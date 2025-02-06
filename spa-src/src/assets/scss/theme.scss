@@ -1,0 +1,22 @@
+/* For Default bootstrap, keep this active */
+// @import "./bootstrap.scss";
+
+/* For Bootswatch themes, comment out the bootstrap import above, and uncomment the specific theme you want */
+// @import "bootswatch/cosmo";
+@import "bootswatch/flatly";
+// @import "bootswatch/journal";
+// @import "bootswatch/lumen";
+// @import "bootswatch/minty";
+// @import "bootswatch/sandstone";
+// @import "bootswatch/spacelab";
+// @import "bootswatch/yeti";
+
+@import "./app.scss";
+
+.push-up {
+  margin-top: -0.5rem;
+}
+
+.headcrumb a {
+  text-decoration: none;
+}
