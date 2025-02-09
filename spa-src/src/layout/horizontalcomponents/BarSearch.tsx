@@ -2,12 +2,12 @@ import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 
-export const TopbarSearch = () => {
+export const BarSearch = () => {
   const [searchText, setSearchText] = useState<string>("");
   const [focused, setFocused] = useState<boolean>(false);
 
   return (
-    <form className="form-inline navbar-search">
+    <form className="form-inline hbar-search">
       <div className="input-group">
         <input
           type="text"

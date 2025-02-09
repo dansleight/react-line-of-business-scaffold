@@ -6,6 +6,9 @@ import {
   faDollarSign,
   faEllipsisV,
   faLightbulb,
+  faQuestion,
+  faToggleOff,
+  faToggleOn,
 } from "@fortawesome/free-solid-svg-icons";
 import { faLightbulb as faLightbulbRegular } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -15,12 +18,25 @@ import "simplebar-react/dist/simplebar.min.css";
 import { useSettingsContext } from "../contexts/UseContexts";
 import { Headcrumb } from "../components/Headcrumb";
 import { Kpi, KpiColor } from "../components/Kpi";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Dropdown } from "bootstrap";
+import { GridBreakpoint } from "../models/Enums";
 
 export function Dashboard() {
-  const { darkMode } = useSettingsContext();
+  const { darkMode, setDarkMode, sidebarToggled, toggleSidebar, breakpoint } =
+    useSettingsContext();
   const dropdownsCreated = useRef<boolean>(false);
+  const [mediaBreakpoint, setMediaBreakpoint] = useState<string>("");
+
+  useEffect(() => {
+    if (breakpoint === GridBreakpoint.xs) setMediaBreakpoint("XS");
+    else if (breakpoint === GridBreakpoint.sm) setMediaBreakpoint("SM");
+    else if (breakpoint === GridBreakpoint.md) setMediaBreakpoint("MD");
+    else if (breakpoint === GridBreakpoint.lg) setMediaBreakpoint("LG");
+    else if (breakpoint === GridBreakpoint.xl) setMediaBreakpoint("XL");
+    else if (breakpoint === GridBreakpoint.xxl) setMediaBreakpoint("XXL");
+    else setMediaBreakpoint("Unknown");
+  }, [breakpoint]);
 
   useEffect(() => {
     if (dropdownsCreated.current) return;
@@ -35,6 +51,37 @@ export function Dashboard() {
     <div id="dashboard-page" className="container-fluid">
       <Headcrumb title="Dashboard" />
 
+      <Row>
+        <Col md={6} lg={4} className="mb-4">
+          <Kpi
+            color={KpiColor.Generic}
+            title="Breakpoint"
+            value={mediaBreakpoint}
+            icon={faQuestion}
+          />
+        </Col>
+        <Col
+          md={6}
+          lg={4}
+          className="mb-4"
+          onClick={() => setDarkMode(!darkMode)}
+        >
+          <Kpi
+            color={KpiColor.Generic}
+            title="Color Mode"
+            value={darkMode ? "Dark" : "Normal"}
+            icon={darkMode ? faLightbulb : faLightbulbRegular}
+          />
+        </Col>
+        <Col lg={4} md={6} className="mb-4" onClick={() => toggleSidebar()}>
+          <Kpi
+            color={KpiColor.Generic}
+            title="Sidebar"
+            value={sidebarToggled ? "Toggled" : "Not Toggled"}
+            icon={sidebarToggled ? faToggleOn : faToggleOff}
+          />
+        </Col>
+      </Row>
       <Row>
         <Col xl={3} md={6} className="mb-4">
           <Kpi
@@ -242,17 +289,6 @@ export function Dashboard() {
               </div>
             </Card.Body>
           </Card>
-        </Col>
-      </Row>
-
-      <Row>
-        <Col xl={3} md={6} className="mb-4">
-          <Kpi
-            color={KpiColor.Generic}
-            title="Color Mode"
-            value={darkMode ? "Dark" : "Normal"}
-            icon={darkMode ? faLightbulb : faLightbulbRegular}
-          />
         </Col>
       </Row>
     </div>

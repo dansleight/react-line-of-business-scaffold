@@ -1,17 +1,24 @@
 /* For Default bootstrap, keep this active */
 // @import "./bootstrap.scss";
 
+/* For the themes that come with this scaffold */
+// @import "themes/reedo";
+
 /* For Bootswatch themes, comment out the bootstrap import above, and uncomment the specific theme you want */
 // @import "bootswatch/cosmo";
 @import "bootswatch/flatly";
 // @import "bootswatch/journal";
 // @import "bootswatch/lumen";
-// @import "bootswatch/minty";
 // @import "bootswatch/sandstone";
 // @import "bootswatch/spacelab";
 // @import "bootswatch/yeti";
 
 @import "./app.scss";
+
+#layout-navbar {
+  --bs-nav-link-font-size: 0.9rem;
+  --bs-nav-link-font-weigh: 300;
+}
 
 .push-up {
   margin-top: -0.5rem;
@@ -19,4 +26,10 @@
 
 .headcrumb a {
   text-decoration: none;
+}
+
+.spaced-elements {
+  & > * {
+    margin: 0.25rem;
+  }
 }

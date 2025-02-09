@@ -3,7 +3,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Dropdown } from "bootstrap";
 import { useEffect, useRef } from "react";
 
-export const SearchDropdown = () => {
+type SearchDropdownProps = {
+  className?: string;
+};
+
+export const SearchDropdown = ({ className }: SearchDropdownProps) => {
   const dropdownCreated = useRef<boolean>(false);
 
   useEffect(() => {
@@ -13,7 +17,10 @@ export const SearchDropdown = () => {
   }, []);
 
   return (
-    <li id="search-dropdown" className="nav-item dropdown no-arrow d-lg-none">
+    <li
+      id="search-dropdown"
+      className={"nav-item dropdown no-arrow " + (className ? className! : "")}
+    >
       <a
         className="nav-link dropdown-toggle"
         href="#"
@@ -32,7 +39,7 @@ export const SearchDropdown = () => {
         className="dropdown-menu dropdown-menu-end p-2 shadow animated--grow-in"
         aria-labelledby="searchDropdown"
       >
-        <form className="form-inline me-auto w-100 navbar-search">
+        <form className="form-inline me-auto w-100 hbar-search">
           <div className="input-group">
             <input
               type="text"

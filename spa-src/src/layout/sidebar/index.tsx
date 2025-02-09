@@ -1,5 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faLaughWink } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useRef, useState } from "react";
 import SimpleBar from "simplebar-react";
 import "simplebar-react/dist/simplebar.min.css";
@@ -10,8 +8,9 @@ import { NarrowSidebar } from "./components/NarrowSidebar";
 import { layoutConfig } from "../../layoutConfig";
 import classNames from "classnames";
 import { GridBreakpoint } from "../../models/Enums";
+import { Logo } from "../../components/Logo";
 
-export const SideBar = () => {
+export const Sidebar = () => {
   const { sidebarToggled, setSidebarToggled, breakpoint, darkMode } =
     useSettingsContext();
   const ref = useRef<any>();
@@ -38,7 +37,7 @@ export const SideBar = () => {
       className={classNames("sidebar shadow " + sidebarClass, {
         toggled: sidebarToggled,
       })}
-      id="accordionSidebar"
+      id="layout-sidebar"
     >
       {/* Sidebar - Brand 
         If the sidebar is not full, the brand and the first divider should be hidden in XS and SM
@@ -53,8 +52,8 @@ export const SideBar = () => {
         )}
         to="/"
       >
-        <div className="sidebar-brand-icon rotate-n-15">
-          <FontAwesomeIcon icon={faLaughWink} size="2x" />
+        <div className="sidebar-brand-icon">
+          <Logo size={30} />
         </div>
         <div className="sidebar-brand-text mx-3">
           Dan-min <sup>48</sup>

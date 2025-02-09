@@ -6,7 +6,7 @@ import { MenuItem } from "../../../models/Interfaces";
 
 export const NarrowSidebar = () => {
   return (
-    <div id="sidebar" className="flex-column nav">
+    <div id="sidebar-narrow" className="flex-column nav">
       <RenderMenuItems items={sidebarMenu} depth={0} />
     </div>
   );

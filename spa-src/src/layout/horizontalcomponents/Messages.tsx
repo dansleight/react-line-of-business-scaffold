@@ -37,7 +37,7 @@ export const Messages = () => {
         </h6>
         <a className="dropdown-item d-flex align-items-center" href="#">
           <div className="dropdown-list-image me-3">
-            <img className="rounded-circle" src="/images/blue.avif" alt="..." />
+            <img className="rounded-circle" src="/images/face2.png" alt="..." />
             <div className="status-indicator bg-success"></div>
           </div>
           <div className="font-weight-bold">
@@ -50,7 +50,7 @@ export const Messages = () => {
         </a>
         <a className="dropdown-item d-flex align-items-center" href="#">
           <div className="dropdown-list-image me-3">
-            <img className="rounded-circle" src="/images/red.avif" alt="..." />
+            <img className="rounded-circle" src="/images/face3.png" alt="..." />
             <div className="status-indicator"></div>
           </div>
           <div>
@@ -63,7 +63,7 @@ export const Messages = () => {
         </a>
         <a className="dropdown-item d-flex align-items-center" href="#">
           <div className="dropdown-list-image me-3">
-            <img className="rounded-circle" src="/images/pink.jpg" alt="..." />
+            <img className="rounded-circle" src="/images/face4.png" alt="..." />
             <div className="status-indicator bg-warning"></div>
           </div>
           <div>
@@ -76,7 +76,7 @@ export const Messages = () => {
         </a>
         <a className="dropdown-item d-flex align-items-center" href="#">
           <div className="dropdown-list-image me-3">
-            <img className="rounded-circle" src="/images/gray.avif" alt="..." />
+            <img className="rounded-circle" src="/images/face5.png" alt="..." />
             <div className="status-indicator bg-success"></div>
           </div>
           <div>

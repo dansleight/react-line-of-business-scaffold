@@ -4,24 +4,29 @@ export enum TopbarTheme {
   Primary = "bg-primary text-gray-100",
   Secondary = "bg-secondary text-white",
   Tertiary = "bg-tertiary text-gray-800",
+  Black = "bg-black text-gray-200",
+  Deep = "bg-gray-900 text-gray-200",
 }
 
 export enum NavbarTheme {
-  Light = "light",
-  Dark = "dark",
-  Primary = "primary",
-  Secondary = "secondary",
-  Tertiary = "tertiary",
+  Light = "bg-light text-gray-900",
+  Dark = "bg-dark text-gray-200",
+  Primary = "bg-primary text-gray-100",
+  Secondary = "bg-secondary text-white",
+  Tertiary = "bg-gray-800 text-gray-200",
+  Black = "bg-black text-gray-200",
+  Deep = "bg-gray-900 text-gray-200",
 }
 
 export enum SidebarTheme {
   Light = "bg-light text-gray-900",
   Dark = "bg-dark text-gray-200",
   Primary = "bg-gradient-primary text-gray-100",
-  Secondary = "bg-gradient-secondary text-white",
-  Tertiary = "bg-gradient-tertiary text-gray-800",
+  Secondary = "bg-gradient-secondary text-gray-800",
+  Tertiary = "bg-tertiary text-gray-800",
   Black = "bg-black text-gray-200",
   Deep = "bg-gray-900 text-gray-200",
+  Info = "bg-info text-white",
 }
 
 /*

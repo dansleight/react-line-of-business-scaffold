@@ -1,6 +1,6 @@
 import { faCircleHalfStroke } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useSettingsContext } from "../../../contexts/UseContexts";
+import { useSettingsContext } from "../../contexts/UseContexts";
 import { MouseEventHandler } from "react";
 
 export function LightDarkMode() {

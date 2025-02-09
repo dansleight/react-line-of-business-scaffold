@@ -8,7 +8,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Dropdown } from "bootstrap";
 import { useEffect, useRef } from "react";
 
-export const Alerts = () => {
+type AlertsProps = {
+  className?: string;
+};
+
+export const Alerts = ({ className }: AlertsProps) => {
   const dropdownCreated = useRef<boolean>(false);
 
   useEffect(() => {
@@ -18,7 +22,10 @@ export const Alerts = () => {
   }, []);
 
   return (
-    <li id="alerts-dropdown" className="nav-item dropdown no-arrow mx-1">
+    <li
+      id="alerts-dropdown"
+      className={"nav-item dropdown no-arrow mx-1 " + (className ?? "")}
+    >
       <a
         className="nav-link dropdown-toggle"
         href="#"

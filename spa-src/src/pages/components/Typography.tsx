@@ -10,7 +10,7 @@ export function Typography() {
         <Col md={6}>
           <Card className="mb-3">
             <Card.Body>
-              <Card.Title className="push-up text-primary">Headings</Card.Title>
+              <Card.Title className="push-up">Headings</Card.Title>
               <div className="bs-component">
                 <h1>Heading 1</h1>
                 <h2>Heading 2</h2>
@@ -35,9 +35,7 @@ export function Typography() {
         <Col md={6}>
           <Card className="mb-3">
             <Card.Body>
-              <Card.Title className="push-up text-primary">
-                Example Body Text
-              </Card.Title>
+              <Card.Title className="push-up">Example Body Text</Card.Title>
               <div className="bs-component">
                 <p>
                   Nullam quis risus eget <a href="#">urna mollis ornare</a> vel
@@ -69,9 +67,7 @@ export function Typography() {
         <Col md={6}>
           <Card className="mb-3">
             <Card.Body>
-              <Card.Title className="push-up text-primary">
-                Emphasis Classes
-              </Card.Title>
+              <Card.Title className="push-up">Emphasis Classes</Card.Title>
               <div className="bs-component">
                 <p className="text-primary">.text-primary</p>
                 <p className="text-primary-emphasis">.text-primary-emphasis</p>
@@ -102,9 +98,7 @@ export function Typography() {
         <Col md={6}>
           <Card className="mb-3">
             <Card.Body>
-              <Card.Title className="push-up text-primary">
-                Blockquotes
-              </Card.Title>
+              <Card.Title className="push-up">Blockquotes</Card.Title>
               <div className="mb-4">
                 <figure>
                   <blockquote className="blockquote">

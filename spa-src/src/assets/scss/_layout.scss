@@ -1,31 +1,151 @@
 // Layout Variables
-// Change below variable if the height of the navbar changes
+// Change below variable if the height of the topbar changes
 $topbar-base-height: 3.375rem !default;
+// Change below variable if the height of the navbar changes
+$navbar-base-height: 2.75rem !default;
 // Change below variable to change the width of the sidenav
 $sidebar-base-width: 14rem !default;
 // Change below variable to change the width of the sidenav when collapsed
 $sidebar-collapsed-width: 6.5rem !default;
 
-body[data-sidebar-include="true"] {
-  #wrapper {
-    .sidebar {
-      position: fixed;
-      top: $topbar-base-height;
+// **************************************************************************************************
+// some things are axiomatic
+#layout-sidebar,
+#layout-topbar,
+#layout-navbar {
+  position: fixed;
+  left: 0;
+}
+#layout-topbar,
+#layout-navbar {
+  width: 100%;
+}
+body[data-sidebar-full="true"] {
+  #layout-sidebar {
+    z-index: 999;
+  }
+}
+body[data-sidebar-full="false"] {
+  #layout-sidebar {
+    z-index: 995;
+  }
+}
+#layout-topbar {
+  top: 0;
+  z-index: 998;
+}
+#layout-navbar {
+  z-index: 997;
+}
 
-      .sb-wrapper {
-        max-height: calc(100vh - $topbar-base-height);
+// **************************************************************************************************
+// if the sidebar is full, it's top position is 0
+body[data-sidebar-full="true"] {
+  #layout-sidebar {
+    top: 0;
+    .sb-wrapper {
+      max-height: 100vh;
+    }
+  }
+  &[data-sidebar-include] {
+    #wrapper {
+      #layout-topbar,
+      #layout-navbar {
+        @include media-breakpoint-up(md) {
+          padding-left: $sidebar-base-width;
+        }
+      }
+      &.sidebar-toggled {
+        #layout-topbar,
+        #layout-navbar {
+          @include media-breakpoint-up(md) {
+            padding-left: $sidebar-collapsed-width;
+          }
+        }
       }
     }
   }
 }
 
+// **************************************************************************************************
+// Three different options for topbar and navbar
+body[data-topbar-include="true"][data-navbar-include="true"] {
+  &[data-sidebar-full="false"] {
+    @include media-breakpoint-up(md) {
+      #layout-sidebar {
+        top: calc($topbar-base-height + $navbar-base-height);
+        .sb-wrapper {
+          max-height: calc(100vh - $topbar-base-height - $navbar-base-height);
+        }
+      }
+      #content-wrapper {
+        margin-top: calc($topbar-base-height + $navbar-base-height);
+        min-height: calc(100vh - $topbar-base-height - $navbar-base-height);
+      }
+    }
+    @include media-breakpoint-down(md) {
+      #layout-sidebar {
+        top: $topbar-base-height;
+        .sb-wrapper {
+          max-height: calc(100vh - $topbar-base-height);
+        }
+      }
+      #content-wrapper {
+        margin-top: $topbar-base-height;
+        min-height: calc(100vh - $topbar-base-height);
+      }
+    }
+  }
+  #layout-navbar {
+    top: $topbar-base-height;
+  }
+
+  // for md and lower, the navbar hides if there is a topbar
+  @include media-breakpoint-down(md) {
+    #layout-navbar {
+      display: none;
+    }
+  }
+}
+
+body[data-topbar-include="true"][data-navbar-include="false"] {
+  &[data-sidebar-full="false"] {
+    #layout-sidebar {
+      top: $topbar-base-height;
+      .sb-wrapper {
+        max-height: calc(100vh - $topbar-base-height);
+      }
+    }
+    #content-wrapper {
+      margin-top: $topbar-base-height;
+      min-height: calc(100vh - $topbar-base-height);
+    }
+  }
+}
+
+body[data-topbar-include="false"][data-navbar-include="true"][data-sidebar-full="false"] {
+  #layout-sidebar {
+    top: $navbar-base-height;
+    .sb-wrapper {
+      max-height: calc(100vh - $navbar-base-height);
+    }
+  }
+  #content-wrapper {
+    margin-top: $navbar-base-height;
+    min-height: calc(100vh - $navbar-base-height);
+  }
+  #layout-navbar {
+    top: 0;
+  }
+}
+// **************************************************************************************************
+
+// **************************************************************************************************
+// for md, we don't use the full-width sidebar, just the collapsed one,
+// and it can share the space with the content
 @include media-breakpoint-down(md) {
   body[data-sidebar-include="true"] {
     #wrapper {
-      .sidebar {
-        z-index: 9990;
-      }
-
       #content-wrapper {
         margin-left: 0;
       }
@@ -39,6 +159,7 @@ body[data-sidebar-include="true"] {
   }
 }
 
+// for sm and lower, the sidebar is over the content, does not share
 @include media-breakpoint-down(sm) {
   body[data-sidebar-include="true"] {
     #wrapper {
@@ -55,13 +176,10 @@ body[data-sidebar-include="true"] {
   }
 }
 
+// otherwise, fairly normal behavior
 @include media-breakpoint-up(md) {
   body[data-sidebar-include="true"] {
     #wrapper {
-      .sidebar {
-        z-index: 999;
-      }
-
       #content-wrapper {
         margin-left: $sidebar-base-width;
       }
@@ -74,48 +192,9 @@ body[data-sidebar-include="true"] {
     }
   }
 }
+// **************************************************************************************************
 
-body[data-topbar-include="true"] {
-  #wrapper {
-    & > .navbar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      z-index: 998;
-    }
-    #content-wrapper {
-      margin-top: calc($topbar-base-height);
-      min-height: calc(100vh - $topbar-base-height);
-    }
-  }
-}
-
-body[data-sidebar-full="true"] {
-  #wrapper {
-    .sidebar {
-      top: 0;
-    }
-    .navbar {
-      // @include media-breakpoint-down(md) {
-      //   padding-left: $sidebar-collapsed-width;
-      // }
-
-      @include media-breakpoint-up(md) {
-        padding-left: $sidebar-base-width;
-      }
-    }
-    &.sidebar-toggled {
-      .navbar {
-        @include media-breakpoint-up(md) {
-          padding-left: $sidebar-collapsed-width;
-        }
-      }
-    }
-  }
-}
-
-#sidebar {
+#sidebar-narrow {
   .openright {
     position: relative;
     .dropdown-menu,
@@ -134,7 +213,7 @@ body[data-sidebar-full="true"] {
   }
 }
 
-.sidebar {
+#layout-sidebar {
   ul.sub-menu {
     padding-left: 1rem;
   }

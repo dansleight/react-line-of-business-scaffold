@@ -15,21 +15,23 @@ Layout Configuration
  - sideBar: indicates whether to include a sidebar or leave it
  - sideBarFull: indicates whether the sidebar is full-height, or starts below the topbar and/or navbar
  - topBar: indicates whether to include a topbar
+
+ NOTE: The active sidebar theme will inform the brand background
 ------------------------------------------------------------------------------------------------------
 */
 export const layoutConfig: LayoutConfig = {
   includeSidebar: true,
-  sidebarTheme: SidebarTheme.Light,
+  sidebarTheme: SidebarTheme.Tertiary,
   sidebarDarkTheme: SidebarTheme.Deep,
   sidebarFull: false,
 
   includeTopbar: true,
-  topbarTheme: TopbarTheme.Primary,
+  topbarTheme: TopbarTheme.Light,
   topbarDarkTheme: TopbarTheme.Primary,
 
-  includeNavbar: false,
+  includeNavbar: true,
   navbarTheme: NavbarTheme.Primary,
-  navbarDarkTheme: NavbarTheme.Dark,
+  navbarDarkTheme: NavbarTheme.Tertiary,
 } as LayoutConfig;
 
 /*

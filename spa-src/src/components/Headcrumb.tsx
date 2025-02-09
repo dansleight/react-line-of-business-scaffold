@@ -26,14 +26,7 @@ export function Headcrumb({ title, parent, titles, paths }: HeadcrumbProps) {
     if (title) setTitle(title);
     else if (workingTitles && workingTitles.length) {
       setTitle(workingTitles.pop()!);
-      console.log(
-        "title was set by popping the last value from the workingTitles array",
-      );
     }
-
-    console.log(
-      `_title is now ${_title} and the workingTitles array length is now ${workingTitles && workingTitles.length}`,
-    );
 
     if (workingTitles && workingTitles.length) {
       for (let i = 0; i < workingTitles.length; i++) {

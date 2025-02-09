@@ -1,9 +1,12 @@
-// Topbar
-.topbar {
+// hbar
+.horizontal-bar {
   min-width: 370px;
-  height: $topbar-base-height;
 
-  .topbar-brand-icon {
+  .hbar-brand {
+    color: inherit;
+  }
+
+  .hbar-brand-icon {
     width: $sidebar-collapsed-width;
     text-align: center;
     background-color: $primary;
@@ -14,17 +17,17 @@
     left: 0;
   }
 
-  .topbar-brand-icon-spacer {
+  .hbar-brand-icon-spacer {
     width: calc($sidebar-collapsed-width - $navbar-padding-x);
   }
 
-  #sidebarToggleTop {
+  .sidebar-toggle-hbar {
     height: 2.5rem;
     width: 2.5rem;
     color: inherit;
   }
 
-  .navbar-search {
+  .hbar-search {
     width: 20rem;
     input {
       font-size: 0.85rem;
@@ -39,7 +42,7 @@
     }
   }
 
-  .topbar-divider {
+  .hbar-divider {
     width: 0;
     border-right: 1px solid $border-color;
     height: calc(#{$topbar-base-height} / 2);
@@ -82,7 +85,6 @@
     position: static;
     .dropdown-menu {
       width: calc(100% - #{$grid-gutter-width});
-      right: $grid-gutter-width / 2;
     }
   }
   .dropdown-list {
@@ -144,7 +146,6 @@
       position: relative;
       .dropdown-menu {
         width: auto;
-        right: 0;
       }
     }
     .dropdown-list {
@@ -156,9 +157,16 @@
       }
     }
   }
+  @include media-breakpoint-down(md) {
+    .dropdown {
+      .dropdown-menu {
+        right: $grid-gutter-width / 2;
+      }
+    }
+  }
 }
 
-.topbar.navbar-dark {
+.horizontal-bar.navbar-dark {
   .navbar-nav {
     .nav-item {
       .nav-link {
@@ -174,7 +182,7 @@
   }
 }
 
-.topbar.navbar-light {
+.horizontal-bar.navbar-light {
   .navbar-nav {
     .nav-item {
       .nav-link {
