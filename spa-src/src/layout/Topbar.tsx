@@ -68,7 +68,7 @@ export const Topbar = () => {
       )}
 
       {/* Topbar Search */}
-      <div className="d-none d-xl-inline-block ms-lg-3 my-lg-0">
+      <div className="d-none d-md-inline-block ms-lg-3 my-lg-0">
         <BarSearch />
       </div>
 

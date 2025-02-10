@@ -4,7 +4,7 @@ import { Headcrumb } from "../../components/Headcrumb";
 export function Typography() {
   return (
     <Container fluid>
-      <Headcrumb parent="Components" title="Typography" />
+      <Headcrumb parent="Bootstrap" title="Typography" />
 
       <Row>
         <Col md={6}>

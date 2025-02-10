@@ -3,7 +3,7 @@ import {
   faChartArea,
   faFolder,
   faGauge,
-  faGear,
+  faB,
   faTable,
   faWrench,
 } from "@fortawesome/free-solid-svg-icons";
@@ -45,20 +45,22 @@ Menu Configuration
 ------------------------------------------------------------------------------------------------------
 */
 const dashboard: MenuItem = { path: "/", label: "Dashboard", icon: faGauge };
-const components: MenuItem = {
-  path: "/components",
-  label: "Components",
-  icon: faGear,
+const bootstrap: MenuItem = {
+  path: "/bootstrap",
+  label: "Bootstrap",
+  icon: faB,
   items: [
-    { path: "/components-navbars", label: "Navbars" },
-    { path: "/components-buttons", label: "Buttons" },
-    { path: "/components-typography", label: "Typography" },
-    { path: "/components-forms", label: "Forms" },
-    { path: "/components-navs", label: "Navs" },
-    { path: "/components-indicators", label: "Indicators" },
-    { path: "/components-progress", label: "Progress" },
-    { path: "/components-containers", label: "Containers" },
-    { path: "/components-dialogs", label: "Dialogs" },
+    { path: "/bootstrap-index", label: "Bootstrap" },
+    { path: "/bootstrap-backgrounds", label: "Background Colors" },
+    { path: "/bootstrap-text", label: "Text" },
+    { path: "/bootstrap-buttons", label: "Buttons" },
+    { path: "/bootstrap-typography", label: "Typography" },
+    { path: "/bootstrap-forms", label: "Forms" },
+    { path: "/bootstrap-navs", label: "Navs" },
+    { path: "/bootstrap-indicators", label: "Indicators" },
+    { path: "/bootstrap-progress", label: "Progress" },
+    { path: "/bootstrap-containers", label: "Containers" },
+    { path: "/bootstrap-dialogs", label: "Dialogs" },
   ],
 };
 const utilities: MenuItem = {
@@ -96,7 +98,7 @@ const tables: MenuItem = { path: "/tables", label: "Tables", icon: faTable };
 export const genericMenu: MenuItem[] = [
   dashboard,
   { group: true, label: "Interface" },
-  components,
+  bootstrap,
   utilities,
   { group: true, label: "Addons" },
   pages,
@@ -109,7 +111,7 @@ export const sidebarMenu: MenuItem[] = [
   {
     group: true,
     label: "Interface",
-    items: [components, utilities],
+    items: [bootstrap, utilities],
   },
   {
     group: true,

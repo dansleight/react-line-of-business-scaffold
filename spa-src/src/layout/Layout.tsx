@@ -9,6 +9,7 @@ type LayoutProps = {
   children: ReactNode;
   title?: string;
 };
+
 export const Layout = ({ children, title }: LayoutProps) => {
   const { sidebarToggled, setBodyAttribute } = useSettingsContext();
 
@@ -32,7 +33,7 @@ export const Layout = ({ children, title }: LayoutProps) => {
         ? "true"
         : "false",
     );
-  }, [layoutConfig]);
+  }, [layoutConfig, children, title]);
 
   return (
     <div id="wrapper" className={sidebarToggled ? "sidebar-toggled" : ""}>

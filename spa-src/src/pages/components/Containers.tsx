@@ -4,7 +4,7 @@ import { Headcrumb } from "../../components/Headcrumb";
 export function Containers() {
   return (
     <Container fluid className="pb-5">
-      <Headcrumb title="Containers" parent="Components" />
+      <Headcrumb parent="Bootstrap" title="Containers" />
 
       {/* List Groups */}
       <Row>

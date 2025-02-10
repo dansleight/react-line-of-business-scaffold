@@ -18,7 +18,7 @@ export function Buttons() {
 
   return (
     <div className="container-fluid">
-      <Headcrumb title="Buttons" parent="Components" />
+      <Headcrumb parent="Bootstrap" title="Buttons" />
 
       <Row>
         <Col lg={6}>

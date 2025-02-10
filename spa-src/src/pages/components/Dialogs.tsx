@@ -28,7 +28,7 @@ export function Dialogs() {
   }, []);
   return (
     <Container fluid>
-      <Headcrumb parent="Components" title="Dialogs" />
+      <Headcrumb parent="Bootstrap" title="Dialogs" />
 
       <Row>
         <Col md={6}>

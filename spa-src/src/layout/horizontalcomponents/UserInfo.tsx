@@ -24,7 +24,7 @@ export const UserInfo = () => {
         aria-expanded="false"
       >
         <span className="me-2 d-none d-lg-inline small">Reed Lloyd</span>
-        <img className="img-profile rounded-circle" src="/images/avatar.png" />
+        <img className="img-profile rounded-circle" src="/images/agent.png" />
       </a>
       {/* Dropdown - User Information */}
       <div
