@@ -1,5 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { useSettingsContext } from "../contexts/UseContexts";
 import { BarSearch } from "./horizontalcomponents/BarSearch";
 import { SearchDropdown } from "./horizontalcomponents/SearchDropdown";
@@ -12,9 +10,11 @@ import classNames from "classnames";
 import { useEffect, useState } from "react";
 import { Brand } from "./horizontalcomponents/Brand";
 import { DropMenu } from "./horizontalcomponents/DropMenu";
+import { ToggleSidebarSvg } from "../components/ToggleSidebarSvg";
+import { GridBreakpoint } from "../models/Enums";
 
 export const Topbar = () => {
-  const { toggleSidebar, darkMode } = useSettingsContext();
+  const { toggleSidebar, darkMode, breakpoint } = useSettingsContext();
   const [topbarClass, setTopbarClass] = useState<string>("");
 
   useEffect(() => {
@@ -35,9 +35,12 @@ export const Topbar = () => {
         - All sizes when there is no sidebar 
         - SM and XS when there is a sidebar */}
       <Brand
-        className={classNames("", {
-          "d-md-none": layoutConfig.includeSidebar,
-        })}
+        className={classNames(
+          darkMode ? layoutConfig.sidebarDarkTheme : layoutConfig.sidebarTheme,
+          {
+            "d-md-none": layoutConfig.includeSidebar,
+          },
+        )}
       />
 
       {/* Create space when the navbar-brand-icon is visible, since it is absolute positioned  */}
@@ -53,7 +56,7 @@ export const Topbar = () => {
           - SM an XS when there is a navbar, maybe MD as well, based on need
           ** should be its own component if there is no sidebar or navbar, and there is still a desire to have it
       */}
-      {(layoutConfig.includeNavbar || layoutConfig.includeSidebar) && (
+      {layoutConfig.includeSidebar && (
         <button
           className={classNames(
             "sidebar-toggle-hbar btn btn-link rounded-circle ms-2",
@@ -63,12 +66,13 @@ export const Topbar = () => {
           )}
           onClick={toggleSidebar}
         >
-          <FontAwesomeIcon icon={faBars} />
+          {/* when we are medium or lower, the toggle's purpose changes. */}
+          <ToggleSidebarSvg reverse={breakpoint <= GridBreakpoint.sm} />
         </button>
       )}
 
       {/* Topbar Search */}
-      <div className="d-none d-md-inline-block ms-lg-3 my-lg-0">
+      <div className="d-none d-md-inline-block ms-3">
         <BarSearch />
       </div>
 

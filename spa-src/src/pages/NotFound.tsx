@@ -1,9 +1,14 @@
+import { Col, Container, Row } from "react-bootstrap";
 import { Headcrumb } from "../components/Headcrumb";
 
 export function NotFound() {
   return (
-    <div className="container-fluid">
+    <Container fluid>
       <Headcrumb title="Not Found" />
-    </div>
+
+      <Row>
+        <Col></Col>
+      </Row>
+    </Container>
   );
 }

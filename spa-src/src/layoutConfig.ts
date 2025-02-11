@@ -20,18 +20,18 @@ Layout Configuration
 ------------------------------------------------------------------------------------------------------
 */
 export const layoutConfig: LayoutConfig = {
-  includeSidebar: true,
+  includeSidebar: false,
   sidebarTheme: SidebarTheme.Tertiary,
   sidebarDarkTheme: SidebarTheme.Deep,
   sidebarFull: false,
 
   includeTopbar: true,
-  topbarTheme: TopbarTheme.Light,
-  topbarDarkTheme: TopbarTheme.Primary,
+  topbarTheme: TopbarTheme.Deep,
+  topbarDarkTheme: TopbarTheme.Deep,
 
   includeNavbar: true,
   navbarTheme: NavbarTheme.Primary,
-  navbarDarkTheme: NavbarTheme.Tertiary,
+  navbarDarkTheme: NavbarTheme.Dark,
 } as LayoutConfig;
 
 /*
