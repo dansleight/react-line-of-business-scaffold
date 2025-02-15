@@ -7,12 +7,12 @@ import { useEffect, useRef, useState } from "react";
 import { Brand } from "./horizontalcomponents/Brand";
 import { Link } from "react-router-dom";
 import { faQuestionCircle } from "@fortawesome/free-regular-svg-icons";
-import { sidebarMenu } from "../layoutConfig";
 import { Dropdown } from "bootstrap";
 import { HMenu } from "./horizontalcomponents/HMenu";
 import { DropMenu } from "./horizontalcomponents/DropMenu";
+import { MenuProps } from "../models/Interfaces";
 
-export const Navbar = () => {
+export const Navbar = ({ menuItems }: MenuProps) => {
   const { toggleSidebar, darkMode } = useSettingsContext();
   const [navbarClass, setNavbarClass] = useState<string>("");
   const dropdownsCreated = useRef<boolean>(false);
@@ -80,9 +80,9 @@ export const Navbar = () => {
       )}
 
       {/* ********************************************************************************************************************
-      Menu Items - Move to a Component
+      Menu Items
       */}
-      <HMenu sm menuitems={sidebarMenu} />
+      <HMenu sm menuitems={menuItems} />
 
       {/* ******************************************************************************************************************** */}
 
@@ -95,7 +95,7 @@ export const Navbar = () => {
             <FontAwesomeIcon icon={faQuestionCircle} />
           </Link>
         </li>
-        <DropMenu id="test" menuitems={sidebarMenu} className="d-lg-none" />
+        <DropMenu id="test" menuitems={menuItems} className="d-lg-none" />
       </ul>
     </nav>
   );

@@ -5,15 +5,16 @@ import { Alerts } from "./horizontalcomponents/Alerts";
 import { Messages } from "./horizontalcomponents/Messages";
 import { UserInfo } from "./horizontalcomponents/UserInfo";
 import { LightDarkMode } from "./horizontalcomponents/LightDarkMode";
-import { layoutConfig, sidebarMenu } from "../layoutConfig";
+import { layoutConfig } from "../layoutConfig";
 import classNames from "classnames";
 import { useEffect, useState } from "react";
 import { Brand } from "./horizontalcomponents/Brand";
 import { DropMenu } from "./horizontalcomponents/DropMenu";
 import { ToggleSidebarSvg } from "../components/ToggleSidebarSvg";
 import { GridBreakpoint } from "../models/Enums";
+import { MenuProps } from "../models/Interfaces";
 
-export const Topbar = () => {
+export const Topbar = ({ menuItems }: MenuProps) => {
   const { toggleSidebar, darkMode, breakpoint } = useSettingsContext();
   const [topbarClass, setTopbarClass] = useState<string>("");
 
@@ -97,7 +98,7 @@ export const Topbar = () => {
 
         <DropMenu
           id="topbar-sidebar-menu-items"
-          menuitems={sidebarMenu}
+          menuitems={menuItems}
           className="d-md-none"
         />
       </ul>

@@ -14,14 +14,21 @@ export interface LayoutConfig {
   includeNavbar: boolean;
   navbarTheme: NavbarTheme;
   navbarDarkTheme: NavbarTheme;
+
+  defaultTitle?: string;
+  titlePrefix?: string;
+  titleSuffix?: string;
+}
+
+export interface MenuProps {
+  menuItems: MenuItem[];
 }
 
 export interface MenuItem {
   path?: string;
   label: string;
-  shortLabel?: string;
   icon?: IconDefinition;
   items?: MenuItem[];
   group?: boolean;
-  colCount?: number;
+  roles?: string | string[];
 }

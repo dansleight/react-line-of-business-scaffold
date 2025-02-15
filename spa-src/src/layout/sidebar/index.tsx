@@ -9,8 +9,9 @@ import { layoutConfig } from "../../layoutConfig";
 import classNames from "classnames";
 import { GridBreakpoint } from "../../models/Enums";
 import { Logo } from "../../components/Logo";
+import { MenuProps } from "../../models/Interfaces";
 
-export const Sidebar = () => {
+export const Sidebar = ({ menuItems }: MenuProps) => {
   const { sidebarToggled, setSidebarToggled, breakpoint, darkMode } =
     useSettingsContext();
   const ref = useRef<any>();
@@ -69,11 +70,11 @@ export const Sidebar = () => {
 
       {!sidebarToggled ? (
         <SimpleBar ref={ref} className="sb-wrapper">
-          <FullSidebar />
+          <FullSidebar menuItems={menuItems} />
         </SimpleBar>
       ) : (
         <div className="bs-wrapper">
-          <NarrowSidebar />
+          <NarrowSidebar menuItems={menuItems} />
         </div>
       )}
 

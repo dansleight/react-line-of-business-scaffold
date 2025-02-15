@@ -4,13 +4,21 @@ import { layoutConfig } from "../layoutConfig";
 import { Sidebar } from "../layout/sidebar";
 import { Topbar } from "./Topbar";
 import { Navbar } from "./Navbar";
+import { MenuItem } from "../models/Interfaces";
 
 type LayoutProps = {
   children: ReactNode;
   title?: string;
+  sidebarMenu: MenuItem[];
+  navbarMenu: MenuItem[];
 };
 
-export const Layout = ({ children, title }: LayoutProps) => {
+export const Layout = ({
+  children,
+  title,
+  sidebarMenu,
+  navbarMenu,
+}: LayoutProps) => {
   const { sidebarToggled, setBodyAttribute } = useSettingsContext();
 
   useEffect(() => {
@@ -37,9 +45,9 @@ export const Layout = ({ children, title }: LayoutProps) => {
 
   return (
     <div id="wrapper" className={sidebarToggled ? "sidebar-toggled" : ""}>
-      {layoutConfig.includeSidebar && <Sidebar />}
-      {layoutConfig.includeTopbar && <Topbar />}
-      {layoutConfig.includeNavbar && <Navbar />}
+      {layoutConfig.includeSidebar && <Sidebar menuItems={sidebarMenu} />}
+      {layoutConfig.includeTopbar && <Topbar menuItems={sidebarMenu} />}
+      {layoutConfig.includeNavbar && <Navbar menuItems={navbarMenu} />}
 
       {/* Content Wrapper */}
       <div id="content-wrapper" className="d-flex flex-column">

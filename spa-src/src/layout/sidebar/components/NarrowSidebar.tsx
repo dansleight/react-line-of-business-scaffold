@@ -1,13 +1,12 @@
 import { NavLink, useLocation } from "react-router-dom";
-import { sidebarMenu } from "../../../layoutConfig";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleDot } from "@fortawesome/free-solid-svg-icons";
-import { MenuItem } from "../../../models/Interfaces";
+import { MenuItem, MenuProps } from "../../../models/Interfaces";
 
-export const NarrowSidebar = () => {
+export const NarrowSidebar = ({ menuItems }: MenuProps) => {
   return (
     <div id="sidebar-narrow" className="flex-column nav">
-      <RenderMenuItems items={sidebarMenu} depth={0} />
+      <RenderMenuItems items={menuItems} depth={0} />
     </div>
   );
 };
