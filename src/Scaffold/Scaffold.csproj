@@ -1,0 +1,45 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Lamar" Version="14.0.1" />
+    <PackageReference Include="Lamar.Microsoft.DependencyInjection" Version="14.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.*" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.*" />
+    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="8.*" />
+    <PackageReference Include="Microsoft.Graph" Version="5.*" />
+    <PackageReference Include="Microsoft.Identity.Web" Version="3.*" />
+    <PackageReference Include="Microsoft.Identity.Web.GraphServiceClient" Version="3.*" />
+    <PackageReference Include="NameGenerator" Version="2.0.4" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.*" />
+    <PackageReference Include="NSwag.AspNetCore" Version="14.*" />
+    <PackageReference Include="NSwag.MSBuild" Version="14.*">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Serilog" Version="4.*" />
+    <PackageReference Include="Serilog.AspNetCore" Version="8.*" />
+    <PackageReference Include="Serilog.Enrichers.Environment" Version="3.*" />
+    <PackageReference Include="Serilog.Exceptions" Version="8.*" />
+    <PackageReference Include="Serilog.Exceptions.SqlServer" Version="8.*" />
+    <PackageReference Include="Serilog.Extensions.Hosting" Version="8.*" />
+    <PackageReference Include="Serilog.Settings.Configuration" Version="8.*" />
+    <PackageReference Include="Serilog.Sinks.ApplicationInsights" Version="4.*" />
+    <PackageReference Include="Serilog.Sinks.Async" Version="2.*" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="6.*" />
+    <PackageReference Include="Serilog.Sinks.Debug" Version="3.*" />
+    <PackageReference Include="Serilog.Sinks.EventLog" Version="4.*" />
+    <PackageReference Include="Serilog.Sinks.File" Version="6.*" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Scaffold.Business\Scaffold.Business.csproj" />
+  </ItemGroup>
+
+</Project>

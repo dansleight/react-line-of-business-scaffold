@@ -31,10 +31,10 @@ $web-font-path: "https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,
 }
 
 .bg-dark {
-  background-color: $gray-800 !important;
+  background-color: $dark !important;
 
   .dropdown-menu {
-    background-color: $gray-800;
+    background-color: $dark;
 
     .dropdown-item,
     .dropdown-item:focus {
@@ -45,14 +45,14 @@ $web-font-path: "https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,
     .dropdown-item:hover,
     .dropdown-item:focus {
       color: $white;
-      background-color: shade-color($gray-800, 10%);
+      background-color: shade-color($dark, 10%);
     }
   }
 }
 
 .bg-light {
   .dropdown-menu {
-    background-color: $gray-200;
+    background-color: $light;
 
     .dropdown-item,
     .dropdown-item:focus {
@@ -63,7 +63,7 @@ $web-font-path: "https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,
     .dropdown-item:hover,
     .dropdown-item:focus {
       color: $navbar-light-hover-color;
-      background-color: tint-color($gray-200, 10%);
+      background-color: tint-color($light, 10%);
     }
   }
 }

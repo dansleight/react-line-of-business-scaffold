@@ -21,6 +21,7 @@ import { Dialogs } from "./pages/components/Dialogs";
 import { Backgrounds } from "./pages/bootstrap/Backgrounds";
 import { Text } from "./pages/bootstrap/Text";
 import { General } from "./pages/bootstrap/General";
+import { Chat } from "./pages/Chat";
 
 export const routes = [
   { path: "/", component: <Dashboard />, title: "Dashboard" },
@@ -46,4 +47,5 @@ export const routes = [
   { path: "/pages-blank-page", component: <BlankPage />, title: "Blank" },
   { path: "/charts", component: <Charts />, title: "Charts" },
   { path: "/tables", component: <Tables />, title: "Tables" },
+  { path: "/chat", component: <Chat />, title: "Chat" },
 ];

@@ -13,16 +13,16 @@ Layout Configuration
 */
 export const layoutConfig: LayoutConfig = {
   includeSidebar: false,
-  sidebarTheme: SidebarTheme.Tertiary,
-  sidebarDarkTheme: SidebarTheme.Deep,
+  sidebarTheme: SidebarTheme.Primary,
+  sidebarDarkTheme: SidebarTheme.Primary,
   sidebarFull: false,
 
   includeTopbar: true,
-  topbarTheme: TopbarTheme.Deep,
+  topbarTheme: TopbarTheme.Dark,
   topbarDarkTheme: TopbarTheme.Deep,
 
   includeNavbar: true,
-  navbarTheme: NavbarTheme.Primary,
+  navbarTheme: NavbarTheme.Light,
   navbarDarkTheme: NavbarTheme.Dark,
 
   defaultTitle: "Scaffold",

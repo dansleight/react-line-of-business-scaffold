@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scaffold", "Scaffold\Scaffold.csproj", "{C6AA1CA7-B11D-4CCF-A844-D2ED7922EE2A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scaffold.Business", "Scaffold.Business\Scaffold.Business.csproj", "{C3701570-BFC8-4181-87AC-34D187CB5227}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scaffold.EFTest", "Scaffold.EFTest\Scaffold.EFTest.csproj", "{D945AFA1-9645-48D9-A72E-BCC67F5A37CF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C6AA1CA7-B11D-4CCF-A844-D2ED7922EE2A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C6AA1CA7-B11D-4CCF-A844-D2ED7922EE2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C6AA1CA7-B11D-4CCF-A844-D2ED7922EE2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C6AA1CA7-B11D-4CCF-A844-D2ED7922EE2A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3701570-BFC8-4181-87AC-34D187CB5227}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3701570-BFC8-4181-87AC-34D187CB5227}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3701570-BFC8-4181-87AC-34D187CB5227}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3701570-BFC8-4181-87AC-34D187CB5227}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D945AFA1-9645-48D9-A72E-BCC67F5A37CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D945AFA1-9645-48D9-A72E-BCC67F5A37CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D945AFA1-9645-48D9-A72E-BCC67F5A37CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D945AFA1-9645-48D9-A72E-BCC67F5A37CF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

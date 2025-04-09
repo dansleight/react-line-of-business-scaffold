@@ -6,6 +6,7 @@ import {
   faTable,
   faWrench,
   faGear,
+  faMessage,
 } from "@fortawesome/free-solid-svg-icons";
 import { MenuItem } from "./models/Interfaces";
 
@@ -63,6 +64,11 @@ const pages: MenuItem = {
     { path: "/pages-blank-page", label: "Blank Page" },
   ],
 };
+const chat: MenuItem = {
+  path: "/chat",
+  label: "Chat",
+  icon: faMessage,
+};
 const charts: MenuItem = {
   path: "/charts",
   label: "Charts",
@@ -83,7 +89,7 @@ export const genericMenuBase: MenuItem[] = [
   utilities,
   { group: true, label: "Addons" },
   pages,
-  charts,
+  chat,
   tables,
   admin,
 ];

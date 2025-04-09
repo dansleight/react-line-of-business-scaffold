@@ -1,4 +1,5 @@
 import { MenuItem } from "./Interfaces";
+import sha256 from "crypto-js/sha256";
 
 const menuItemIsVisible = (
   menuItem: MenuItem,
@@ -39,4 +40,8 @@ export const smartSplit = (input: string): string => {
   return input
     .replace(/([a-z])([A-Z])/g, "$1 $2")
     .replace(/([A-Z])([A-Z][a-z])/g, "$1 $2");
+};
+
+export const hashCode = function (input: string) {
+  return sha256(input);
 };

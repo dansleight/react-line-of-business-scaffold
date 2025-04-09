@@ -1,13 +1,25 @@
-import { ReactNode, useEffect, useState } from "react";
+import { ComponentType, ReactNode, useEffect, useState } from "react";
 import { GridBreakpoint, gridBreakpoints } from "../models/Enums";
 import { SettingsContext } from "./UseContexts";
 import useCookie from "react-use-cookie";
+import { GlobalSettingsModel } from "../apiClient/data-contracts";
+import { defaultGlobalSettings, webApiConfig } from "../appConfig";
+import { Api } from "../apiClient/Api";
+import React from "react";
 
 type SettingsProviderProps = {
   children: ReactNode;
+  messageWrapper?: ComponentType<{ children: ReactNode }>;
 };
 
-export function SettingsProvider({ children }: SettingsProviderProps) {
+export function SettingsProvider({
+  children,
+  messageWrapper,
+}: SettingsProviderProps) {
+  const [globalSettings, setGlobalSettings] = useState<GlobalSettingsModel>(
+    defaultGlobalSettings as GlobalSettingsModel,
+  );
+  const [loaded, setLoaded] = useState<boolean | undefined>(undefined);
   const [sidebarToggled, setSidebarToggled] = useState<boolean>(false);
   const [darkMode, setDarkMode] = useState<boolean>(false);
   const [darkModeCookie, setDarkModeCookie] = useCookie("darkmode", "false");
@@ -35,6 +47,26 @@ export function SettingsProvider({ children }: SettingsProviderProps) {
       else document.documentElement.setAttribute(attribute, value);
     }
   };
+
+  useEffect(() => {
+    console.log(webApiConfig.origin);
+    const api = new Api({ baseUrl: webApiConfig.origin });
+
+    const getSettings = async () => {
+      api
+        .settingsGet()
+        .then((res) => {
+          setGlobalSettings(res.data);
+          setLoaded(true);
+        })
+        .catch((e) => {
+          console.error(e);
+          setGlobalSettings(defaultGlobalSettings as GlobalSettingsModel);
+          setLoaded(false);
+        });
+    };
+    getSettings();
+  }, []);
 
   useEffect(() => {
     setHtmlAttribute("data-bs-theme", darkMode ? "dark" : "light");
@@ -80,6 +112,8 @@ export function SettingsProvider({ children }: SettingsProviderProps) {
     return () => window.removeEventListener("resize", calcBreakpoint);
   }, []);
 
+  const Wrapper = messageWrapper ?? React.Fragment;
+
   return (
     <SettingsContext.Provider
       value={{
@@ -91,9 +125,28 @@ export function SettingsProvider({ children }: SettingsProviderProps) {
         breakpoint,
         darkMode,
         setDarkMode,
+        globalSettings,
       }}
     >
-      {children}
+      {loaded === undefined ? (
+        <Wrapper>
+          <em>Retrieving settings from the server...</em>
+        </Wrapper>
+      ) : loaded === false ? (
+        <div className="text-center">
+          <h3 className="text-danger">Failed to load settings...</h3>
+          <p>
+            I'm sorry, I was unable to get the necessary settings from the
+            server in order to continue.
+          </p>
+          <p>
+            Consider waiting a few minutes and trying to refresh. If the problem
+            persists, contact support.
+          </p>
+        </div>
+      ) : (
+        <>{children}</>
+      )}
     </SettingsContext.Provider>
   );
 }
