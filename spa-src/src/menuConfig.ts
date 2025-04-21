@@ -7,6 +7,8 @@ import {
   faWrench,
   faGear,
   faMessage,
+  faExclamationTriangle,
+  faCubesStacked,
 } from "@fortawesome/free-solid-svg-icons";
 import { MenuItem } from "./models/Interfaces";
 
@@ -81,17 +83,29 @@ const admin: MenuItem = {
   icon: faGear,
   roles: "Admin",
 };
+const errorTesting: MenuItem = {
+  path: "/error-testing",
+  label: "Error Testing",
+  icon: faExclamationTriangle,
+};
+const widgets: MenuItem = {
+  path: "/widgets",
+  label: "Widgets",
+  icon: faCubesStacked,
+};
 
 export const genericMenuBase: MenuItem[] = [
   dashboard,
-  { group: true, label: "Interface" },
-  bootstrap,
-  utilities,
-  { group: true, label: "Addons" },
-  pages,
-  chat,
-  tables,
-  admin,
+  widgets,
+  errorTesting,
+  // { group: true, label: "Interface" },
+  // bootstrap,
+  // utilities,
+  // { group: true, label: "Addons" },
+  // pages,
+  // chat,
+  // tables,
+  // admin,
 ];
 
 export const sidebarMenuBase: MenuItem[] = [

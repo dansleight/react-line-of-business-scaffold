@@ -1,0 +1,1 @@
+OPEN_PATHS = ["/", "/about","/api/settings"]

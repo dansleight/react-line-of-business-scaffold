@@ -22,6 +22,9 @@ import { Backgrounds } from "./pages/bootstrap/Backgrounds";
 import { Text } from "./pages/bootstrap/Text";
 import { General } from "./pages/bootstrap/General";
 import { Chat } from "./pages/Chat";
+import { Widgets } from "./pages/Widgets";
+import { Component } from "react";
+import { ErrorTesting } from "./pages/ErrorTesting";
 
 export const routes = [
   { path: "/", component: <Dashboard />, title: "Dashboard" },
@@ -48,4 +51,6 @@ export const routes = [
   { path: "/charts", component: <Charts />, title: "Charts" },
   { path: "/tables", component: <Tables />, title: "Tables" },
   { path: "/chat", component: <Chat />, title: "Chat" },
+  { path: "/widgets", component: <Widgets />, title: "Widgets" },
+  { path: "/error-testing", component: <ErrorTesting />, title: "Error Testing" },
 ];

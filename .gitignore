@@ -236,6 +236,9 @@ GeneratedArtifacts/
 _Pvt_Extensions/
 ModelManifest.xml
 
+# Python/FastAPI
+__pycache__
+
 # OS Generated Files #
 ######################
 .DS_Store

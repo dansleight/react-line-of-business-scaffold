@@ -30,8 +30,8 @@ generateApi({
       Null: "null",
       ...constructs.Keyword,
     },
-    TypeField: ({ readonly, key, value }) =>
-      [...[readonly && "readonly "], key, ": ", value].join(""),
+    TypeField: ({ readOnly, key, value }) =>
+      [...[readOnly && "readOnly "], key, ": ", value].join(""),
   }),
   modular: true,
   cleanOutput: true,

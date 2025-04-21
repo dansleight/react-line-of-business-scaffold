@@ -1,14 +1,40 @@
-import { faList, faSignOut, faUser } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCopy,
+  faList,
+  faSignOut,
+  faUser,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Dropdown } from "bootstrap";
 import { useEffect, useRef } from "react";
-import { useIdentityContext } from "../../contexts/UseContexts";
+import {
+  useIdentityContext,
+  useSessionContext,
+} from "../../contexts/UseContexts";
 import { Link } from "react-router-dom";
 import { hashCode } from "../../models/Utilities";
 
 export const UserInfo = () => {
+  const { getApiBearer } = useSessionContext();
   const { name, username, handleLogout } = useIdentityContext();
   const dropdownCreated = useRef<boolean>(false);
+
+  const copyFullBearerToClipboard = async () => {
+    copyBearerToClipboard(true);
+  };
+
+  const copyBearerToClipboard = async (full: boolean = false) => {
+    const bearer: string | undefined = await getApiBearer();
+    if (bearer && full) {
+      navigator.clipboard.writeText(`Bearer ${bearer}`);
+    } else if (bearer) {
+      navigator.clipboard.writeText(bearer);
+    } else {
+      navigator.clipboard.writeText(
+        "Something went wrong and the bearer wasn't retrieved."
+      );
+    }
+  };
 
   useEffect(() => {
     if (dropdownCreated.current) return;
@@ -68,6 +94,27 @@ export const UserInfo = () => {
           Activity Log
         </Link>
         <div className="dropdown-divider"></div>
+        <a className="dropdown-item" onClick={() => copyBearerToClipboard()}>
+          <FontAwesomeIcon
+            icon={faCopy}
+            size="sm"
+            fixedWidth
+            className="me-2 text-gray-400"
+          />
+          Bearer to Clipboard
+        </a>
+        <a
+          className="dropdown-item"
+          onClick={() => copyBearerToClipboard(true)}
+        >
+          <FontAwesomeIcon
+            icon={faCopy}
+            size="sm"
+            fixedWidth
+            className="me-2 text-gray-400"
+          />
+          Full Bearer to Clipboard
+        </a>
         <a
           className="dropdown-item"
           onClick={handleLogout}

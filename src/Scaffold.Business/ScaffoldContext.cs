@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
 namespace Scaffold.Business;
 
@@ -17,22 +17,14 @@ public partial class ScaffoldContext : DbContext
         _connectionString = connectionString;
     }
 
-    public virtual DbSet<CollectionObject> Collections { get; set; }
     public virtual DbSet<WidgetObject> Widgets { get; set; }
-    public virtual DbSet<BlueTypeObject> BlueTypes { get; set; }
-    public virtual DbSet<GreenTypeObject> GreenTypes { get; set; }
-    public virtual DbSet<RedTypeObject> RedTypes { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer(_connectionString);
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<CollectionObject>();
         modelBuilder.Entity<WidgetObject>();
-        modelBuilder.Entity<BlueTypeObject>();
-        modelBuilder.Entity<GreenTypeObject>();
-        modelBuilder.Entity<RedTypeObject>();
 
         OnModelCreatingPartial(modelBuilder);
     }

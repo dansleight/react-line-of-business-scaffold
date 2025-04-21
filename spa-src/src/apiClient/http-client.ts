@@ -1,5 +1,6 @@
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /*
  * ---------------------------------------------------------------
  * ## THIS FILE WAS GENERATED VIA SWAGGER-TYPESCRIPT-API        ##
@@ -31,17 +32,35 @@ export interface FullRequestParams extends Omit<RequestInit, "body"> {
   cancelToken?: CancelToken;
 }
 
-export type RequestParams = Omit<FullRequestParams, "body" | "method" | "query" | "path">;
+interface ProcessedRequestParams {
+  requestParams: RequestParams;
+  responseFormat:
+    | "text"
+    | "arrayBuffer"
+    | "blob"
+    | "bytes"
+    | "formData"
+    | "json"
+    | undefined;
+}
+
+export type RequestParams = Omit<
+  FullRequestParams,
+  "body" | "method" | "query" | "path"
+>;
 
 export interface ApiConfig<SecurityDataType = unknown> {
   baseUrl?: string;
   baseApiParams?: Omit<RequestParams, "baseUrl" | "cancelToken" | "signal">;
-  securityWorker?: (securityData: SecurityDataType | null) => Promise<RequestParams | void> | RequestParams | void;
+  securityWorker?: (
+    securityData: SecurityDataType | null,
+  ) => Promise<RequestParams | void> | RequestParams | void;
   customFetch?: typeof fetch;
   unhandledErrorHandler?: (message: string) => void;
 }
 
-export interface HttpResponse<D extends unknown, E extends unknown = unknown> extends Response {
+export interface HttpResponse<D extends unknown, E extends unknown = unknown>
+  extends Response {
   ref: string;
   data: D;
   error: E;
@@ -61,9 +80,10 @@ export class HttpClient<SecurityDataType = unknown> {
   private securityData: SecurityDataType | null = null;
   private securityWorker?: ApiConfig<SecurityDataType>["securityWorker"];
   private abortControllers = new Map<CancelToken, AbortController>();
-  private customFetch = (...fetchParams: Parameters<typeof fetch>) => fetch(...fetchParams);
+  private customFetch = (...fetchParams: Parameters<typeof fetch>) =>
+    fetch(...fetchParams);
   private errIdx: number = 1000;
-  public unhandledErrorHandler?: (message: string) => void;
+  private unhandledErrorHandler?: (message: string) => void;
 
   private baseApiParams: RequestParams = {
     credentials: "same-origin",
@@ -96,9 +116,15 @@ export class HttpClient<SecurityDataType = unknown> {
 
   protected toQueryString(rawQuery?: QueryParamsType): string {
     const query = rawQuery || {};
-    const keys = Object.keys(query).filter((key) => "undefined" !== typeof query[key]);
+    const keys = Object.keys(query).filter(
+      (key) => "undefined" !== typeof query[key],
+    );
     return keys
-      .map((key) => (Array.isArray(query[key]) ? this.addArrayQueryParam(query, key) : this.addQueryParam(query, key)))
+      .map((key) =>
+        Array.isArray(query[key])
+          ? this.addArrayQueryParam(query, key)
+          : this.addQueryParam(query, key),
+      )
       .join("&");
   }
 
@@ -109,8 +135,13 @@ export class HttpClient<SecurityDataType = unknown> {
 
   private contentFormatters: Record<ContentType, (input: any) => any> = {
     [ContentType.Json]: (input: any) =>
-      input !== null && (typeof input === "object" || typeof input === "string") ? JSON.stringify(input) : input,
-    [ContentType.Text]: (input: any) => (input !== null && typeof input !== "string" ? JSON.stringify(input) : input),
+      input !== null && (typeof input === "object" || typeof input === "string")
+        ? JSON.stringify(input)
+        : input,
+    [ContentType.Text]: (input: any) =>
+      input !== null && typeof input !== "string"
+        ? JSON.stringify(input)
+        : input,
     [ContentType.FormData]: (input: any) =>
       Object.keys(input || {}).reduce((formData, key) => {
         const property = input[key];
@@ -127,7 +158,10 @@ export class HttpClient<SecurityDataType = unknown> {
     [ContentType.UrlEncoded]: (input: any) => this.toQueryString(input),
   };
 
-  protected mergeRequestParams(params1: RequestParams, params2?: RequestParams): RequestParams {
+  protected mergeRequestParams(
+    params1: RequestParams,
+    params2?: RequestParams,
+  ): RequestParams {
     return {
       ...this.baseApiParams,
       ...params1,
@@ -140,7 +174,9 @@ export class HttpClient<SecurityDataType = unknown> {
     };
   }
 
-  protected createAbortSignal = (cancelToken: CancelToken): AbortSignal | undefined => {
+  protected createAbortSignal = (
+    cancelToken: CancelToken,
+  ): AbortSignal | undefined => {
     if (this.abortControllers.has(cancelToken)) {
       const abortController = this.abortControllers.get(cancelToken);
       if (abortController) {
@@ -163,6 +199,31 @@ export class HttpClient<SecurityDataType = unknown> {
     }
   };
 
+  public getRequestParams = async (
+    secure: boolean | undefined,
+    params: any,
+    format:
+      | "text"
+      | "arrayBuffer"
+      | "blob"
+      | "bytes"
+      | "formData"
+      | "json"
+      | undefined,
+  ): Promise<ProcessedRequestParams> => {
+    const secureParams =
+      ((typeof secure === "boolean" ? secure : this.baseApiParams.secure) &&
+        this.securityWorker &&
+        (await this.securityWorker!(this.securityData))) ||
+      {};
+    const requestParams = this.mergeRequestParams(params, secureParams);
+    const responseFormat = format || requestParams.format;
+    return {
+      requestParams: requestParams,
+      responseFormat: responseFormat,
+    } as ProcessedRequestParams;
+  };
+
   public request = <T = any, E = any>({
     body,
     secure,
@@ -175,60 +236,69 @@ export class HttpClient<SecurityDataType = unknown> {
     ...params
   }: FullRequestParams): ApiPromise<T, E> => {
     return new ApiPromise<T, E>((resolve, reject) => {
-      const secureParams =
-        ((typeof secure === "boolean" ? secure : this.baseApiParams.secure) &&
-          this.securityWorker &&
-          (async () => await this.securityWorker!(this.securityData))()) ||
-        {};
-      const requestParams = this.mergeRequestParams(params, secureParams);
       const queryString = query && this.toQueryString(query);
       const payloadFormatter = this.contentFormatters[type || ContentType.Json];
-      const responseFormat = format || requestParams.format;
+
       // setting a unique error id and a listener for unhandled rejections
       const requestErrorId = `requestErr_${this.errIdx++}`;
 
       const promise = new ApiPromise<T, E>((resolve, reject) => {
-        this.customFetch(`${baseUrl || this.baseUrl || ""}${path}${queryString ? `?${queryString}` : ""}`, {
-          ...requestParams,
-          headers: {
-            ...(requestParams.headers || {}),
-            ...(type && type !== ContentType.FormData ? { "Content-Type": type } : {}),
+        this.getRequestParams(secure, params, format).then(
+          ({ requestParams, responseFormat }: ProcessedRequestParams) => {
+            this.customFetch(
+              `${baseUrl || this.baseUrl || ""}${path}${queryString ? `?${queryString}` : ""}`,
+              {
+                ...requestParams,
+                headers: {
+                  ...(requestParams.headers || {}),
+                  ...(type && type !== ContentType.FormData
+                    ? { "Content-Type": type }
+                    : {}),
+                },
+                signal:
+                  (cancelToken
+                    ? this.createAbortSignal(cancelToken)
+                    : requestParams.signal) || null,
+                body:
+                  typeof body === "undefined" || body === null
+                    ? null
+                    : payloadFormatter(body),
+              },
+            )
+              .then(async (response) => {
+                const r = response.clone() as HttpResponse<T, E>;
+                r.ref = requestErrorId;
+                r.data = null as unknown as T;
+                r.error = null as unknown as E;
+
+                const data = !responseFormat
+                  ? r
+                  : await response[responseFormat]()
+                      .then((data) => {
+                        if (r.ok) {
+                          r.data = data;
+                        } else {
+                          r.error = data;
+                        }
+                        return r;
+                      })
+                      .catch((e) => {
+                        r.error = e;
+                        return r;
+                      });
+
+                if (cancelToken) {
+                  this.abortControllers.delete(cancelToken);
+                }
+
+                if (!response.ok) reject(data);
+                resolve(data);
+              })
+              .catch((e) => {
+                console.log("catch in fetch", e);
+              });
           },
-          signal: (cancelToken ? this.createAbortSignal(cancelToken) : requestParams.signal) || null,
-          body: typeof body === "undefined" || body === null ? null : payloadFormatter(body),
-        })
-          .then(async (response) => {
-            const r = response.clone() as HttpResponse<T, E>;
-            r.ref = requestErrorId;
-            r.data = null as unknown as T;
-            r.error = null as unknown as E;
-
-            const data = !responseFormat
-              ? r
-              : await response[responseFormat]()
-                  .then((data) => {
-                    if (r.ok) {
-                      r.data = data;
-                    } else {
-                      r.error = data;
-                    }
-                    return r;
-                  })
-                  .catch((e) => {
-                    r.error = e;
-                    return r;
-                  });
-
-            if (cancelToken) {
-              this.abortControllers.delete(cancelToken);
-            }
-
-            if (!response.ok) reject(data);
-            resolve(data);
-          })
-          .catch((e) => {
-            console.log("catch in fetch", e);
-          });
+        );
       });
       const errHandler = (event: PromiseRejectionEvent) => {
         if (event?.reason?.ref && event.reason.ref == requestErrorId) {
@@ -243,11 +313,10 @@ export class HttpClient<SecurityDataType = unknown> {
 
       promise
         .then((res) => {
-          window.removeEventListener("unhandledrejection", errHandler), resolve(res);
+          window.removeEventListener("unhandledrejection", errHandler),
+            resolve(res);
         })
         .catch((err) => reject(err));
-
-      // promise.then((res) => resolve(res)).catch((err) => reject(err));
     });
   };
 }
@@ -256,7 +325,10 @@ export class ApiPromise<T, E> {
   private promise: Promise<HttpResponse<T, E>>;
 
   constructor(
-    executor: (resolve: (value: HttpResponse<T, E>) => void, reject: (reason: HttpResponse<T, E>) => void) => void,
+    executor: (
+      resolve: (value: HttpResponse<T, E>) => void,
+      reject: (reason: HttpResponse<T, E>) => void,
+    ) => void,
   ) {
     this.promise = new Promise(executor);
   }
@@ -266,7 +338,10 @@ export class ApiPromise<T, E> {
     onFulfilled: ((value: HttpResponse<T, E>) => any) | null,
     onRejected?: ((reason: any) => any) | null,
   ): ApiPromise<T, E>;
-  then(onFulfilled?: undefined | null, onRejected?: ((reason: any) => any) | null): ApiPromise<T, E>;
+  then(
+    onFulfilled?: undefined | null,
+    onRejected?: ((reason: any) => any) | null,
+  ): ApiPromise<T, E>;
   // Single implementation for custom then
   then(
     onFulfilled?: ((value: HttpResponse<T, E>) => any) | null,
@@ -300,7 +375,9 @@ export class ApiPromise<T, E> {
     });
   }
 
-  badRequest(onRejected: (reason: HttpResponse<T, E>) => void): ApiPromise<T, E> {
+  badRequest(
+    onRejected: (reason: HttpResponse<T, E>) => void,
+  ): ApiPromise<T, E> {
     return new ApiPromise<T, E>((resolve, reject) => {
       this.promise
         .catch((reason) => {

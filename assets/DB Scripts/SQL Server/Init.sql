@@ -28,14 +28,14 @@ GO
 CREATE TABLE dat_Config (
 	ConfigKey			nvarchar(100)	NOT NULL,
 	ConfigValue			nvarchar(max)	NOT NULL,
-	CONSTRAINT PK_dat_Config PRIMARY KEY (ConfigKey)
+	CONSTRAINT pk_dat_Config PRIMARY KEY (ConfigKey)
 )
 GO
 
 -- ******************** enum_UserRole ********************
 CREATE TABLE enum_UserRole (
-	Role				nvarchar(50)		NOT NULL,
-	CONSTRAINT PK_enum_Role PRIMARY KEY (Role)
+	Role				nvarchar(50)	NOT NULL,
+	CONSTRAINT pk_enum_Role PRIMARY KEY (Role)
 )
 GO
 
@@ -56,8 +56,5 @@ GO
 
 INSERT dat_User (Email, Role) 
 VALUES 
-	(N'dansleight@gmail.com', N'Admin'),
-	(N'dan.sleight@inl.gov', N'Admin'),
-	(N'knbanner@gmail.com', N'Admin'),
-	(N'keith.banner@inl.gov', N'Admin')
+	(N'test@unknown.com', N'Admin')
 GO
