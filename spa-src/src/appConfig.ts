@@ -2,9 +2,9 @@ import { GlobalSettingsModel } from "./apiClient/data-contracts";
 
 export const msalConfig = {
   auth: {
-    clientId: "451a8bf4-764e-45d0-966a-2f74fc7b244a",
+    clientId: "1a3be136-ad1b-4479-824e-4b58d533f67b",
     authority:
-      "https://login.microsoftonline.com/0b0909e0-dd06-4f45-95c2-2d440471413d",
+      "https://login.microsoftonline.com/1dd101d9-5fe4-4226-b1a3-310d6e0a392d",
   },
   cache: {
     cacheLocation: "sessionStorage",

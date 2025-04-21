@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -5,6 +6,7 @@ using Scaffold.SpaModels;
 
 namespace Scaffold.Controllers;
 
+[Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public class TestController : ControllerBase

@@ -8,11 +8,11 @@ import { GlobalSettingsModel } from "../apiClient/data-contracts";
 type SettingsContextType = {
   setBodyAttribute: (
     attribute: string,
-    value: string | null | undefined,
+    value: string | null | undefined
   ) => void;
   setHtmlAttribute: (
     attribute: string,
-    value: string | null | undefined,
+    value: string | null | undefined
   ) => void;
   sidebarToggled: boolean;
   setSidebarToggled: (sidebarToggled: boolean) => void;
@@ -43,6 +43,7 @@ export const useIdentityContext = () => useContext(IdentityContext);
 type SessionContextType = {
   api: Api;
   menuItems: MenuItem[];
+  getApiBearer: () => Promise<string | undefined>;
 };
 
 export const SessionContext = createContext({} as SessionContextType);

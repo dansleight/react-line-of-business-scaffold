@@ -32,13 +32,15 @@ export function SessionProvider({
   const [showApiError, setShowApiError] = useState<boolean>(false);
   const [apiErrorMessage, setApiErrorMessage] = useState<string>("");
   const [apiErrorDetails, setApiErrorDetails] = useState<string | undefined>(
-    undefined,
+    undefined
   );
+  const [showErrorDetails, setShowErrorDetails] = useState<boolean>(false);
 
   const handleErrorModalClose = () => {
     setShowApiError(false);
     setApiErrorMessage("");
     setApiErrorDetails(undefined);
+    setShowErrorDetails(false);
   };
 
   const handleApiError = (error: any) => {
@@ -49,29 +51,45 @@ export function SessionProvider({
         if (error.error.userMessage)
           setApiErrorMessage(error.error.userMessage);
         else if (error.error.message) setApiErrorMessage(error.error.message);
+        else if (error.error.detail) setApiErrorMessage(error.error.detail);
         else setApiErrorMessage("Server returned BadRequest");
       } else if (error.status == 404) {
         setApiErrorMessage(
-          "Server returned status code 404: Not Found. The record request does not exist.",
+          "Server returned status code 404: Not Found. The record request does not exist."
         );
       } else if (error.status == 500) {
         const serverErr: InternalServerError =
           error.error as InternalServerError;
         setApiErrorMessage(
           serverErr.Message ??
-            "Server reported a status code 500: Internal Server Error.",
+            "Server reported a status code 500: Internal Server Error."
         );
         if (serverErr.StackTraceString)
           setApiErrorDetails(serverErr.StackTraceString);
       } else {
         setApiErrorMessage(
-          `Server returned a status code ${error.status}: ${error.statusText}`,
+          `Server returned a status code ${error.status}: ${error.statusText}`
         );
       }
     } else {
       setApiErrorMessage("unspecified error, check logs");
     }
     setShowApiError(true);
+  };
+
+  const getApiBearer = async () => {
+    await instance.initialize();
+    const request: any = {
+      scopes: [globalSettings.msalSettings!.apiScope],
+      accounts: accounts[0],
+    };
+    const authenticationResult = await instance
+      .acquireTokenSilent(request as SilentRequest)
+      .catch((e: any) => {
+        console.error(e);
+      });
+    if (authenticationResult) return authenticationResult!.accessToken;
+    return undefined;
   };
 
   useEffect(() => {
@@ -100,7 +118,7 @@ export function SessionProvider({
           };
         },
         unhandledErrorHandler: handleApiError,
-      }),
+      })
     );
   }, []);
 
@@ -113,8 +131,13 @@ export function SessionProvider({
           <em>Getting ready...</em>
         </Wrapper>
       ) : (
-        <SessionContext.Provider value={{ api, menuItems }}>
-          <Modal show={showApiError} onHide={handleErrorModalClose}>
+        <SessionContext.Provider value={{ api, menuItems, getApiBearer }}>
+          <Modal
+            show={showApiError}
+            onHide={handleErrorModalClose}
+            size="lg"
+            backdrop="static"
+          >
             <Modal.Header className="bg-danger text-bg-danger">
               <Modal.Title>Unhandled Error</Modal.Title>
             </Modal.Header>
@@ -126,14 +149,34 @@ export function SessionProvider({
               <p className="text-danger">{apiErrorMessage}</p>
               {apiErrorDetails && (
                 <>
-                  <Accordion>
-                    <Accordion.Item eventKey="0">
-                      <Accordion.Header>Details</Accordion.Header>
-                      <Accordion.Body>
+                  {showErrorDetails ? (
+                    <>
+                      <a
+                        href="#"
+                        className="muted"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setShowErrorDetails(false);
+                        }}
+                      >
+                        Hide Details
+                      </a>
+                      <div className="border border-tertiary mt-2 p-1">
                         <pre>{apiErrorDetails}</pre>
-                      </Accordion.Body>
-                    </Accordion.Item>
-                  </Accordion>
+                      </div>
+                    </>
+                  ) : (
+                    <a
+                      href="#"
+                      className="muted"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setShowErrorDetails(true);
+                      }}
+                    >
+                      Show Details
+                    </a>
+                  )}
                 </>
               )}
             </Modal.Body>

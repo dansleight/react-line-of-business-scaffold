@@ -22,12 +22,12 @@ export function Chat() {
   const { api } = useSessionContext();
   const [good, setGood] = useState<GoodModel | undefined>(undefined);
   const [badRequest, setBadRequest] = useState<BadRequestModel | undefined>(
-    undefined,
+    undefined
   );
   const [notFound, setNotFound] = useState<boolean>(false);
   const [serverError, setServerError] = useState<boolean>(false);
   const [requestType, setRequestType] = useState<RequestType>(
-    RequestType.BadRequest,
+    RequestType.BadRequest
   );
   const [handled, setHandled] = useState<boolean>(false);
 
@@ -38,7 +38,7 @@ export function Chat() {
     setServerError(false);
   };
 
-  const makeRequest = async () => {
+  const makeRequest = () => {
     // const res = await api.testGet(requestType);
     // setGood(res.data);
     clearVals();
@@ -145,13 +145,6 @@ export function Chat() {
                 <dl>
                   <dt>Message</dt>
                   <dd>500 Internal Server Error</dd>
-
-                  {/* {serverError.stackTrace && (
-                    <>
-                      <dt>Stack Trace</dt>
-                      <dd>{serverError.stackTrace}</dd>
-                    </>
-                  )} */}
                 </dl>
               </>
             )}

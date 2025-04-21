@@ -4,6 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <!-- <GenerateDocumentationFile>True</GenerateDocumentationFile> -->
   </PropertyGroup>
 
   <ItemGroup>
@@ -35,7 +36,8 @@
     <PackageReference Include="Serilog.Sinks.Debug" Version="3.*" />
     <PackageReference Include="Serilog.Sinks.EventLog" Version="4.*" />
     <PackageReference Include="Serilog.Sinks.File" Version="6.*" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="7.*" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" Version="7.*" />
   </ItemGroup>
 
   <ItemGroup>

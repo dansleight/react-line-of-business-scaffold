@@ -1,5 +1,6 @@
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /*
  * ---------------------------------------------------------------
  * ## THIS FILE WAS GENERATED VIA SWAGGER-TYPESCRIPT-API        ##
@@ -29,6 +30,18 @@ export interface FullRequestParams extends Omit<RequestInit, "body"> {
   baseUrl?: string;
   /** request cancellation token */
   cancelToken?: CancelToken;
+}
+
+interface ProcessedRequestParams {
+  requestParams: RequestParams;
+  responseFormat:
+    | "text"
+    | "arrayBuffer"
+    | "blob"
+    | "bytes"
+    | "formData"
+    | "json"
+    | undefined;
 }
 
 export type RequestParams = Omit<
@@ -70,7 +83,7 @@ export class HttpClient<SecurityDataType = unknown> {
   private customFetch = (...fetchParams: Parameters<typeof fetch>) =>
     fetch(...fetchParams);
   private errIdx: number = 1000;
-  public unhandledErrorHandler?: (message: string) => void;
+  private unhandledErrorHandler?: (message: string) => void;
 
   private baseApiParams: RequestParams = {
     credentials: "same-origin",
@@ -186,6 +199,31 @@ export class HttpClient<SecurityDataType = unknown> {
     }
   };
 
+  public getRequestParams = async (
+    secure: boolean | undefined,
+    params: any,
+    format:
+      | "text"
+      | "arrayBuffer"
+      | "blob"
+      | "bytes"
+      | "formData"
+      | "json"
+      | undefined,
+  ): ProcessedRequestParams => {
+    const secureParams =
+      ((typeof secure === "boolean" ? secure : this.baseApiParams.secure) &&
+        this.securityWorker &&
+        (async () => await this.securityWorker!(this.securityData))()) ||
+      {};
+    const requestParams = this.mergeRequestParams(params, secureParams);
+    const responseFormat = format || requestParams.format;
+    return {
+      requestParams: requestParams,
+      responseFormat: responseFormat,
+    } as ProcessedRequestParams;
+  };
+
   public request = <T = any, E = any>({
     body,
     secure,
@@ -198,71 +236,69 @@ export class HttpClient<SecurityDataType = unknown> {
     ...params
   }: FullRequestParams): ApiPromise<T, E> => {
     return new ApiPromise<T, E>((resolve, reject) => {
-      const secureParams =
-        ((typeof secure === "boolean" ? secure : this.baseApiParams.secure) &&
-          this.securityWorker &&
-          (async () => await this.securityWorker!(this.securityData))()) ||
-        {};
-      const requestParams = this.mergeRequestParams(params, secureParams);
       const queryString = query && this.toQueryString(query);
       const payloadFormatter = this.contentFormatters[type || ContentType.Json];
-      const responseFormat = format || requestParams.format;
+
       // setting a unique error id and a listener for unhandled rejections
       const requestErrorId = `requestErr_${this.errIdx++}`;
 
       const promise = new ApiPromise<T, E>((resolve, reject) => {
-        this.customFetch(
-          `${baseUrl || this.baseUrl || ""}${path}${queryString ? `?${queryString}` : ""}`,
-          {
-            ...requestParams,
-            headers: {
-              ...(requestParams.headers || {}),
-              ...(type && type !== ContentType.FormData
-                ? { "Content-Type": type }
-                : {}),
-            },
-            signal:
-              (cancelToken
-                ? this.createAbortSignal(cancelToken)
-                : requestParams.signal) || null,
-            body:
-              typeof body === "undefined" || body === null
-                ? null
-                : payloadFormatter(body),
+        this.getRequestParams(secure, params, format).then(
+          ({ requestParams, responseFormat }: ProcessedRequestParams) => {
+            this.customFetch(
+              `${baseUrl || this.baseUrl || ""}${path}${queryString ? `?${queryString}` : ""}`,
+              {
+                ...requestParams,
+                headers: {
+                  ...(requestParams.headers || {}),
+                  ...(type && type !== ContentType.FormData
+                    ? { "Content-Type": type }
+                    : {}),
+                },
+                signal:
+                  (cancelToken
+                    ? this.createAbortSignal(cancelToken)
+                    : requestParams.signal) || null,
+                body:
+                  typeof body === "undefined" || body === null
+                    ? null
+                    : payloadFormatter(body),
+              },
+            )
+              .then(async (response) => {
+                const r = response.clone() as HttpResponse<T, E>;
+                r.ref = requestErrorId;
+                r.data = null as unknown as T;
+                r.error = null as unknown as E;
+
+                const data = !responseFormat
+                  ? r
+                  : await response[responseFormat]()
+                      .then((data) => {
+                        if (r.ok) {
+                          r.data = data;
+                        } else {
+                          r.error = data;
+                        }
+                        return r;
+                      })
+                      .catch((e) => {
+                        r.error = e;
+                        return r;
+                      });
+
+                if (cancelToken) {
+                  this.abortControllers.delete(cancelToken);
+                }
+
+                if (!response.ok) reject(data);
+                resolve(data);
+              })
+              .catch((e) => {
+                console.log("catch in fetch", e);
+              });
           },
-        )
-          .then(async (response) => {
-            const r = response.clone() as HttpResponse<T, E>;
-            r.ref = requestErrorId;
-            r.data = null as unknown as T;
-            r.error = null as unknown as E;
-
-            const data = !responseFormat
-              ? r
-              : await response[responseFormat]()
-                  .then((data) => {
-                    if (r.ok) {
-                      r.data = data;
-                    } else {
-                      r.error = data;
-                    }
-                    return r;
-                  })
-                  .catch((e) => {
-                    r.error = e;
-                    return r;
-                  });
-
-            if (cancelToken) {
-              this.abortControllers.delete(cancelToken);
-            }
-
-            if (!response.ok) reject(data);
-            resolve(data);
-          })
-          .catch((e) => {
-            console.log("catch in fetch", e);
-          });
+        );
       });
       const errHandler = (event: PromiseRejectionEvent) => {
         if (event?.reason?.ref && event.reason.ref == requestErrorId) {
@@ -281,8 +317,6 @@ export class HttpClient<SecurityDataType = unknown> {
             resolve(res);
         })
         .catch((err) => reject(err));
-
-      // promise.then((res) => resolve(res)).catch((err) => reject(err));
     });
   };
 }

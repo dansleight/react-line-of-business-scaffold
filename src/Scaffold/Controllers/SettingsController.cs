@@ -19,6 +19,10 @@ public class SettingsController : ControllerBase
         _configuration = configuration;
     }
 
+    /// <summary>
+    /// Gets the global settings necessary for the SPA to start, including MSAL settings for Authentication
+    /// </summary>
+    /// <returns></returns>
     [HttpGet]
     [ProducesResponseType(typeof(GlobalSettingsModel), 200)]
     public ActionResult Get()

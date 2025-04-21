@@ -8,11 +8,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Identity.Web;
 using Microsoft.IdentityModel.Logging;
+using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Converters;
 using Scaffold.Business.Models.Config;
 using Serilog;
 using Serilog.AspNetCore;
 using Serilog.Events;
+using Swashbuckle.AspNetCore.SwaggerUI;
 
 namespace Scaffold;
 
@@ -54,7 +56,7 @@ public class Program
         // todo: see if I can have a development api key that doesn't require Entra for development
         JwtSecurityTokenHandler.DefaultMapInboundClaims = false;
         services.AddAuthentication("Bearer")
-            .AddMicrosoftIdentityWebApi(context.Configuration, "EntraId", "Bearer", false)
+            .AddMicrosoftIdentityWebApi(context.Configuration.GetSection("EntraId"), JwtBearerDefaults.AuthenticationScheme, true)
             .EnableTokenAcquisitionToCallDownstreamApi()
             .AddMicrosoftGraph(context.Configuration.GetSection("DownstreamApi"))
             .AddInMemoryTokenCaches();
@@ -149,12 +151,17 @@ public class Program
 
         services.AddSpaStaticFiles(opt => opt.RootPath = "ClientApp/dist");
 
-        services.AddOpenApiDocument(settings =>
+        services.AddSwaggerGen(c =>
         {
-            settings.Version = "v1";
-            settings.Title = "Scaffold API";
-            settings.Description = "Api for Scaffold";
+            c.SwaggerDoc("v1", new OpenApiInfo { Title = "Scaffold API", Version = "v1.0", Description = "Scaffold API Prototype" });
+            c.AddJwtBearerSecurity();
+            // c.IncludeXmlComments(Assembly.GetExecutingAssembly(), true);
+            c.CustomOperationIds(e => $"{e.ActionDescriptor.RouteValues["controller"]}_{e.ActionDescriptor.RouteValues["action"]}");
+            c.SupportNonNullableReferenceTypes();
+            c.UseAllOfToExtendReferenceSchemas();
+            c.OperationFilter<AuthorizeOperationFilter>();
         });
+        services.AddSwaggerGenNewtonsoftSupport();
 
         services.AddMemoryCache();
         services.AddEndpointsApiExplorer();
@@ -217,16 +224,23 @@ public class Program
 
         app.UseCors(corsPolicyName);
 
-        app.UseOpenApi();
-        app.UseSwaggerUi(settings =>
+        app.UseSwagger();
+        app.UseSwaggerUI(options =>
         {
-            settings.EnableTryItOut = true;
+            options.DocumentTitle = "Scaffold API";
+            options.EnableTryItOutByDefault();
+            options.EnablePersistAuthorization();
+            options.DocExpansion(DocExpansion.List);
+            options.InjectJavascript("/swagger-custom.js");
         });
 
+        app.UseMiddleware<NormalizeAuthorizationHeaderMiddleware>();
         app.UseAuthentication();
         app.UseAuthorization();
 
         app.MapControllers();
+
+        app.UseStaticFiles();
 
         // This not is mostly pointless, because our environment is set up to run the API and the SPA separately during development
         // If you are running them both during development, the Node.JS process doesn't stop with the debug session, you'll have to kill it yourself

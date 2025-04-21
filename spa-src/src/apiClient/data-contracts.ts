@@ -1,5 +1,6 @@
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /*
  * ---------------------------------------------------------------
  * ## THIS FILE WAS GENERATED VIA SWAGGER-TYPESCRIPT-API        ##
@@ -9,37 +10,69 @@
  * ---------------------------------------------------------------
  */
 
-export interface CollectionObject {
-  /** @format int32 */
-  collectionId: number;
+/** AddWidgetModel */
+export interface AddWidgetModel {
+  /** Name */
   name: string;
+  /** Description */
   description: string | null;
-  collectionType: CollectionType;
 }
 
-export enum CollectionType {
-  Default = "Default",
-  Special = "Special",
+/** BadRequestModel */
+export interface BadRequestModel {
+  /** Message */
+  message: string;
+  /** Usermessage */
+  userMessage: string | null;
 }
 
+/** GlobalSettingsModel */
 export interface GlobalSettingsModel {
+  /** Applicationmode */
   applicationMode: string;
-  msalSettings: MsalSettingsModel | null;
+  msalSettings: MsalSettingsModel;
 }
 
+/** GoodModel */
+export interface GoodModel {
+  /** Id */
+  id: number;
+  /** Name */
+  name: string;
+}
+
+/** HTTPValidationError */
+export interface HTTPValidationError {
+  /** Detail */
+  detail: ValidationError[];
+}
+
+/** MsalSettingsModel */
 export interface MsalSettingsModel {
+  /** Clientid */
   clientId: string;
+  /** Authority */
   authority: string;
+  /** Apiscope */
   apiScope: string;
 }
 
-export interface GoodModel {
-  /** @format int32 */
-  id: number;
-  name: string;
+/** ValidationError */
+export interface ValidationError {
+  /** Location */
+  loc: (string | number)[];
+  /** Message */
+  msg: string;
+  /** Error Type */
+  type: string;
 }
 
-export interface BadRequestModel {
-  message: string;
-  userMessage: string | null;
+/** WidgetObject */
+export interface WidgetObject {
+  /** Widgetid */
+  widgetId: number;
+  /** Name */
+  name: string;
+  /** Description */
+  description: string | null;
 }

@@ -191,31 +191,6 @@ export class HttpClient<SecurityDataType = unknown> {
     }
   };
 
-  public getRequestParams = async (
-    secure: boolean | undefined,
-    params: any,
-    format:
-      | "text"
-      | "arrayBuffer"
-      | "blob"
-      | "bytes"
-      | "formData"
-      | "json"
-      | undefined,
-  ): ProcessedRequestParams => {
-    const secureParams =
-      ((typeof secure === "boolean" ? secure : this.baseApiParams.secure) &&
-        this.securityWorker &&
-        (await this.securityWorker(this.securityData))) ||
-      {};
-    const requestParams = this.mergeRequestParams(params, secureParams);
-    const responseFormat = format || requestParams.format;
-    return {
-      requestParams: requestParams,
-      responseFormat: responseFormat,
-    } as ProcessedRequestParams;
-  };
-
   public request = <T = any, E = any>({
     body,
     secure,

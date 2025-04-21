@@ -17,7 +17,7 @@ public class MsalSettingsModel
     public MsalSettingsModel(string clientId, string tenantId, string apiScope)
     {
         ClientId = clientId;
-        Authority = tenantId;
+        Authority = $"https://login.microsoftonline.com/{tenantId}";
         ApiScope = apiScope;
     }
 
@@ -29,20 +29,17 @@ public class MsalSettingsModel
     {
         string? clientId = configuration.GetSection("EntraId:ClientId").Get<string>();
         string? tenantId = configuration.GetSection("EntraId:TenantId").Get<string>();
-        string? audience = configuration.GetSection("EntraId:Audience").Get<string>();
         string? webApiScope = configuration.GetSection("EntraId:WebApiScope").Get<string>();
 
         if (
             string.IsNullOrWhiteSpace(clientId)
             || string.IsNullOrWhiteSpace(tenantId)
-            || string.IsNullOrWhiteSpace(audience)
             || string.IsNullOrWhiteSpace(webApiScope))
         {
             return null;
         }
 
-        string apiScope = $"{audience}/{webApiScope}";
-        return new MsalSettingsModel(clientId, tenantId, apiScope);
+        return new MsalSettingsModel(clientId, tenantId, webApiScope);
     }
 
     #endregion
