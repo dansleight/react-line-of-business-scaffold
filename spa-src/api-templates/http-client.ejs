@@ -191,6 +191,31 @@ export class HttpClient<SecurityDataType = unknown> {
     }
   };
 
+  public getRequestParams = async (
+    secure: boolean | undefined,
+    params: any,
+    format:
+      | "text"
+      | "arrayBuffer"
+      | "blob"
+      | "bytes"
+      | "formData"
+      | "json"
+      | undefined,
+  ): ProcessedRequestParams => {
+    const secureParams =
+      ((typeof secure === "boolean" ? secure : this.baseApiParams.secure) &&
+        this.securityWorker &&
+        (await this.securityWorker(this.securityData))) ||
+      {};
+    const requestParams = this.mergeRequestParams(params, secureParams);
+    const responseFormat = format || requestParams.format;
+    return {
+      requestParams: requestParams,
+      responseFormat: responseFormat,
+    } as ProcessedRequestParams;
+  };
+
   public request = <T = any, E = any>({
     body,
     secure,
@@ -308,46 +333,17 @@ export class ApiPromise<T, E> {
     this.promise = new Promise(executor);
   }
 
-  // Overload signatures for custom then
-  then(
-    onFulfilled: ((value: HttpResponse<T, E>) => any) | null,
-    onRejected?: ((reason: any) => any) | null,
-  ): ApiPromise<T, E>;
-  then(
-    onFulfilled?: undefined | null,
-    onRejected?: ((reason: any) => any) | null,
-  ): ApiPromise<T, E>;
-  // Single implementation for custom then
-  then(
-    onFulfilled?: ((value: HttpResponse<T, E>) => any) | null,
-    onRejected?: ((reason: any) => any) | null,
-  ): ApiPromise<T, E> {
-    return new ApiPromise<T, E>((resolve, reject) => {
-      this.promise
-        .then(
-          onFulfilled
-            ? (value) => {
-                const result = onFulfilled(value);
-                if (result instanceof Promise) {
-                  result.then(resolve).catch(reject);
-                } else {
-                  resolve(result as HttpResponse<T, E>);
-                }
-              }
-            : resolve,
-          onRejected
-            ? (reason) => {
-                const result = onRejected(reason);
-                if (result instanceof Promise) {
-                  result.then(resolve).catch(reject);
-                } else {
-                  resolve(result as HttpResponse<T, E>);
-                }
-              }
-            : reject,
-        )
-        .catch(reject);
-    });
+  then<U>(
+    onFulfilled?:
+      | ((value: HttpResponse<T, E>) => U | PromiseLike<U>)
+      | undefined
+      | null,
+    onRejected?: ((reason: any) => U | PromiseLike<U>) | undefined | null,
+  ): ApiPromise<U, E> {
+    const newPromise = this.promise.then(onFulfilled, onRejected);
+    return new ApiPromise<U, E>((resolve, reject) =>
+      newPromise.then(resolve, reject),
+    );
   }
 
   badRequest(
@@ -357,6 +353,23 @@ export class ApiPromise<T, E> {
       this.promise
         .catch((reason) => {
           if (reason.status === 400) {
+            onRejected(reason);
+            resolve({} as HttpResponse<T, E>);
+          } else {
+            reject(reason);
+          }
+        })
+        .catch(reject);
+    });
+  }
+
+  unauthorized(
+    onRejected: (reason: HttpResponse<T, E>) => void,
+  ): ApiPromise<T, E> {
+    return new ApiPromise<T, E>((resolve, reject) => {
+      this.promise
+        .catch((reason) => {
+          if (reason.status === 401) {
             onRejected(reason);
             resolve({} as HttpResponse<T, E>);
           } else {
@@ -382,25 +395,18 @@ export class ApiPromise<T, E> {
     });
   }
 
-  catch(onRejected: (reason: any) => any): ApiPromise<T, E> {
-    return new ApiPromise<T, E>((resolve, reject) => {
-      this.promise
-        .catch((reason) => {
-          const result = onRejected(reason);
-          if (result instanceof Promise) {
-            result.then(resolve).catch(reject);
-          } else {
-            resolve(result);
-          }
-        })
-        .catch(reject);
-    });
+  catch<U>(onRejected: (reason: any) => U | PromiseLike<U>): ApiPromise<U, E> {
+    const newPromise = this.promise.catch(onRejected);
+    return new ApiPromise<U, E>((resolve, reject) =>
+      newPromise.then(resolve, reject),
+    );
   }
 
   finally(onFinally: () => void): ApiPromise<T, E> {
-    return new ApiPromise<T, E>((resolve, reject) => {
-      this.promise.finally(() => onFinally()).then(resolve, reject);
-    });
+    const newPromise = this.promise.finally(onFinally);
+    return new ApiPromise<T, E>((resolve, reject) =>
+      newPromise.then(resolve, reject),
+    );
   }
 
   toPromise(): Promise<HttpResponse<T, E>> {

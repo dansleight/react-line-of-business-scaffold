@@ -236,6 +236,9 @@ GeneratedArtifacts/
 _Pvt_Extensions/
 ModelManifest.xml
 
+# Development Environment Files
+*/.env.development
+
 # Python/FastAPI
 __pycache__
 

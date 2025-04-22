@@ -31,8 +31,6 @@ export function ErrorTesting() {
   );
   const [handled, setHandled] = useState<boolean>(false);
 
-  console.log("error testing");
-
   const clearVals = () => {
     setGood(undefined);
     setBadRequest(undefined);

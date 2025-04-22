@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from app.logging.config import logger
-from app.auth.config import API_AUDIENCE, TENANT_ID, API_SCOPE
 from app.schemas.global_settings import GlobalSettingsModel
+from app.config import settings
 
 router = APIRouter(prefix="/api/settings", tags=["Settings"])
 
@@ -16,7 +16,7 @@ async def get_GlobalSettings():
     return { 
         "ApplicationMode": "Development", 
         "MsalSettings" : {
-            "ClientId": API_AUDIENCE,
-            "Authority": f"https://login.microsoftonline.com/{TENANT_ID}",
-            "ApiScope": API_SCOPE
+            "ClientId": settings.api_audience,
+            "Authority": settings.authority,
+            "ApiScope": settings.api_scope
     }}

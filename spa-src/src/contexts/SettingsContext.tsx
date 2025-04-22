@@ -17,7 +17,7 @@ export function SettingsProvider({
   messageWrapper,
 }: SettingsProviderProps) {
   const [globalSettings, setGlobalSettings] = useState<GlobalSettingsModel>(
-    defaultGlobalSettings as GlobalSettingsModel,
+    defaultGlobalSettings as GlobalSettingsModel
   );
   const [loaded, setLoaded] = useState<boolean | undefined>(undefined);
   const [sidebarToggled, setSidebarToggled] = useState<boolean>(false);
@@ -28,7 +28,7 @@ export function SettingsProvider({
 
   const setBodyAttribute = (
     attribute: string,
-    value: string | null | undefined,
+    value: string | null | undefined
   ) => {
     if (document.body) {
       if (!value || value.trim() == "")
@@ -39,7 +39,7 @@ export function SettingsProvider({
 
   const setHtmlAttribute = (
     attribute: string,
-    value: string | null | undefined,
+    value: string | null | undefined
   ) => {
     if (document.documentElement) {
       if (!value || value.trim() == "")
@@ -88,7 +88,7 @@ export function SettingsProvider({
 
   // Wanting to track the screen size, and surface it as a context property
   const [breakpoint, setBreakpoint] = useState<GridBreakpoint>(
-    gridBreakpoints[0],
+    gridBreakpoints[0]
   );
 
   useEffect(() => {

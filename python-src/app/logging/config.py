@@ -4,8 +4,9 @@ from structlog.processors import TimeStamper, JSONRenderer, KeyValueRenderer
 from structlog.stdlib import add_log_level, ProcessorFormatter
 from app.logging.sql_sink import SQLSink
 from app.database.config import SessionLocal
-import os
 from datetime import datetime
+from app.config import settings
+import os
 
 def configure_logging():
     # Create logs directory

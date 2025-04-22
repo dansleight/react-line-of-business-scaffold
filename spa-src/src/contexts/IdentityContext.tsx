@@ -17,7 +17,7 @@ export const IdentityProvider = ({
   const { accounts, instance } = msal;
   const [waiting, setWaiting] = useState<boolean>(true);
   const [redirecting, setRedirecting] = useState<boolean | undefined>(
-    undefined,
+    undefined
   );
   const [name, setName] = useState<string>("unknown");
   const [username, setUsername] = useState<string>("unknown");
@@ -35,6 +35,9 @@ export const IdentityProvider = ({
       .loginRedirect({
         ...loginRequest,
         redirectUri: document.location.origin,
+        extraQueryParameters: {
+          msafed: "0", // Forces work/school accounts only. No Personal Accounts
+        },
       })
       .catch((e) => {
         console.error(e);

@@ -23,15 +23,22 @@ import {
 import { IdentityProvider } from "./contexts/IdentityContext";
 import { SessionProvider } from "./contexts/SessionContext";
 import { LoadingWrapper } from "./components/LoadingWrapper";
+import { useSettingsContext } from "./contexts/UseContexts";
 
 function App() {
   const [sidebarMenu, setSidebarMenu] = useState<MenuItem[]>([]);
   const [navbarMenu, setNavbarMenu] = useState<MenuItem[]>([]);
+  const { globalSettings } = useSettingsContext();
 
   const msalConfigFull = {
     ...msalConfig,
     redirectUri: window.location.origin,
   };
+
+  if (globalSettings.msalSettings !== null) {
+    msalConfigFull.auth.clientId = globalSettings.msalSettings.clientId;
+    msalConfigFull.auth.authority = globalSettings.msalSettings.authority;
+  }
   const msalInstance = new PublicClientApplication(msalConfigFull);
 
   msalInstance.addEventCallback((event: EventMessage) => {

@@ -1,3 +1,4 @@
 {
-  "workbench.colorTheme": "Monokai"
+  "workbench.colorTheme": "Monokai",
+  "window.title": "Scaffold Python API/${rootName}${separator}${activeEditorShort}"
 }

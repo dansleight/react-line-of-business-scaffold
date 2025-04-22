@@ -3,14 +3,14 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from jose import jwt, JWTError
 import httpx
 from typing import Dict
-from .config import AUTHORITY, API_AUDIENCE, JWKS_URL
 from app.logging.config import logger
+from app.config import settings
 
 security = HTTPBearer()
 
 async def get_jwks() -> Dict:
     async with httpx.AsyncClient(verify=False) as client:  # Keep for Zscaler
-        response = await client.get(JWKS_URL)
+        response = await client.get(settings.jwks_url)
         response.raise_for_status()
         return response.json()
 
@@ -23,8 +23,8 @@ async def validate_token(credentials: HTTPAuthorizationCredentials = Depends(sec
             token,
             jwks,
             algorithms=["RS256"],
-            audience=API_AUDIENCE,
-            issuer=f"{AUTHORITY}/v2.0",
+            audience=settings.api_audience,
+            issuer=f"{settings.authority}/v2.0",
         )
         logger.info("Token validated", extra={"user_id": payload.get("sub")})
         return payload

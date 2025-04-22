@@ -1,5 +1,0 @@
-TENANT_ID = "1dd101d9-5fe4-4226-b1a3-310d6e0a392d"
-AUTHORITY = f"https://login.microsoftonline.com/{TENANT_ID}"
-API_AUDIENCE = "1a3be136-ad1b-4479-824e-4b58d533f67b"
-API_SCOPE = "https://eaglerock.net/dev/ReadWrite"
-JWKS_URL = f"{AUTHORITY}/discovery/v2.0/keys"

@@ -1,10 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <!-- <GenerateDocumentationFile>True</GenerateDocumentationFile> -->
+    <UserSecretsId>3a213158-e381-4bb2-9c43-ee3a7ae36795</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

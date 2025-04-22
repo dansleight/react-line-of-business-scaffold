@@ -11,7 +11,7 @@ import { webApiConfig } from "../appConfig";
 import { SilentRequest } from "@azure/msal-browser";
 import { SessionContext, useSettingsContext } from "./UseContexts";
 import { MenuItem } from "../models/Interfaces";
-import { Accordion, Button, Modal } from "react-bootstrap";
+import { Button, Modal } from "react-bootstrap";
 import { InternalServerError } from "../models/InternalServerError";
 
 type SessionProviderProps = {
@@ -44,7 +44,7 @@ export function SessionProvider({
   };
 
   const handleApiError = (error: any) => {
-    console.log(error);
+    console.error(error);
     if (error.status && typeof error.status == "number") {
       // going to assume that we have an HttpResponse
       if (error.status == 400) {
