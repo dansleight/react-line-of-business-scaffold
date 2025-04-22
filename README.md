@@ -1,14 +1,16 @@
 # react-line-of-business-scaffold
 
-The intent of this project is to create a React SPA front-end with a dotnet web-api back-end with a flexible configuration to use as a scaffold for new line-of-business (admin) projects.
+The intent of this project is to create a React SPA front-end with either a dotnet web-api back-end or a python fastapi back-end, either with a flexible configuration to use as a scaffold for new line-of-business (admin) projects.
 
 I use scaffold purposefully. The intent is to give the developer a canvas, not a framework. Once you have instantiated your own copy, do what you need to have it fit your needs.
 
 ## Current State
 
-There is currently just a React application, using Vite. `npm i` followed by `npm run dev` should get it running.
+Both a WebAPI/C# and a FastAPI/Python are in place, in various states of readiness. The C# probably more ready than the Python, but it's getting there.
 
-Like almost all work, this is very derived. The purpose of this endeavor is not to reinvent anything, but to put together a particular set of tools that fits in certain line-of-business scenarios without looking so much like a typical line-of-business application.
+The SPA is pretty far along, and really just lacks some polish, and perhaps more examples. I'd really like to establish a few capablities:
+- Create a forms pattern that uses the generated contracts to help with generation and validation. Creating and binding forms should be really easy with this framework.
+- Be able to easiliy bind collections of data to a grid. I'd like to use the free version of AG-Grid, as I believe it is well enhanced by buying licensing, especially in a line-of-bussiness scenario.
 
 ## Documentation
 
