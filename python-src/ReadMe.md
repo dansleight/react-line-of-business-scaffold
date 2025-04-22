@@ -12,23 +12,10 @@ I chose FastAPI because it handles multi-threading out of the box, and is fairly
 
 ## Getting up and Running
 
-### SQL Server
+You will need to account for the following to get the Python version of the back-end up and running:
 
-You'll need an SQL Server. I run SQL Server in a container. There are really two options, but it seems that using Azure SQL Edge may be better in most scenarios. I think the biggest drawback is likely going to be whether backups can be used in the final environment you may need to support.
-
-Here is the docker command for Windows:
-
-```
-docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=PlaceHolder&NotARealPassword" -p 1433:1433 --name sql -v C:/SqlServer/data:/var/opt/mssql/data -v C:/SqlServer/log:/var/opt/mssql/log -v C:/SqlServer/secrets:/var/opt/mssql/secrets -v C:/SqlServer/backup:/var/opt/mssql/backup --restart unless-stopped -d mcr.microsoft.com/azure-sql-edge
-```
-
-Before you run this, you'll need to create the folder C:\SqlServer, or change the script to point to a directory that best meets your needs.
-
-Mac users will have to adjust the paths, which should be easy enough.
-
-#### Provisioning Script
-
-`assets/DB Scripts/SQL Server/init.sql` will create a database, create tables and populate a few test tables. You'll need a login and user for the database to configure a connection.
+- Microsoft SQL Server instance. This is covered in the root README.md of the project.
+- Python 3 (I'd suggest something still supported) and a Virtual Environment
 
 ### Python Virtual Environment
 
@@ -51,7 +38,6 @@ Understand once you are in the active virtual environment, you'll use `python` n
 ```
 ./.venv/Scripts/Activate.ps1
 pip install -r requirements.txt
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8011
 ```
 
 #### MacOS
@@ -59,7 +45,6 @@ uvicorn app.main:app --reload --host 0.0.0.0 --port 8011
 ```
 source .venv/bin/activate
 pip install -r requirements.txt
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8011
 ```
 
 If you install additional packages, you'll need to resave the requirements.txt file by running:
@@ -95,6 +80,8 @@ CORS_ORIGINS = "http://localhost" # not doing anything with this yet
 ```
 
 #### uvicorn command to bind port
+
+The repo includes the launch.json for debugging the application, and that sets the port to 8011, which is currently what the SPA would expect. If you prefer to just run it command line, from within the venv:
 
 ```
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8011
