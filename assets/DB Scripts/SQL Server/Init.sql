@@ -1,4 +1,5 @@
 
+
 IF NOT EXISTS (
 	SELECT	1
 	FROM	sys.databases
@@ -10,14 +11,6 @@ END
 GO
 
 USE Scaffold
-GO
-
-CREATE USER serg FOR LOGIN serg
-    WITH DEFAULT_SCHEMA = dbo;  
-GO  
-ALTER ROLE [db_datareader] ADD MEMBER [serg]
-GO
-ALTER ROLE [db_datawriter] ADD MEMBER [serg]
 GO
 
 IF OBJECT_ID('dat_User') IS NOT NULL
@@ -103,3 +96,12 @@ VALUES
 	(1, 'Gadget', 'This is a gadget, a kind of Widget'),
 	(2, 'Thingy', 'This is a thingy that I can''t really describe')
 GO
+
+--CREATE LOGIN serg WITH PASSWORD = 'passwordhere'
+--CREATE USER serg FOR LOGIN serg
+--    WITH DEFAULT_SCHEMA = dbo;  
+--GO  
+--ALTER ROLE [db_datareader] ADD MEMBER [serg]
+--GO
+--ALTER ROLE [db_datawriter] ADD MEMBER [serg]
+--GO

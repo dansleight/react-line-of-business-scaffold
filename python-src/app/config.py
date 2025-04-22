@@ -6,7 +6,7 @@ class Settings(BaseSettings):
   model_config = SettingsConfigDict(env_file=(".env.development"))
 
   tenant_id: str
-  api_audience: str
+  client_id: str
   api_scope: str
   # authority: str = f"https://login.microsoftonline.com/{tenant_id}"
   # jwks_url = f"{authority}/discovery/v2.0/keys"
@@ -23,6 +23,10 @@ class Settings(BaseSettings):
 
   cors_origins: str
   open_paths: List[str] = ["/", "/about", "/api/settings"]
+
+  @property
+  def api_audience(self):
+    return self.client_id
 
   @property
   def authority(self):

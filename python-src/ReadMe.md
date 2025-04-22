@@ -62,7 +62,7 @@ In `python-src/` you'll need to create a .env.development file. If you look at `
 ```
 # Entra ID settings
 TENANT_ID = "your-tenant-id"
-API_AUDIENCE = "your-client-id"
+CLIENT_ID = "your-client-id"
 API_SCOPE = "your-scope"
 
 # Database Connection String Values

@@ -2,7 +2,7 @@ import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import { Headcrumb } from "../components/Headcrumb";
 import { useSessionContext } from "../contexts/UseContexts";
 import { useState } from "react";
-import { BadRequestModel, GoodModel } from "../apiClient/data-contracts";
+import { GoodModel } from "../apiClient/data-contracts";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faMap,
@@ -21,11 +21,9 @@ enum RequestType {
 export function ErrorTesting() {
   const { api } = useSessionContext();
   const [good, setGood] = useState<GoodModel | undefined>(undefined);
-  const [badRequest, setBadRequest] = useState<BadRequestModel | undefined>(
-    undefined
-  );
+  const [badRequest, setBadRequest] = useState<any | undefined>(undefined);
   const [notFound, setNotFound] = useState<boolean>(false);
-  const [serverError, setServerError] = useState<boolean>(false);
+  const [serverError, setServerError] = useState<any | undefined>(undefined);
   const [requestType, setRequestType] = useState<RequestType>(
     RequestType.BadRequest
   );
@@ -46,9 +44,9 @@ export function ErrorTesting() {
       api
         .testGet(requestType)
         .then((res) => setGood(res.data), null)
-        // .badRequest((err) => setBadRequest(err.error as BadRequestModel))
+        .badRequest((err) => setBadRequest(err.error))
         .notFound(() => setNotFound(true))
-        .catch(() => setServerError(true));
+        .catch((err) => setServerError(err.error));
     } else {
       api.testGet(requestType).then((res) => setGood(res.data));
     }
@@ -114,13 +112,22 @@ export function ErrorTesting() {
                   <FontAwesomeIcon icon={faThumbsDown} /> Bad Request
                 </h3>
                 <dl>
-                  <dt>Message</dt>
-                  <dd>{badRequest.message}</dd>
-
+                  {badRequest.message && (
+                    <>
+                      <dt>Message</dt>
+                      <dd>{badRequest.message}</dd>
+                    </>
+                  )}
                   {badRequest.userMessage && (
                     <>
                       <dt>User Message</dt>
                       <dd>{badRequest.userMessage}</dd>
+                    </>
+                  )}
+                  {badRequest.detail && (
+                    <>
+                      <dt>Detail</dt>
+                      <dd>{badRequest.detail}</dd>
                     </>
                   )}
                 </dl>
@@ -143,8 +150,22 @@ export function ErrorTesting() {
                   <FontAwesomeIcon icon={faStop} /> Server Error
                 </h3>
                 <dl>
-                  <dt>Message</dt>
-                  <dd>500 Internal Server Error</dd>
+                  {serverError.detail ? (
+                    <>
+                      <dt>Detail</dt>
+                      <dd>{serverError.detail}</dd>
+                    </>
+                  ) : serverError.Message ? (
+                    <>
+                      <dt>Message</dt>
+                      <dd>{serverError.Message}</dd>
+                    </>
+                  ) : (
+                    <>
+                      <dt>Message</dt>
+                      <dd>500 Internal Server Error</dd>
+                    </>
+                  )}
                 </dl>
               </>
             )}

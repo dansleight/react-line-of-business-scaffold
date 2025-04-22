@@ -58,14 +58,16 @@ export function SessionProvider({
           "Server returned status code 404: Not Found. The record request does not exist."
         );
       } else if (error.status == 500) {
-        const serverErr: InternalServerError =
-          error.error as InternalServerError;
-        setApiErrorMessage(
-          serverErr.Message ??
+        if (error.error.detail) setApiErrorMessage(error.error.detail);
+        else if (error.error.Message) {
+          setApiErrorMessage(error.error.Message);
+          if (error.error.StackTraceString)
+            setApiErrorDetails(error.error.StackTraceString);
+        } else {
+          setApiErrorMessage(
             "Server reported a status code 500: Internal Server Error."
-        );
-        if (serverErr.StackTraceString)
-          setApiErrorDetails(serverErr.StackTraceString);
+          );
+        }
       } else {
         setApiErrorMessage(
           `Server returned a status code ${error.status}: ${error.statusText}`
