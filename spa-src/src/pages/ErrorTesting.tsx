@@ -146,7 +146,7 @@ export function ErrorTesting() {
             )}
             {serverError && (
               <>
-                <h3 className="text-warning">
+                <h3 className="text-danger">
                   <FontAwesomeIcon icon={faStop} /> Server Error
                 </h3>
                 <dl>

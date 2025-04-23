@@ -13,6 +13,7 @@ import { SessionContext, useSettingsContext } from "./UseContexts";
 import { MenuItem } from "../models/Interfaces";
 import { Button, Modal } from "react-bootstrap";
 import { InternalServerError } from "../models/InternalServerError";
+import classNames from "classnames";
 
 type SessionProviderProps = {
   children: ReactNode;
@@ -35,12 +36,14 @@ export function SessionProvider({
     undefined
   );
   const [showErrorDetails, setShowErrorDetails] = useState<boolean>(false);
+  const [severeError, setSevereError] = useState<boolean>(false);
 
   const handleErrorModalClose = () => {
     setShowApiError(false);
     setApiErrorMessage("");
     setApiErrorDetails(undefined);
     setShowErrorDetails(false);
+    setSevereError(false);
   };
 
   const handleApiError = (error: any) => {
@@ -58,6 +61,7 @@ export function SessionProvider({
           "Server returned status code 404: Not Found. The record request does not exist."
         );
       } else if (error.status == 500) {
+        setSevereError(true);
         if (error.error.detail) setApiErrorMessage(error.error.detail);
         else if (error.error.Message) {
           setApiErrorMessage(error.error.Message);
@@ -140,7 +144,12 @@ export function SessionProvider({
             size="lg"
             backdrop="static"
           >
-            <Modal.Header className="bg-danger text-bg-danger">
+            <Modal.Header
+              className={classNames("", {
+                "bg-danger text-bg-danger": severeError,
+                "bg-warning text-bg-warning": !severeError,
+              })}
+            >
               <Modal.Title>Unhandled Error</Modal.Title>
             </Modal.Header>
             <Modal.Body>
