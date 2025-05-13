@@ -68,20 +68,16 @@
     }
   }
 
-  #sidebarToggle {
-    width: 2.5rem;
-    height: 2.5rem;
-    text-align: center;
-    margin-bottom: 1rem;
+  #sidebar-toggle-button {
+    position: absolute;
+    top: -600px;
+    right: -18px;
+    width: 36px;
+    height: 36px;
     cursor: pointer;
-    padding: 0;
 
-    &:hover {
-      text-decoration: none;
-    }
-
-    &:focus {
-      outline: none;
+    .sidebar-toggle-sidebar {
+      color: var(--bs-primary);
     }
   }
 
@@ -126,9 +122,14 @@
 @include media-breakpoint-up(md) {
   .sidebar {
     width: $sidebar-base-width !important;
+    overflow: visible;
 
     &.toggled {
       width: $sidebar-collapsed-width !important;
+    }
+
+    #sidebar-toggle-button {
+      top: 6px;
     }
 
     .sb-wrapper {

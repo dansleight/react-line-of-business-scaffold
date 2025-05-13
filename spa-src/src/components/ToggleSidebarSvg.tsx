@@ -3,9 +3,13 @@ import { useSettingsContext } from "../contexts/UseContexts";
 
 type ToggleSidebarSvgProps = {
   reverse?: boolean;
+  size?: "sm" | "md" | "lg";
 };
 
-export function ToggleSidebarSvg({ reverse }: ToggleSidebarSvgProps) {
+export function ToggleSidebarSvg({
+  reverse,
+  size = "md",
+}: ToggleSidebarSvgProps) {
   const { sidebarToggled } = useSettingsContext();
   const [flipper, setFlipper] = useState<boolean>(true);
 
@@ -18,7 +22,7 @@ export function ToggleSidebarSvg({ reverse }: ToggleSidebarSvgProps) {
       {sidebarToggled == flipper ? (
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          height="1.5em"
+          height={size == "sm" ? "1em" : size == "lg" ? "2em" : "1.5em"}
           viewBox="0 0 960 960"
           className="sidebar-toggle"
           fill="currentColor"
@@ -38,7 +42,7 @@ export function ToggleSidebarSvg({ reverse }: ToggleSidebarSvgProps) {
       ) : (
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          height="1.5em"
+          height={size == "sm" ? "1em" : size == "lg" ? "2em" : "1.5em"}
           viewBox="0 0 960 960"
           className="sidebar-toggle"
           fill="currentColor"

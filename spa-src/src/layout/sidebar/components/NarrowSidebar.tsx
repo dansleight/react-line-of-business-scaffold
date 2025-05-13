@@ -45,7 +45,11 @@ const RenderMenuItem = ({ item, depth }: RenderMenuItemProps) => {
 
   if (item.items === undefined || item.items.length == 0) {
     return (
-      <NavLink className="nav-link" to={item.path ?? "/#"} data-discover="true">
+      <NavLink
+        className="nav-link dropdown-item"
+        to={item.path ?? "/#"}
+        data-discover="true"
+      >
         {!depth ? (
           <>
             <FontAwesomeIcon

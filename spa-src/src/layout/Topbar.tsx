@@ -15,7 +15,7 @@ import { GridBreakpoint } from "../models/Enums";
 import { MenuProps } from "../models/Interfaces";
 
 export const Topbar = ({ menuItems }: MenuProps) => {
-  const { toggleSidebar, darkMode, breakpoint } = useSettingsContext();
+  const { darkMode, breakpoint } = useSettingsContext();
   const [topbarClass, setTopbarClass] = useState<string>("");
 
   useEffect(() => {
@@ -28,7 +28,7 @@ export const Topbar = ({ menuItems }: MenuProps) => {
       id="layout-topbar"
       className={classNames(
         "horizontal-bar navbar navbar-expand static-top " + topbarClass,
-        {},
+        {}
       )}
     >
       {/* 
@@ -40,7 +40,7 @@ export const Topbar = ({ menuItems }: MenuProps) => {
           darkMode ? layoutConfig.sidebarDarkTheme : layoutConfig.sidebarTheme,
           {
             "d-md-none": layoutConfig.includeSidebar,
-          },
+          }
         )}
       />
 
@@ -50,33 +50,19 @@ export const Topbar = ({ menuItems }: MenuProps) => {
           "d-md-none": layoutConfig.includeSidebar,
         })}
       ></div>
-
       {/* Sidebar Toggle (navbar)
           Conditions where the toggle should show:
           - all sizes when there is a sidebar
           - SM an XS when there is a navbar, maybe MD as well, based on need
           ** should be its own component if there is no sidebar or navbar, and there is still a desire to have it
       */}
-      {layoutConfig.includeSidebar && (
-        <button
-          className={classNames(
-            "sidebar-toggle-hbar btn btn-link rounded-circle ms-2",
-            {
-              "d-md-none": !layoutConfig.includeSidebar,
-            },
-          )}
-          onClick={toggleSidebar}
-        >
-          {/* when we are medium or lower, the toggle's purpose changes. */}
-          <ToggleSidebarSvg reverse={breakpoint <= GridBreakpoint.sm} />
-        </button>
+      {layoutConfig.includeSidebar && layoutConfig.sidebarFull && (
+        <div style={{ width: "1rem" }}></div>
       )}
-
       {/* Topbar Search */}
       <div className="d-none d-md-inline-block ms-3">
         <BarSearch />
       </div>
-
       {/* Right Nav */}
       <ul className="navbar-nav ms-auto">
         {/* Nav Item - Search Dropdown (Visible Only MD and smaller) */}

@@ -9,6 +9,8 @@ import {
   faMessage,
   faExclamationTriangle,
   faCubesStacked,
+  faCircleHalfStroke,
+  faClock,
 } from "@fortawesome/free-solid-svg-icons";
 import { MenuItem } from "./models/Interfaces";
 
@@ -88,6 +90,11 @@ const errorTesting: MenuItem = {
   label: "Error Testing",
   icon: faExclamationTriangle,
 };
+const loaderTesting: MenuItem = {
+  path: "/loader-testing",
+  label: "Loader Testing",
+  icon: faCircleHalfStroke,
+};
 const widgets: MenuItem = {
   path: "/widgets",
   label: "Widgets",
@@ -98,6 +105,7 @@ export const genericMenuBase: MenuItem[] = [
   dashboard,
   widgets,
   errorTesting,
+  loaderTesting,
   // { group: true, label: "Interface" },
   // bootstrap,
   // utilities,

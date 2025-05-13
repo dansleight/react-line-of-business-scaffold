@@ -10,10 +10,16 @@ import classNames from "classnames";
 import { GridBreakpoint } from "../../models/Enums";
 import { Logo } from "../../components/Logo";
 import { MenuProps } from "../../models/Interfaces";
+import { ToggleSidebarSvg } from "../../components/ToggleSidebarSvg";
 
 export const Sidebar = ({ menuItems }: MenuProps) => {
-  const { sidebarToggled, setSidebarToggled, breakpoint, darkMode } =
-    useSettingsContext();
+  const {
+    sidebarToggled,
+    toggleSidebar,
+    setSidebarToggled,
+    breakpoint,
+    darkMode,
+  } = useSettingsContext();
   const ref = useRef<any>();
   const [sidebarClass, setSidebarClass] = useState<string>("");
 
@@ -40,6 +46,18 @@ export const Sidebar = ({ menuItems }: MenuProps) => {
       })}
       id="layout-sidebar"
     >
+      {/* Sidebar - Toggle */}
+      <div
+        id="sidebar-toggle-button"
+        className={classNames(
+          "bg-body text-bg-body rounded-circle border border-primary border-3 d-flex justify-content-center align-items-center",
+          { "text-white": darkMode, "text-black": !darkMode }
+        )}
+        onClick={toggleSidebar}
+      >
+        <ToggleSidebarSvg reverse={breakpoint <= GridBreakpoint.sm} size="sm" />
+      </div>
+
       {/* Sidebar - Brand 
         If the sidebar is not full, the brand and the first divider should be hidden in XS and SM
       */}
@@ -49,7 +67,7 @@ export const Sidebar = ({ menuItems }: MenuProps) => {
           "sidebar-brand d-flex align-items-center justify-content-center",
           {
             "d-none d-md-flex": !layoutConfig.sidebarFull,
-          },
+          }
         )}
         to="/"
       >

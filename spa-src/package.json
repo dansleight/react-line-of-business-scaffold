@@ -14,12 +14,13 @@
     "update-python-api": "rm -f src/apiClient/*.ts && node generate-python-api.js"
   },
   "dependencies": {
-    "@azure/msal-browser": "^4.11.0",
-    "@azure/msal-react": "^3.0.10",
+    "@azure/msal-browser": "^4.11.1",
+    "@azure/msal-react": "^3.0.11",
     "@fortawesome/fontawesome-common-types": "^6.7.2",
     "@fortawesome/free-regular-svg-icons": "^6.7.2",
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@fortawesome/react-fontawesome": "^0.2.2",
+    "@hookform/resolvers": "^5.0.1",
     "@metismenu/react": "^0.0.3",
     "bootstrap": "^5.3.5",
     "bootswatch": "^5.3.5",
@@ -31,28 +32,30 @@
     "react": "^18.3.1",
     "react-bootstrap": "^2.10.9",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^7.5.1",
+    "react-hook-form": "^7.56.2",
+    "react-router-dom": "^7.5.3",
     "react-use-cookie": "^1.6.1",
-    "simplebar-react": "^3.3.0"
+    "simplebar-react": "^3.3.0",
+    "zod": "^3.24.4"
   },
   "devDependencies": {
-    "@eslint/js": "^9.24.0",
+    "@eslint/js": "^9.25.1",
     "@types/bootstrap": "^5.2.10",
     "@types/crypto-js": "^4.2.2",
     "@types/lodash": "^4.17.16",
     "@types/react": "^18.3.20",
-    "@types/react-dom": "^18.3.6",
-    "@vitejs/plugin-react": "^4.4.0",
+    "@types/react-dom": "^18.3.7",
+    "@vitejs/plugin-react": "^4.4.1",
     "dotenv": "^16.5.0",
-    "eslint": "^9.24.0",
+    "eslint": "^9.25.1",
     "eslint-plugin-react-hooks": "^5.2.0",
-    "eslint-plugin-react-refresh": "^0.4.19",
+    "eslint-plugin-react-refresh": "^0.4.20",
     "globals": "^15.15.0",
-    "sass-embedded": "^1.86.3",
+    "sass-embedded": "^1.87.0",
     "swagger-typescript-api": "^13.1.1",
     "typescript": "~5.8.3",
-    "typescript-eslint": "^8.30.1",
-    "vite": "^6.3.2"
+    "typescript-eslint": "^8.31.1",
+    "vite": "^6.3.4"
   },
   "prettier": {
     "overrides": [

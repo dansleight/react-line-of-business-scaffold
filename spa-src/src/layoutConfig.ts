@@ -12,14 +12,14 @@ Layout Configuration
 ------------------------------------------------------------------------------------------------------
 */
 export const layoutConfig: LayoutConfig = {
-  includeSidebar: false,
+  includeSidebar: true,
   sidebarTheme: SidebarTheme.Primary,
   sidebarDarkTheme: SidebarTheme.Primary,
   sidebarFull: false,
 
   includeTopbar: true,
-  topbarTheme: TopbarTheme.Secondary,
-  topbarDarkTheme: TopbarTheme.Deep,
+  topbarTheme: TopbarTheme.Tertiary,
+  topbarDarkTheme: TopbarTheme.Dark,
 
   includeNavbar: true,
   navbarTheme: NavbarTheme.Light,

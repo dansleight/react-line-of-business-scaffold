@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 import { Card, Col, Container, Row } from "react-bootstrap";
 import { Logo } from "./Logo";
+import { BallsBar } from "./Loader";
 
 export type LoadingWrapperProps = {
   children: ReactNode;
@@ -21,12 +22,7 @@ export const LoadingWrapper = ({ children }: LoadingWrapperProps) => {
             <Card className="bg-dark text-bg-dark">
               <Card.Body className="py-5 text-center">
                 {children}
-                <div className="progress mt-3" role="progressbar">
-                  <div
-                    className="progress-bar progress-bar-striped progress-bar-animated"
-                    style={{ width: "100%" }}
-                  />
-                </div>
+                <BallsBar />
               </Card.Body>
             </Card>
           </Col>

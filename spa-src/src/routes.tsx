@@ -25,6 +25,7 @@ import { Chat } from "./pages/Chat";
 import { Widgets } from "./pages/Widgets";
 import { Component } from "react";
 import { ErrorTesting } from "./pages/ErrorTesting";
+import { LoaderTesting } from "./pages/LoaderTesting";
 
 export const routes = [
   { path: "/", component: <Dashboard />, title: "Dashboard" },
@@ -53,4 +54,5 @@ export const routes = [
   { path: "/chat", component: <Chat />, title: "Chat" },
   { path: "/widgets", component: <Widgets />, title: "Widgets" },
   { path: "/error-testing", component: <ErrorTesting />, title: "Error Testing" },
+  { path: "/loader-testing", component: <LoaderTesting />, title: "Loader Testing" },
 ];
