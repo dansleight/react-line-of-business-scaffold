@@ -18,11 +18,11 @@ router = APIRouter(prefix="/api/widget", tags=["Widget"])
     operation_id="widgetGet"
 )
 async def get_widgets(db: Session = Depends(get_db), payload: Dict = Depends(validate_token)):
-    logger.debug("Fetching all widgets", extra={"user_id": payload.get("sub")})
+    # logger.debug("Fetching all widgets", extra={"user_id": payload.get("sub")})
     widgets = db.query(Widget).all()
     # Map SQLAlchemy models to Pydantic schemas
     widget_responses = [WidgetObject.model_validate(widget) for widget in widgets]
-    logger.info("Retrieved widgets", extra={"count": len(widgets)})
+    # logger.info("Retrieved widgets", extra={"count": len(widgets)})
     return widgets
 
 @router.post(
