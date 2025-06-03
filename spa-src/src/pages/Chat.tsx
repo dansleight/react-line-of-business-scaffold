@@ -46,7 +46,7 @@ export function Chat() {
       api
         .testGet(requestType)
         .then((res) => setGood(res.data), null)
-        .badRequest((err) => setBadRequest(err.error as BadRequestModel))
+        // .badRequest((err) => setBadRequest(err.error as BadRequestModel))
         .notFound(() => setNotFound(true));
       // .catch(() => setServerError(true));
     } else {

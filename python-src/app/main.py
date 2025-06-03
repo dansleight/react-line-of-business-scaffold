@@ -1,9 +1,13 @@
 from fastapi import FastAPI, Request
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
 from fastapi.openapi.utils import get_openapi
-from app.routes import global_settings, root, auth, widget, test
-from app.logging.config import logger
 from fastapi.middleware.cors import CORSMiddleware
+from pathlib import Path
+import os
 import time
+from app.routes import global_settings, auth, widget, test
+from app.logging.config import logger
 from app.config import settings
 
 app = FastAPI(
@@ -11,22 +15,24 @@ app = FastAPI(
     redoc_url="/redoc",
     openapi_url="/openapi.json",
     swagger_ui_parameters={
-        "tryItOutEnabled": True,  # Enable "Try it out" by default for all endpoints
-        "persistAuthorization": True,  # Persist bearer token across requests
+        "tryItOutEnabled": True,
+        "persistAuthorization": True,
     }
 )
 
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], # Allows any origin
+    allow_origins=["*"],  # Adjust for production
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"]
 )
 
+# Mount static files
+app.mount("/static", StaticFiles(directory="client_app"), name="static")
+
 # Include routers
-app.include_router(root.router)
 app.include_router(auth.router)
 app.include_router(widget.router)
 app.include_router(global_settings.router)
@@ -35,6 +41,7 @@ app.include_router(test.router)
 # Log app startup
 logger.info("Starting FastAPI Prototype API", extra={"version": "1.0.0"})
 
+# Logging middleware
 @app.middleware("http")
 async def log_requests(request: Request, call_next):
     start_time = time.time()
@@ -45,12 +52,30 @@ async def log_requests(request: Request, call_next):
     })
     response = await call_next(request)
     duration = time.time() - start_time
-    logger.info("Request completed", extra = {
+    logger.info("Request completed", extra={
         "method": request.method,
         "path": request.url.path,
-        "client": request.client.host if request.client else "unknown"
+        "client": request.client.host if request.client else "unknown",
+        "duration_ms": duration * 1000
     })
     return response
+
+# Serve SPA for non-API, non-WebSocket, non-special routes
+@app.get("/{path:path}")
+async def serve_spa(path: str):
+    # Skip API, WebSocket, and special routes
+    protected_paths = ("/api", "/ws", "/docs", "/redoc", "/openapi.json", "/static")
+    if path.startswith(protected_paths):
+        return {"error": "Not found"}, 404
+
+    # Serve SPA's index.html
+    spa_index_path = Path("client_app/index.html")
+    if not spa_index_path.exists():
+        return {"error": "SPA index.html not found"}, 404
+
+    with open(spa_index_path, "r") as file:
+        content = file.read()
+    return HTMLResponse(content=content)
 
 # Custom OpenAPI schema
 def custom_openapi():

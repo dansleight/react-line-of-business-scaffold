@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build --emptyOutDir --outDir ../src/AiProto/ClientApp/dist",
+    "pythonbuild": "tsc -b && vite build --emptyOutDir --outDir=../python-src/client_app --base=/static/",
     "testbuild": "tsc -b && vite build && rm *.tsbuildinfo && rm -rf dist",
     "lint": "eslint .",
     "preview": "vite preview",
