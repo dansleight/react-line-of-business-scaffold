@@ -1,5 +1,5 @@
 from functools import lru_cache
-from typing import List
+from typing import List, Optional
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
@@ -8,7 +8,7 @@ class Settings(BaseSettings):
   tenant_id: str
   client_id: str
   api_scope: str
-  # authority: str = f"https://login.microsoftonline.com/{tenant_id}"
+  id_provider: Optional[str] = None
   # jwks_url = f"{authority}/discovery/v2.0/keys"
 
   db_server: str = "127.0.0.1:1433"
@@ -25,16 +25,27 @@ class Settings(BaseSettings):
   open_paths: List[str] = ["/", "/about", "/api/settings"]
 
   @property
-  def api_audience(self):
-    return self.client_id
+  def is_ms(self):
+    if (
+      self.id_provider == None 
+      or self.id_provider == "" 
+      or self.id_provider.lower().startswith("entra") 
+      or self.id_provider.lower().startswith("azure")
+      or self.id_provider.lower().startswith("microsoft")):
+      return True
+    return False
 
   @property
   def authority(self):
-    return f"https://login.microsoftonline.com/{self.tenant_id}"
+    return f"https://login.microsoftonline.com/{self.tenant_id}" if self.is_ms else self.tenant_id
+
+  @property
+  def api_audience(self):
+    return self.client_id if self.is_ms else self.tenant_id
   
   @property
   def jwks_url(self):
-    return f"{self.authority}/discovery/v2.0/keys"
+    return f"{self.authority}/discovery/v2.0/keys" if self.is_ms else f"{self.authority}/oauth2/v1/keys"
   
   @property
   def db_url(self):

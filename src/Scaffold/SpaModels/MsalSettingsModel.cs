@@ -9,6 +9,7 @@ public class MsalSettingsModel
     public string ClientId { get; set; }
     public string Authority { get; set; }
     public string ApiScope { get; set; }
+    public string? Provider { get; set; }
 
     #endregion
 

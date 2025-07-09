@@ -16,7 +16,8 @@ async def get_GlobalSettings():
     return { 
         "ApplicationMode": "Development", 
         "MsalSettings" : {
-            "ClientId": settings.api_audience,
+            "ClientId": settings.client_id,
             "Authority": settings.authority,
-            "ApiScope": settings.api_scope
+            "ApiScope": settings.api_scope,
+            "Provider": settings.id_provider,
     }}

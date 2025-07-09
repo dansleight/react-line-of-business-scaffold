@@ -2,7 +2,9 @@ import { useMsal } from "@azure/msal-react";
 import { ComponentType, ReactNode, useEffect, useRef, useState } from "react";
 import { loginRequest } from "../appConfig";
 import React from "react";
-import { IdentityContext } from "./UseContexts";
+import { IdentityContext, useSettingsContext } from "./UseContexts";
+import { RedirectRequest } from "@azure/msal-browser";
+import { IsMs } from "../Utils/GlobalSettingsHelper";
 
 type IdentityProviderProps = {
   children: ReactNode;
@@ -13,6 +15,7 @@ export const IdentityProvider = ({
   children,
   messageWrapper,
 }: IdentityProviderProps) => {
+  const { globalSettings } = useSettingsContext();
   const msal = useMsal();
   const { accounts, instance } = msal;
   const [waiting, setWaiting] = useState<boolean>(true);
@@ -31,24 +34,33 @@ export const IdentityProvider = ({
   }
 
   const handleLogin = () => {
-    instance
-      .loginRedirect({
-        ...loginRequest,
-        redirectUri: document.location.origin,
-        extraQueryParameters: {
-          msafed: "0", // Forces work/school accounts only. No Personal Accounts
-        },
-      })
-      .catch((e) => {
-        console.error(e);
-      });
+    const scopes: string[] = [];
+    const redirectParams: RedirectRequest = {
+      scopes: scopes,
+      redirectUri: document.location.origin,
+    };
+    if (IsMs(globalSettings)) {
+      // since this is Entra, we're going to:
+      // 1) set the scope so we can read user info
+      // 2) force a particular workflow
+      redirectParams.scopes = loginRequest.scopes;
+      redirectParams.extraQueryParameters = { msafed: "0" };
+    } else {
+      // since this isn't Entra, we're going to
+      // set the scopes from globalSettings
+      redirectParams.scopes = [globalSettings.msalSettings.apiScope];
+    }
+    console.log("redirectParams: ", redirectParams);
+    instance.loginRedirect(redirectParams).catch((e) => {
+      console.error(e);
+    });
   };
 
   const handleLogout = () => {
     // if you are creating an appliation that is "internal" the logout redirect could be useless and annoying, so, we can also just clear out the session data and start over
     localStorage.clear();
     sessionStorage.clear();
-    document.location.replace("/");
+    document.location.replace("about://blank");
     // instance.logoutRedirect({
     //   postLogoutRedirectUri: "/",
     // });

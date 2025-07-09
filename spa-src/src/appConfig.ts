@@ -7,6 +7,8 @@ export const msalConfig = {
   auth: {
     clientId: "get-from-api",
     authority: "get-from-api",
+    knownAuthorities: [""],
+    authorityMetadata: "",
   },
   cache: {
     cacheLocation: "sessionStorage",

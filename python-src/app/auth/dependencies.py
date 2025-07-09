@@ -45,12 +45,14 @@ async def validate_token(credentials: HTTPAuthorizationCredentials = Depends(sec
     logger.debug("Validating token", extra={"token_prefix": token[:10]})
     try:
         jwks = await get_jwks()
+        issuer = f"{settings.authority}/v2.0" if settings.is_ms else settings.authority
+        
         payload = jwt.decode(
             token,
             jwks,
             algorithms=["RS256"],
             audience=settings.api_audience,
-            issuer=f"{settings.authority}/v2.0",
+            issuer=issuer,
         )
         logger.info("Token validated", extra={"user_id": payload.get("sub")})
         return payload

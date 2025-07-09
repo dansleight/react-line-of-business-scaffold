@@ -49,6 +49,8 @@ export interface MsalSettingsModel {
   clientId: string;
   authority: string;
   apiScope: string;
+  /** Provider */
+  provider: string | null;
 }
 
 export interface ValidationError {
