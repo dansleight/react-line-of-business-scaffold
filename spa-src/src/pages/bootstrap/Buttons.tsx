@@ -280,6 +280,9 @@ export function Buttons() {
                 <button type="button" className="btn btn-primary btn-sm">
                   Small button
                 </button>
+                <button type="button" className="btn btn-primary btn-xs">
+                  Extra-Small button
+                </button>
               </div>
             </Card.Body>
           </Card>
