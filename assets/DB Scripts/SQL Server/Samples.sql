@@ -127,27 +127,27 @@ INSERT INTO enum_CollectionType VALUES ('Default'), ('Special')
 GO
 
 -- ******************** dat_Collection ********************
-CREATE TABLE dat_Collection (
-	CollectionId		int				IDENTITY(1001, 1) NOT NULL,
-	[Name]				nvarchar(100)	NOT NULL,
-	[Description]		nvarchar(max)	NULL,
-	CollectionType		nvarchar(20)	NOT NULL,
-	CONSTRAINT pk_dat_Collection PRIMARY KEY (CollectionId),
-	CONSTRAINT fk_dat_Collection_enum_CollectionType FOREIGN KEY (CollectionType) REFERENCES enum_CollectionType(CollectionType)
-)
-GO
+--CREATE TABLE dat_Collection (
+--	CollectionId		int				IDENTITY(1001, 1) NOT NULL,
+--	[Name]				nvarchar(100)	NOT NULL,
+--	[Description]		nvarchar(max)	NULL,
+--	CollectionType		nvarchar(20)	NOT NULL,
+--	CONSTRAINT pk_dat_Collection PRIMARY KEY (CollectionId),
+--	CONSTRAINT fk_dat_Collection_enum_CollectionType FOREIGN KEY (CollectionType) REFERENCES enum_CollectionType(CollectionType)
+--)
+--GO
 
-SET IDENTITY_INSERT dat_Collection ON;
-INSERT INTO dat_Collection (CollectionId, [Name], CollectionType)
-VALUES
-	(1, 'My Widgets', 'Default')
-GO
-SET IDENTITY_INSERT dat_Collection OFF;
+--SET IDENTITY_INSERT dat_Collection ON;
+--INSERT INTO dat_Collection (CollectionId, [Name], CollectionType)
+--VALUES
+--	(1, 'My Widgets', 'Default')
+--GO
+--SET IDENTITY_INSERT dat_Collection OFF;
 
 -- ******************** dat_Widget ********************
 CREATE TABLE dat_Widget (
 	WidgetId			int				IDENTITY(1001,1) NOT NULL,
-	CollectionId		int				NOT NULL,
+	--CollectionId		int				NOT NULL,
 	Name				nvarchar(100)	NOT NULL,
 	Description			nvarchar(max)	NULL,
 	WidgetType			nvarchar(100)	NOT NULL,
@@ -155,7 +155,7 @@ CREATE TABLE dat_Widget (
 	BlueTypeId			int				NOT NULL,
 	ApprovalDate		datetime		NULL,
 	CONSTRAINT pk_dat_Widget PRIMARY KEY (WidgetId),
-	CONSTRAINT fk_dat_Widget_dat_Collection FOREIGN KEY (CollectionId) REFERENCES dat_Collection (CollectionId),
+	--CONSTRAINT fk_dat_Widget_dat_Collection FOREIGN KEY (CollectionId) REFERENCES dat_Collection (CollectionId),
 	CONSTRAINT fk_dat_Widget_enum_WidgetType FOREIGN KEY(WidgetType) REFERENCES enum_WidgetType (WidgetType),
 	CONSTRAINT fk_dat_Widget_lu_BlueType FOREIGN KEY(BlueTypeId) REFERENCES lu_BlueType (BlueTypeId),
 	CONSTRAINT fk_dat_Widget_lu_RedType FOREIGN KEY(RedTypeId) REFERENCES lu_RedType (RedTypeId)
@@ -164,9 +164,9 @@ GO
 
 SET IDENTITY_INSERT dat_Widget ON 
 GO
-INSERT dat_Widget (WidgetId, CollectionId, Name, WidgetType, RedTypeId, BlueTypeId, ApprovalDate) 
+INSERT dat_Widget (WidgetId, Name, WidgetType, RedTypeId, BlueTypeId, ApprovalDate) 
 VALUES 
-	(1, 1, N'First', N'Oval', 1, 1, GETDATE())
+	(1, N'First', N'Oval', 1, 1, GETDATE())
 GO
 SET IDENTITY_INSERT dat_Widget OFF
 GO

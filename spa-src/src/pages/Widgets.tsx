@@ -1,31 +1,36 @@
-import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
+import {
+  Button,
+  Card,
+  Col,
+  Container,
+  Form,
+  ProgressBar,
+  Row,
+} from "react-bootstrap";
 import { Headcrumb } from "../components/Headcrumb";
 import { useSessionContext } from "../contexts/UseContexts";
 import { useEffect, useState } from "react";
 import { WidgetObject, AddWidgetModel } from "../apiClient/data-contracts";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faBan, faPlus, faSave } from "@fortawesome/free-solid-svg-icons";
+import { AddWidgetForm } from "../forms/generated/AddWidgetForm";
+import { WaitBar } from "../components/Loader";
 
 export function Widgets() {
   const { api } = useSessionContext();
+  const [waiting, setWaiting] = useState<boolean>(true);
   const [widgets, setWidgets] = useState<WidgetObject[] | undefined>(undefined);
-  const [name, setName] = useState<string>("");
-  const [description, setDescription] = useState<string>("");
-
-  const addWidget = () => {
-    if (name.trim() == "") {
-      alert("Name required");
-      return;
-    }
-    api
-      .widgetAdd({ name: name, description: description } as AddWidgetModel)
-      .then(() => updateWidgets());
-    setName("");
-    setDescription("");
-  };
 
   const updateWidgets = () => {
-    api.widgetGet().then((res) => setWidgets(res.data));
+    setWaiting(true);
+    api.widgetGet().then((res) => {
+      setWidgets(res.data);
+      setWaiting(false);
+    });
+  };
+
+  const widgetFormSuccess = (widget: WidgetObject) => {
+    updateWidgets();
   };
 
   useEffect(() => {
@@ -58,7 +63,18 @@ export function Widgets() {
                     </tr>
                   ))}
                 </tbody>
+                {waiting && (
+                  <tfoot>
+                    <tr>
+                      <td colSpan={3}>
+                        <WaitBar />
+                      </td>
+                    </tr>
+                  </tfoot>
+                )}
               </table>
+            ) : waiting ? (
+              <WaitBar />
             ) : (
               <div className="text-center">
                 <em>no widgets loaded</em>
@@ -71,42 +87,15 @@ export function Widgets() {
                 <Card.Title>Add a Widget</Card.Title>
               </Card.Header>
               <Card.Body>
-                <Form.Group className="mb-2">
-                  <Form.Label>Name</Form.Label>
-                  <Form.Control
-                    type="text"
-                    value={name}
-                    onChange={(e) => setName(e.currentTarget.value)}
-                  />
-                </Form.Group>
-                <Form.Group className="mb-2">
-                  <Form.Label>Description</Form.Label>
-                  <Form.Control
-                    as="textarea"
-                    rows={3}
-                    value={description}
-                    onChange={(e) => setDescription(e.currentTarget.value)}
-                  />
-                </Form.Group>
-                <div className="text-end">
-                  <Button
-                    onClick={addWidget}
-                    variant="primary"
-                    className="ms-1"
-                  >
-                    <FontAwesomeIcon icon={faPlus} /> Add
-                  </Button>
-                  <Button
-                    onClick={() => {
-                      setName("");
-                      setDescription("");
-                    }}
-                    variant="secondary"
-                    className="ms-1"
-                  >
-                    Clear
-                  </Button>
-                </div>
+                <AddWidgetForm
+                  onSuccess={widgetFormSuccess}
+                  submitLabel={
+                    <>
+                      <FontAwesomeIcon icon={faSave} /> Save
+                    </>
+                  }
+                  showCancel
+                />
               </Card.Body>
             </Card>
           </Col>

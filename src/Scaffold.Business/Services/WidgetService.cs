@@ -1,8 +1,8 @@
 using System.Dynamic;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Scaffold.Business.Models.Config;
+using Scaffold.Business.Services.RepoBases;
 
 namespace Scaffold.Business.Services;
 
@@ -20,31 +20,28 @@ public class WidgetService
         _repo = repo;
     }
 
-    public Task<IEnumerable<WidgetObject>> GetAsync() => _repo.GetAsnyc();
+    public Task<IEnumerable<WidgetObject>> GetAsync() => _repo.GetAsync();
 
-    public Task<WidgetObject?> GetById(int collectionId) => _repo.GetByIdAsync(collectionId);
+    public Task<WidgetObject?> GetByIdAsync(int collectionId) => _repo.GetByIdAsync(collectionId);
+
     public Task<IEnumerable<WidgetObject>> GetByNameAsync(string name) => _repo.GetByNameAsync(name);
-    public async Task<WidgetObject> AddAsync(WidgetObject widget)
-    {
-        var res = await _repo.AddAsync(widget);
-        _repo.SaveChanges();
-        return res.Entity;
-    }
+
+    public Task<WidgetObject> AddAsync(WidgetObject widget) => _repo.InsertAsync(widget);
+
+    public Task UpdateAsync(WidgetObject widget) => _repo.UpdateAsync(widget);
+
+    public Task DeleteAsync(WidgetObject widget) => _repo.DeleteAsync(widget);
+
+    public Task DeleteAsync(int widgetId) => _repo.DeleteByIdAsync(widgetId);
 }
 
-public partial class WidgetRepository : EfRepositoryBase<WidgetObject>
+public partial class WidgetRepository : BoundTableRepositoryBase<WidgetObject>
 {
-    private readonly DataAccessSettings _settings;
-    private readonly string _connectionString;
-    private readonly ILogger<WidgetRepository> _logger;
-
     public WidgetRepository(
+        ILogger<WidgetRepository> logger,
         IOptions<DataAccessSettings> config,
-        ILogger<WidgetRepository> logger) : base(config)
+        BoundTableBinder tableBinder) : base(logger, config, tableBinder)
     {
-        _settings = config.Value;
-        _connectionString = _settings.ConnectionStrings!.Single(x => x.Key == "DefaultConnection").Value;
-        _logger = logger;
     }
 
     public async Task<IEnumerable<WidgetObject>> GetByNameAsync(string name)

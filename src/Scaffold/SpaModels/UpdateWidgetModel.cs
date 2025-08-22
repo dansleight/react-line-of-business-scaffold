@@ -6,9 +6,11 @@ using Scaffold.Classes;
 
 namespace Scaffold.SpaModels;
 
-public class AddWidgetModel
+public class UpdateWidgetModel
 {
     #region Properties
+
+    public int WidgetId { get; set; }
 
     [Display(Name = "Name")]
     [MaxLength(100)]
@@ -37,6 +39,7 @@ public class AddWidgetModel
 
     public WidgetObject ToWidgetObject() => new WidgetObject(Name, WidgetType, BlueTypeId)
     {
+        WidgetId = WidgetId,
         Description = Description,
         RedTypeId = RedTypeId,
     };
