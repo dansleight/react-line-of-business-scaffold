@@ -1,0 +1,93 @@
+{
+  "name": "WebAPI (C# .NET)",
+  "steps": [
+    {
+      "action": "remove",
+      "files": [
+        "./spa-src/generate-python-api.js",
+        "./python-src/",
+        "./setup/set-backend-fastapi.ts",
+        "./setup/fastapi.config.json",
+        "./src/.vs/"
+      ]
+    },
+    {
+      "action": "rename",
+      "target": "./spa-src/scripts/generate-webapi-api.js",
+      "to": "./spa-src/scripts/generate-api.js"
+    },
+    {
+      "action": "replace",
+      "target": "./spa-src/README.md",
+      "with": "./setup/webapi/ReadMe.md"
+    },
+    {
+      "action": "replace-text",
+      "target": [
+        "./assets/DbScripts/SqlServer/Init.sql",
+        "./src/Scaffold/appsettings.Development.json",
+        "./src/ReadMe.md"
+      ],
+      "match": "Scaff_DB",
+      "to": "${dbName}",
+      "comment": "Replace 'Scaffold' with namespace in multiple files"
+    },
+    {
+      "action": "replace-text",
+      "target": "./spa-src/src/appConfig.ts",
+      "match": "User.ReadWrite",
+      "to": "User.Read",
+      "comment": "Downgrade MS Graph permission"
+    },
+    {
+      "action": "replace-text",
+      "target": [
+        "./spa-src/.env",
+        "./spa-src/src/appConfig.ts",
+        "./src/.vscode/launch.json"
+      ],
+      "match": "5011",
+      "to": "${apiPort}",
+      "comment": "Set dynamic API port"
+    },
+    {
+      "action": "replace-text",
+      "target": [
+        "./src/.vscode/launch.json",
+        "./src/.vscode/tasks.json",
+        "./src/.vscode/settings.json",
+        "./spa-src/.vscode/settings.json"
+      ],
+      "match": "Scaffold",
+      "to": "${ns}",
+      "comment": "Replace 'Scaffold' with namespace in multiple files"
+    },
+    {
+      "action": "replace-text",
+      "target": "./spa-src/package.json",
+      "match": "line-of-business",
+      "to": "${nslower}",
+      "comment": "Replace 'line-of-business' witn namespace in package.json"
+    },
+    {
+      "action": "replace-text",
+      "target": "./spa-src/vite.config.ts",
+      "match": "3011",
+      "to": "${spaPort}",
+      "comment": "Replace 'line-of-business' witn namespace in package.json"
+    },
+    {
+      "action": "replace-text",
+      "target": "./spa-src/src/layout/sidebar/index.tsx",
+      "match": "Scaff <sup>00</sup>",
+      "to": "${title}",
+      "comment": "Title on Sidebar"
+    },
+    {
+      "action": "remove-scripts",
+      "target": "./spa-src/package.json",
+      "scripts": ["fastapibuild"],
+      "comment": "Safely remove Python-related npm scripts"
+    }
+  ]
+}

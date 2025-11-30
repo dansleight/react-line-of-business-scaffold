@@ -2,13 +2,17 @@ import structlog
 import logging
 from structlog.processors import TimeStamper, JSONRenderer, KeyValueRenderer
 from structlog.stdlib import add_log_level, ProcessorFormatter
-from app.logging.sql_sink import SQLSink
+from app.logging.sql_sink import setup_async_sql_sink
 from app.database.config import SessionLocal
 from datetime import datetime
 from app.config import settings
 import os
 
+_queue_listener = None
+
 def configure_logging():
+    global _queue_listener
+
     # Create logs directory
     log_dir = "logs"
     os.makedirs(log_dir, exist_ok=True)
@@ -24,8 +28,9 @@ def configure_logging():
     console_handler.setLevel(logging.DEBUG)
 
     # SQL handler
-    sql_handler = SQLSink(SessionLocal)
-    sql_handler.setLevel(logging.INFO)  # Log INFO and above to SQL
+    sql_queue_handler, queue_listener = setup_async_sql_sink(SessionLocal)
+    sql_queue_handler.setLevel(logging.INFO) # log INFO and above to SQL
+    _queue_listener = queue_listener
     
     # Configure structlog
     structlog.configure(
@@ -59,16 +64,22 @@ def configure_logging():
     
     file_handler.setFormatter(json_formatter)
     console_handler.setFormatter(console_formatter)
-    sql_handler.setFormatter(json_formatter) # JSON for SQL consistency
+    sql_queue_handler.setFormatter(json_formatter) # JSON for SQL consistency
     
     # Configure stdlib logging
     logging.basicConfig(
         level=logging.DEBUG,
-        handlers=[console_handler, file_handler, sql_handler],
+        handlers=[console_handler, file_handler, sql_queue_handler],
     )
         
     # Return main logger
     return structlog.get_logger("fastapi")
+
+def shutdown_logging():
+    """Call this on application shutdown to ensure all logs are flushed"""
+    global _queue_listener
+    if _queue_listener:
+        _queue_listener.stop()
 
 # Initialize logger
 logger = configure_logging()

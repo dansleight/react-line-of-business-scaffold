@@ -75,7 +75,7 @@ export const Sidebar = ({ menuItems }: MenuProps) => {
           <Logo size={30} />
         </div>
         <div className="sidebar-brand-text mx-3">
-          Dan-min <sup>48</sup>
+          Scaff <sup>00</sup>
         </div>
       </Link>
 

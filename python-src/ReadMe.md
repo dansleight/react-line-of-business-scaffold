@@ -67,7 +67,7 @@ API_SCOPE = "your-scope"
 
 # Database Connection String Values
 DB_SERVER = "127.0.0.1:1433"
-DB_NAME = "Scaffold"
+DB_NAME = "Scaff_DB"
 DB_USERNAME = "your-username"
 DB_PASSWORD = "your-password"
 DB_DRIVER = "ODBC+Driver+17+for+SQL+Server" # on windows, this should be "SQL+Server+Native+Client+11.0"
@@ -75,16 +75,16 @@ DB_ENCRYPT = "yes"
 DB_TRUSTSERVERCERTIFICATE = "yes"
 
 # CORS origins
-CORS_ORIGINS = "http://localhost" # not doing anything with this yet
+CORS_ORIGINS = "http://localhost"
 
 ```
 
 #### uvicorn command to bind port
 
-The repo includes the launch.json for debugging the application, and that sets the port to 8011, which is currently what the SPA would expect. If you prefer to just run it command line, from within the venv:
+The repo includes the launch.json for debugging the application, and that sets the port to 5011, which is currently what the SPA would expect. If you prefer to just run it command line, from within the venv:
 
 ```
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8011
+uvicorn app.main:app --reload --host 0.0.0.0 --port 5011
 ```
 
 # Notes

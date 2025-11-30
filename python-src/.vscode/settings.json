@@ -1,4 +1,5 @@
 {
   "workbench.colorTheme": "Monokai",
-  "window.title": "Scaffold Python API/${rootName}${separator}${activeEditorShort}"
+  "window.title": "Scaffold API/${rootName}${separator}${activeEditorShort}",
+  "python.analysis.extraPaths": ["app"]
 }

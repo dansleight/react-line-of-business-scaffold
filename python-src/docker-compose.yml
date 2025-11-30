@@ -1,0 +1,17 @@
+services:
+  fastapi-app:
+    platform: linux/amd64 # Force amd64 for ODBC driver compatibility
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fastapi-dev
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./app:/code/app # Mount the app directory for hot-reloading
+      - ./logs:/code/logs # Mount the logs directory
+      - /app/__pycache__ # Prevent __pycache__ from being shared
+    environment:
+      - PYTHONUNBUFFERED=1
+      - PYTHONPATH=/app
+      - DB_DRIVER=ODBC+Driver+17+for+SQL+Server # Be sure we're using the right driver in the container

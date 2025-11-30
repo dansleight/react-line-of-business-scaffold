@@ -13,7 +13,6 @@ import { useEffect, useState } from "react";
 import { WidgetObject, AddWidgetModel } from "../apiClient/data-contracts";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBan, faPlus, faSave } from "@fortawesome/free-solid-svg-icons";
-import { AddWidgetForm } from "../forms/generated/AddWidgetForm";
 import { WaitBar } from "../components/Loader";
 
 export function Widgets() {
@@ -29,7 +28,7 @@ export function Widgets() {
     });
   };
 
-  const widgetFormSuccess = (widget: WidgetObject) => {
+  const widgetFormSuccess = () => {
     updateWidgets();
   };
 
@@ -87,20 +86,101 @@ export function Widgets() {
                 <Card.Title>Add a Widget</Card.Title>
               </Card.Header>
               <Card.Body>
-                <AddWidgetForm
-                  onSuccess={widgetFormSuccess}
-                  submitLabel={
-                    <>
-                      <FontAwesomeIcon icon={faSave} /> Save
-                    </>
-                  }
-                  showCancel
-                />
+                <AddWidgetForm onSuccess={widgetFormSuccess} showCancel />
               </Card.Body>
             </Card>
           </Col>
         </Row>
       </Container>
     </>
+  );
+}
+
+type AddWidgetFormProps = {
+  showCancel?: boolean;
+  onSuccess: () => void;
+};
+
+function AddWidgetForm({ showCancel = true, onSuccess }: AddWidgetFormProps) {
+  const { api } = useSessionContext();
+  const [name, setName] = useState<string>("");
+  const [err, setErr] = useState<string | undefined>(undefined);
+  const [description, setDescription] = useState<string>("");
+  const [waiting, setWaiting] = useState<boolean>(false);
+
+  const handleSubmit = () => {
+    if (name.trim() == "") {
+      setErr("Name is required");
+      return;
+    }
+    setErr(undefined);
+    setWaiting(true);
+    api
+      .widgetAdd({ name: name, description: description } as AddWidgetModel)
+      .then((res) => {
+        setName("");
+        setDescription("");
+        onSuccess();
+      })
+      .finally(() => setWaiting(false));
+  };
+
+  const handleCancel = () => {
+    setErr(undefined);
+    setName("");
+    setDescription("");
+  };
+
+  return (
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        handleSubmit();
+      }}
+    >
+      {err && <div className="alert alert-danger">{err}</div>}
+      <Form.Group className="mb-2">
+        <Form.Label>
+          <strong>Name</strong>
+        </Form.Label>
+        <Form.Control
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          disabled={waiting}
+        />
+      </Form.Group>
+      <Form.Group className="mb-2">
+        <Form.Label>
+          <strong>Description</strong>
+        </Form.Label>
+        <Form.Control
+          as="textarea"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          disabled={waiting}
+        />
+      </Form.Group>
+      <div className="text-end mb-2">
+        {waiting ? (
+          <WaitBar />
+        ) : (
+          <>
+            <Button type="submit" variant="primary" className="ms-1">
+              <FontAwesomeIcon icon={faSave} fixedWidth /> {" Save"}
+            </Button>
+            {showCancel && (
+              <Button
+                variant="tertiary"
+                onClick={handleCancel}
+                className="ms-1"
+              >
+                Cancel
+              </Button>
+            )}
+          </>
+        )}
+      </div>
+    </form>
   );
 }

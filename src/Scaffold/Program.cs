@@ -13,7 +13,6 @@ using Newtonsoft.Json.Converters;
 using Scaffold.Business;
 using Scaffold.Business.Models.Config;
 using Scaffold.Business.Services.RepoBases;
-using Scaffold.Classes;
 using Serilog;
 using Serilog.AspNetCore;
 using Serilog.Events;
@@ -163,7 +162,6 @@ public class Program
             c.SupportNonNullableReferenceTypes();
             c.UseAllOfToExtendReferenceSchemas();
             c.OperationFilter<AuthorizeOperationFilter>();
-            c.SchemaFilter<DisplayAttributeSchemaFilter>();
         });
         services.AddSwaggerGenNewtonsoftSupport();
 

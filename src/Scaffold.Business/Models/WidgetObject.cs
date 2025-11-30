@@ -1,7 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Scaffold.Business.Enums;
 
 namespace Scaffold.Business;
 
@@ -19,28 +18,16 @@ public class WidgetObject
     [Column]
     public string? Description { get; set; }
 
-    [Column]
-    public WidgetType WidgetType { get; set; }
-
-    [Column]
-    public int? RedTypeId { get; set; }
-
-    [Column]
-    public int BlueTypeId { get; set; }
-
-    public DateTime? ApprovalDate { get; set; }
-
     #endregion
 
     #region Constructor
 
     internal WidgetObject() { }
 
-    public WidgetObject(string name, WidgetType widgetType, int blueTypeId)
+    public WidgetObject(string name, string? description = null)
     {
         Name = name;
-        WidgetType = widgetType;
-        BlueTypeId = blueTypeId;
+        Description = description;
     }
 
     #endregion

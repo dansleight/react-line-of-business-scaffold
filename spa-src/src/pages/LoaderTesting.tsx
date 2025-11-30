@@ -1,6 +1,6 @@
 import { Col, Container, Row } from "react-bootstrap";
 import { Headcrumb } from "../components/Headcrumb";
-import { WaitBar, BallsBar } from "../components/Loader";
+import { WaitBar } from "../components/Loader";
 
 export function LoaderTesting() {
   return (
@@ -11,7 +11,7 @@ export function LoaderTesting() {
       <Container>
         <Row>
           <Col>
-            <BallsBar />
+            <WaitBar />
           </Col>
         </Row>
       </Container>

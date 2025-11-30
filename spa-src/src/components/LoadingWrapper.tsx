@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import { Card, Col, Container, Row } from "react-bootstrap";
 import { Logo } from "./Logo";
-import { BallsBar } from "./Loader";
+import { WaitBar } from "./Loader";
 
 export type LoadingWrapperProps = {
   children: ReactNode;
@@ -22,7 +22,7 @@ export const LoadingWrapper = ({ children }: LoadingWrapperProps) => {
             <Card className="bg-dark text-bg-dark">
               <Card.Body className="py-5 text-center">
                 {children}
-                <BallsBar />
+                <WaitBar />
               </Card.Body>
             </Card>
           </Col>

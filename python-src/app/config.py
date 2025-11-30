@@ -12,7 +12,7 @@ class Settings(BaseSettings):
   # jwks_url = f"{authority}/discovery/v2.0/keys"
 
   db_server: str = "127.0.0.1:1433"
-  db_name: str = "Scaffold"
+  db_name: str = "Scaff_DB"
   db_username: str = "user_scaffold"
   db_password: str = ""
   db_driver: str = "ODBC+Driver+17+for+SQL+Server"

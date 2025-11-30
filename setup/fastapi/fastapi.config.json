@@ -1,0 +1,118 @@
+{
+  "name": "FastAPI (Python)",
+  "steps": [
+    {
+      "action": "remove",
+      "files": [
+        "./spa-src/generate-api.js",
+        "./src/",
+        "./setup/set-backend-webapi.ts",
+        "./setup/webapi.config.json"
+      ]
+    },
+    {
+      "action": "copy",
+      "from": "./setup/fastapi/env.development",
+      "to": "./src/.env.development"
+    },
+    {
+      "action": "rename",
+      "target": "./python-src/",
+      "to": "./src/"
+    },
+    {
+      "action": "rename",
+      "target": "./src/docker-compose.override.yml-template",
+      "to": "./src/docker-compose.override.yml"
+    },
+    {
+      "action": "replace-text",
+      "target": "./spa-src/src/appConfig.ts",
+      "match": "User.ReadWrite",
+      "to": "User.Read",
+      "comment": "Downgrade MS Graph permission"
+    },
+    {
+      "action": "replace-text",
+      "target": [
+        "./assets/DbScripts/SqlServer/Init.sql",
+        "./src/docker-compose.override.yml",
+        "./src/.env.development",
+        "./src/ReadMe.md"
+      ],
+      "match": "Scaff_DB",
+      "to": "${dbName}",
+      "comment": "Replace 'Scaffold' with namespace in multiple files"
+    },
+    {
+      "action": "replace-text",
+      "target": [
+        "./spa-src/.env",
+        "./spa-src/src/appConfig.ts",
+        "./src/.vscode/launch.json",
+        "./src/docker-compose.override.yml",
+        "./src/Dockerfile",
+        "./src/ReadMe.md"
+      ],
+      "match": "5011",
+      "to": "${apiPort}",
+      "comment": "Set dynamic API port"
+    },
+    {
+      "action": "replace-text",
+      "target": [
+        "./src/.vscode/tasks.json",
+        "./src/.vscode/settings.json",
+        "./spa-src/.vscode/settings.json"
+      ],
+      "match": "Scaffold",
+      "to": "${ns}",
+      "comment": "Replace 'Scaffold' with namespace in multiple files"
+    },
+    {
+      "action": "replace-text",
+      "target": [
+        "./src/.env.development",
+        "./src/app/config.py",
+        "./src/ReadMe.md"
+      ],
+      "match": "Scaff_DB",
+      "to": "${dbName}",
+      "comment": "Replace 'Scaffold' with namespace in multiple files"
+    },
+    {
+      "action": "replace-text",
+      "target": "./spa-src/package.json",
+      "match": "line-of-business",
+      "to": "${nslower}",
+      "comment": "Replace 'line-of-business' witn namespace in package.json"
+    },
+    {
+      "action": "replace-text",
+      "target": "./spa-src/vite.config.ts",
+      "match": "3011",
+      "to": "${spaPort}",
+      "comment": "Replace 'line-of-business' witn namespace in package.json"
+    },
+    {
+      "action": "replace-text",
+      "target": "./spa-src/package.json",
+      "match": "/python-src/",
+      "to": "/src/",
+      "comment": "Replace python-src with src in package.json"
+    },
+    {
+      "action": "replace-text",
+      "target": "./spa-src/src/layout/sidebar/index.tsx",
+      "match": "Scaff <sup>00</sup>",
+      "to": "${title}",
+      "comment": "Title on Sidebar"
+    },
+    {
+      "action": "remove-scripts",
+      "target": "./spa-src/package.json",
+      "scripts": ["pythonbuild", "update-python-api"],
+      "comment": "Safely remove Python-related npm scripts"
+    }
+  ]
+}

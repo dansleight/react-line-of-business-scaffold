@@ -48,7 +48,7 @@ export const IdentityProvider = ({
     } else {
       // since this isn't Entra, we're going to
       // set the scopes from globalSettings
-      redirectParams.scopes = [globalSettings.msalSettings.apiScope];
+      redirectParams.scopes = [globalSettings.msalSettings!.apiScope];
     }
     console.log("redirectParams: ", redirectParams);
     instance.loginRedirect(redirectParams).catch((e) => {

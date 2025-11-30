@@ -7,13 +7,24 @@ from pathlib import Path
 import os
 import time
 from app.routes import global_settings, auth, widget, test
-from app.logging.config import logger
+from app.logging.config import logger, shutdown_logging
 from app.config import settings
+from contextlib import asynccontextmanager
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    #startup
+    logger.info("FastAPI application starting", extra={"version": "0.0.1"})
+    yield
+    #shutdown
+    logger.info("FastAPI application shutting down")
+    shutdown_logging()
 
 app = FastAPI(
-    docs_url="/docs",
+    lifespan=lifespan,
+    docs_url="/swagger/index.html",
     redoc_url="/redoc",
-    openapi_url="/openapi.json",
+    openapi_url="/swagger/v1/swagger.json",
     swagger_ui_parameters={
         "tryItOutEnabled": True,
         "persistAuthorization": True,
@@ -38,9 +49,6 @@ app.include_router(widget.router)
 app.include_router(global_settings.router)
 app.include_router(test.router)
 
-# Log app startup
-logger.info("Starting FastAPI Prototype API", extra={"version": "1.0.0"})
-
 # Logging middleware
 @app.middleware("http")
 async def log_requests(request: Request, call_next):
@@ -64,7 +72,7 @@ async def log_requests(request: Request, call_next):
 @app.get("/{path:path}")
 async def serve_spa(path: str):
     # Skip API, WebSocket, and special routes
-    protected_paths = ("/api", "/ws", "/docs", "/redoc", "/openapi.json", "/static")
+    protected_paths = ("/api", "/ws", "/swagger", "/redoc", "/openapi.json", "/static")
     if path.startswith(protected_paths):
         return {"error": "Not found"}, 404
 

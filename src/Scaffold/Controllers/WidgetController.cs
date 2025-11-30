@@ -78,39 +78,4 @@ public class WidgetController : ControllerBase
             return StatusCode(500, e);
         }
     }
-
-    [HttpPut]
-    [ProducesResponseType(typeof(WidgetObject), 200)]
-    [ProducesResponseType(typeof(HttpValidationError), 400)]
-    public async Task<ActionResult> Update(UpdateWidgetModel model)
-    {
-        try
-        {
-            await _widgetService.UpdateAsync(model.ToWidgetObject());
-            WidgetObject res = (await _widgetService.GetByIdAsync(model.WidgetId))!;
-            return Ok(res);
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e, "");
-            return StatusCode(500, e);
-        }
-    }
-
-    [HttpDelete("{widgetId}")]
-    [ProducesResponseType(typeof(bool), 200)]
-    public async Task<ActionResult> Delete(int widgetId)
-    {
-        try
-        {
-            var widget = await _widgetService.GetByIdAsync(widgetId);
-            await _widgetService.DeleteAsync(widget!);
-            return Ok(true);
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e, "");
-            return StatusCode(500, e);
-        }
-    }
 }

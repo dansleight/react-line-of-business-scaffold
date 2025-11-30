@@ -1,0 +1,42 @@
+services:
+  fastapi-app:
+    platform: linux/amd64 # Force amd64 for ODBC driver compatibility
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        LOCAL_BUILD: "true" # Set to "false" for production builds
+    container_name: fastapi-dev
+    ports:
+      - "5011:5011" # FastAPI application
+      - "5678:5678" # Debugpy port
+    volumes:
+      - ./app:/code/app # Mount the app directory
+      - ./logs:/code/logs # Mount the logs directory
+      - /code/__pycache__ # Prevent __pycache__ from being shared
+    environment:
+      - PYTHONUNBUFFERED=1
+      - PYTHONPATH=/app
+      - ENVIRONMENT=development
+      # IdP Settings
+      - TENANT_ID=
+      - CLIENT_ID=
+      - API_SCOPE=
+      # Database Settings
+      - DB_SERVER=host.docker.internal:1433
+      - DB_NAME=Scaff_DB
+      - DB_USERNAME=user_Scaff_DB
+      - DB_PASSWORD=Password!here
+      - DB_ENCRYPT=yes
+      - DB_TRUSTSERVERCERTIFICATE=yes
+      # CORS Settings
+      - CORS_ORIGINS=http://localhost
+    command: >
+      python -Xfrozen_modules=off 
+      -m debugpy --listen 0.0.0.0:5678 
+      -m uvicorn app.main:app --host 0.0.0.0 --port 5011 --reload
+    # Use --wait-for-client if you need to debug startup code:
+    # command: >
+    #   python -Xfrozen_modules=off 
+    #  -m debugpy --listen 0.0.0.0:5678 --wait-for-client 
+    #  -m uvicorn app.main:app --host 0.0.0.0 --port 5011 --reloading
