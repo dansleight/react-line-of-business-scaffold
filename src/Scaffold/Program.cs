@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Identity.Web;
-using Microsoft.IdentityModel.Logging;
 using Microsoft.OpenApi;
 using Newtonsoft.Json.Converters;
 using Scaffold.Business;
@@ -157,7 +156,7 @@ public class Program
         {
             c.SwaggerDoc("v1", new OpenApiInfo { Title = "Scaffold API", Version = "v1.0", Description = "Scaffold API Prototype" });
             c.AddJwtBearerSecurity();
-            // c.IncludeXmlComments(Assembly.GetExecutingAssembly(), true);
+            c.IncludeXmlComments(Assembly.GetExecutingAssembly(), true);
             c.CustomOperationIds(e => $"{e.ActionDescriptor.RouteValues["controller"]}_{e.ActionDescriptor.RouteValues["action"]}");
             c.SupportNonNullableReferenceTypes();
             c.UseAllOfToExtendReferenceSchemas();
