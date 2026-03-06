@@ -1,4 +1,6 @@
 import { defineConfig } from "vite";
+import { NodePackageImporter } from "sass-embedded";
+import { NodePackageImporter as SassPackageImporter } from "sass";
 import react from "@vitejs/plugin-react";
 
 // https://vite.dev/config/
@@ -10,6 +12,11 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       scss: {
+        api: "modern-compiler",
+        importers: [
+          new NodePackageImporter() as unknown as SassPackageImporter,
+        ],
+        quietDeps: true,
         silenceDeprecations: [
           "mixed-decls",
           "legacy-js-api",
@@ -17,6 +24,7 @@ export default defineConfig({
           "import",
           "global-builtin",
           "slash-div",
+          "if-function",
         ],
       },
     },
