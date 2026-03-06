@@ -1,21 +1,12 @@
 import { defineConfig } from "vite";
-import { NodePackageImporter } from "sass-embedded";
-import { NodePackageImporter as SassPackageImporter } from "sass";
 import react from "@vitejs/plugin-react";
 
-// https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
-  server: {
-    port: 3011,
-  },
+  server: { port: 3011 },
   css: {
     preprocessorOptions: {
       scss: {
-        api: "modern-compiler",
-        importers: [
-          new NodePackageImporter() as unknown as SassPackageImporter,
-        ],
         quietDeps: true,
         silenceDeprecations: [
           "mixed-decls",

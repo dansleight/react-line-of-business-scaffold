@@ -20,7 +20,7 @@ export const Sidebar = ({ menuItems }: MenuProps) => {
     breakpoint,
     darkMode,
   } = useSettingsContext();
-  const ref = useRef<any>();
+  const ref = useRef<any>({});
   const [sidebarClass, setSidebarClass] = useState<string>("");
 
   const location = useLocation();
@@ -51,7 +51,7 @@ export const Sidebar = ({ menuItems }: MenuProps) => {
         id="sidebar-toggle-button"
         className={classNames(
           "bg-body text-bg-body rounded-circle border border-primary border-3 d-flex justify-content-center align-items-center",
-          { "text-white": darkMode, "text-black": !darkMode }
+          { "text-white": darkMode, "text-black": !darkMode },
         )}
         onClick={toggleSidebar}
       >
@@ -67,7 +67,7 @@ export const Sidebar = ({ menuItems }: MenuProps) => {
           "sidebar-brand d-flex align-items-center justify-content-center",
           {
             "d-none d-md-flex": !layoutConfig.sidebarFull,
-          }
+          },
         )}
         to="/"
       >
