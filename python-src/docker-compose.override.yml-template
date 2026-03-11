@@ -1,22 +1,10 @@
 services:
   fastapi-app:
-    platform: linux/amd64 # Force amd64 for ODBC driver compatibility
     build:
-      context: .
-      dockerfile: Dockerfile
       args:
         LOCAL_BUILD: "true" # Set to "false" for production builds
-    container_name: fastapi-dev
-    ports:
-      - "5011:5011" # FastAPI application
-      - "5678:5678" # Debugpy port
-    volumes:
-      - ./app:/code/app # Mount the app directory
-      - ./logs:/code/logs # Mount the logs directory
-      - /code/__pycache__ # Prevent __pycache__ from being shared
+    container_name: Scaffold_FastAPI_dev
     environment:
-      - PYTHONUNBUFFERED=1
-      - PYTHONPATH=/app
       - ENVIRONMENT=development
       # IdP Settings
       - TENANT_ID=
@@ -31,6 +19,8 @@ services:
       - DB_TRUSTSERVERCERTIFICATE=yes
       # CORS Settings
       - CORS_ORIGINS=http://localhost
+    volumes:
+      - ./.vscode_devcontainer:/code/.vscode # Separate .vscode folder for inside the container
     command: >
       python -Xfrozen_modules=off 
       -m debugpy --listen 0.0.0.0:5678 
