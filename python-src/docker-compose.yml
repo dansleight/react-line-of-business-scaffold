@@ -4,14 +4,25 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: fastapi-dev
+    container_name: Scaffold_FastAPI
+    environment:
+      - PYTHONUNBUFFERED=1
+      - PYTHONPATH=/app
+      - ENVIRONMENT=production
+      # Database Settings
+      - DB_DRIVER=ODBC+Driver+17+for+SQL+Server # Be sure we're using the right driver in the container
+      - DB_SERVER=host.docker.internal:1433
+      - DB_NAME=Scaff_DB
+      - DB_USERNAME=user_Scaff_DB
+      - DB_ENCRYPT=yes
+      - DB_TRUSTSERVERCERTIFICATE=yes
     ports:
-      - "8000:8000"
+      - "5011:5011" # FastAPI application
+      - "5678:5678" # Debugpy port
     volumes:
       - ./app:/code/app # Mount the app directory for hot-reloading
       - ./logs:/code/logs # Mount the logs directory
       - /app/__pycache__ # Prevent __pycache__ from being shared
-    environment:
-      - PYTHONUNBUFFERED=1
-      - PYTHONPATH=/app
-      - DB_DRIVER=ODBC+Driver+17+for+SQL+Server # Be sure we're using the right driver in the container
+      - ./requirements.txt:/code/requirements.txt # Requirements need to go both ways
+      - ./ReadMe.md:/code/ReadMe.md
+      - ./client_app:/code/client_app

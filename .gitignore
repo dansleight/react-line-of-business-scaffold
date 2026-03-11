@@ -241,6 +241,7 @@ ModelManifest.xml
 
 # Python/FastAPI
 __pycache__
+*/docker-compose.override.yml
 
 # OS Generated Files #
 ######################

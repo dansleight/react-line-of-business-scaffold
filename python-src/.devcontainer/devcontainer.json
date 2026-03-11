@@ -1,0 +1,15 @@
+{
+    "name": "Scaffold_FastAPI",
+    "dockerComposeFile": "../docker-compose.yml",
+    "service": "fastapi-app",
+    "workspaceFolder": "/code",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-python.python",
+                "ms-python.debugpy",
+                "ms-python.vscode-pylance"
+            ]
+        }
+    }
+}

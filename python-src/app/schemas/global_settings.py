@@ -20,4 +20,5 @@ class GlobalSettingsModel(BaseModel):
         from_attributes=True,
     )
     ApplicationMode: str
+    ConnectionString: str
     MsalSettings: MsalSettingsModel

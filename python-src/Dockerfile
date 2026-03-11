@@ -50,8 +50,11 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Install debugpy for VS Code debugging
 RUN pip install --no-cache-dir debugpy
 
+# Remove the requiremnts file, allow it to be mounted instead
+RUN rm requirements.txt
+
 # Copy application code
-COPY . .
+# COPY . .
 
 # Expose port for FastAPI
 EXPOSE 5011
