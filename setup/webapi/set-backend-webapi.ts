@@ -13,24 +13,24 @@ import {
   replaceInFile,
   removeFromFile,
   removePackageScripts,
-} from "./utilities";
+} from "../utils/utilities";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const PROJECT_ROOT = path.resolve(__dirname, "..");
+const PROJECT_ROOT = path.resolve(__dirname, "../..");
 const SETUP_DIR = __dirname; // <-- critical: exclude this entire folder
-const CONFIG_PATH = path.join(SETUP_DIR, "fastapi/fastapi.config.json");
+const CONFIG_PATH = path.join(SETUP_DIR, "./webapi.config.json");
 
 async function main() {
-  console.log("Setting up Python FastAPI project...\n");
+  console.log("Setting up .NET WebAPI project...\n");
 
   const answers = await inquirer.prompt([
     {
       type: "input",
       name: "namespace",
-      message: "What is the name for your WebAPI project? (No spaces)",
+      message: "What is the namespace for your WebAPI project?",
       validate: (v) =>
-        /^[a-zA-Z][a-zA-Z0-9.]*$/.test(v) || "Valid namespace required",
+        /^[a-zA-Z][a-zA-Z0-9.]*$/.test(v) || "Valid C# namespace required",
     },
     {
       type: "input",
@@ -62,7 +62,9 @@ async function main() {
   const { namespace: ns, database, title, port } = answers;
   const apiPort = Number(port);
   const spaPort = apiPort - 2000;
-  const dbName = database.trim() || ns;
+  const dbName = database.trim() || "Scaffold";
+  const projectGuid = generateGuid(ns + ".WebApi");
+  const solutionGuid = generateGuid(ns + ".Solution");
   const nslower = ns.toLowerCase();
 
   console.log(`\nConfiguration:`);
@@ -94,12 +96,6 @@ async function main() {
           console.log(
             `Renamed: ${step.target} → ${path.relative(PROJECT_ROOT, to)}`,
           );
-          break;
-        case "copy":
-          const copy_from = path.resolve(PROJECT_ROOT, step.from!);
-          const copy_to = path.resolve(PROJECT_ROOT, step.to!);
-          await fs.copyFile(copy_from, copy_to);
-          console.log(`Copied: ${step.from} → ${step.to}`);
           break;
         case "replace":
           const target = path.resolve(PROJECT_ROOT, step.target!);
@@ -172,6 +168,24 @@ async function main() {
     }
   }
 
+  // === RECURSIVE RENAME: Scaffold → Namespace (folders + files) ===
+  const srcDir = path.join(PROJECT_ROOT, "src");
+
+  if (await fs.stat(srcDir).catch(() => false)) {
+    console.log(`\nRecursively renaming all 'Scaffold' → '${ns}' in src/ ...`);
+    await recursiveRenameContaining(srcDir, "Scaffold", ns.split(".").pop()!);
+  }
+
+  // Rename solution file (outside src/)
+  const oldSln = path.join(PROJECT_ROOT, "Scaffold.sln");
+  const newSlnName = `${ns.split(".").pop()}.sln`;
+  const newSln = path.join(PROJECT_ROOT, newSlnName);
+
+  if (await fs.stat(oldSln).catch(() => false)) {
+    await safeRename(oldSln, newSln, "Solution file");
+    console.log(`Solution renamed: Scaffold.sln → ${newSlnName}`);
+  }
+
   // CRITICAL: Title first — prevents "Scaffold" in title from being overwritten
   const titleFiles = [
     "spa-src/src/layout/Layout.tsx",
@@ -188,17 +202,20 @@ async function main() {
   }
 
   // Now do namespace & DB replacements — but EXCLUDE setup/ entirely
-  const filesToProcess = glob.sync("**/*.{py,json,ts,tsx,js,jsx,sql}", {
-    cwd: PROJECT_ROOT,
-    absolute: true,
-    ignore: [
-      "**/node_modules/**",
-      "**/bin/**",
-      "**/obj/**",
-      "**/setup/**", // Critical: never touch setup folder
-      "**/.git/**",
-    ],
-  });
+  const filesToProcess = glob.sync(
+    "**/*.{cs,csproj,sln,json,ts,tsx,js,jsx,sql}",
+    {
+      cwd: PROJECT_ROOT,
+      absolute: true,
+      ignore: [
+        "**/node_modules/**",
+        "**/bin/**",
+        "**/obj/**",
+        "**/setup/**", // Critical: never touch setup folder
+        "**/.git/**",
+      ],
+    },
+  );
 
   for (const file of filesToProcess) {
     try {
@@ -207,11 +224,68 @@ async function main() {
         .replace(/Scaffold/g, ns) // namespace
         .replace(/\{Database\}/g, dbName); // DB name
 
+      // Replace old placeholder GUIDs
+      updated = updated.replace(
+        /[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}/gi,
+        (match) => {
+          const lower = match.toLowerCase();
+          if (
+            lower.includes("0000") ||
+            lower.includes("1111") ||
+            content.includes("Scaffold")
+          ) {
+            return file.endsWith(".sln") ? solutionGuid : projectGuid;
+          }
+          return match;
+        },
+      );
+
       if (updated !== content) {
         await fs.writeFile(file, updated);
         console.log(`Updated: ${path.relative(PROJECT_ROOT, file)}`);
       }
     } catch {}
+  }
+
+  // Clean bin/obj
+  for (const dir of glob
+    .sync("**/bin", { cwd: PROJECT_ROOT })
+    .concat(glob.sync("**/obj", { cwd: PROJECT_ROOT }))
+    .concat(glob.sync("**/.vs", { cwd: PROJECT_ROOT }))) {
+    const full = path.resolve(PROJECT_ROOT, dir);
+    if (!full.includes(SETUP_DIR)) {
+      await fs.rm(full, { recursive: true, force: true });
+      console.log(`Cleaned: ${dir}/`);
+    }
+  }
+
+  // Remove UserSecretsId from all .csproj files (clean template)
+  const csprojFiles = glob.sync("**/*.csproj", {
+    cwd: PROJECT_ROOT,
+    absolute: true,
+    ignore: ["**/node_modules/**", "**/setup/**"],
+  });
+
+  for (const file of csprojFiles) {
+    try {
+      const content = await fs.readFile(file, "utf-8");
+      const cleaned = content
+        .replace(/<UserSecretsId>.*?<\/UserSecretsId>\s*/gis, "")
+        .replace(
+          // Also remove empty <PropertyGroup> if that's all it contained
+          /<PropertyGroup>\s*<\/PropertyGroup>/gis,
+          "",
+        );
+
+      if (cleaned !== content) {
+        await fs.writeFile(file, cleaned);
+        console.log(
+          `Cleaned UserSecretsId: ${path.relative(PROJECT_ROOT, file)}`,
+        );
+      }
+    } catch (err) {
+      // ignore if file not readable
+    }
   }
 
   // Final step: Clean install to fix broken .bin links
@@ -251,7 +325,7 @@ async function main() {
   }
 
   console.log("\nProject successfully initialized!");
-  console.log(`   Name     : ${ns}`);
+  console.log(`   Namespace: ${ns}`);
   console.log(`   Database : ${dbName}`);
   console.log(`   Title    : ${title}`);
 }

@@ -1,8 +1,8 @@
 {
   "scripts": {
-    "set-backend-webapi": "pnpm dlx tsx set-backend-webapi.ts",
-    "set-backend-fastapi": "pnpm dlx tsx set-backend-fastapi.ts",
-    "set-logo": "pnpm dlx tsx set-logo.ts"
+    "set-backend-webapi": "pnpm dlx tsx ./webapi/set-backend-webapi.ts",
+    "set-backend-fastapi": "pnpm dlx tsx ./fastapi/set-backend-fastapi.ts",
+    "set-logo": "pnpm dlx tsx ./utils/set-logo.ts"
   },
   "devDependencies": {
     "@types/inquirer": "^9.0.9",

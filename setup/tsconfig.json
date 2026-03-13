@@ -9,5 +9,5 @@
     "esModuleInterop": true,
     "skipLibCheck": true
   },
-  "include": ["set-logo.ts"]
+  "include": ["./utils/set-logo.ts"]
 }

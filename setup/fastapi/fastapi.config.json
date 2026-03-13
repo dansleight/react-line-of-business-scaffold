@@ -7,8 +7,7 @@
         "./assets/DbScripts/SqlServer/2 - WebAPI logs.sql",
         "./spa-src/generate-api.js",
         "./src/",
-        "./setup/set-backend-webapi.ts",
-        "./setup/webapi.config.json"
+        "./setup/webapi/nothing.txt"
       ]
     },
     {
