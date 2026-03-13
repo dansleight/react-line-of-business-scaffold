@@ -32,3 +32,7 @@ This script allows you to change the default, goof logo to an icon from FontAwes
 pnpm i # if you haven't already
 pnpm run set-logo
 ```
+
+> **Note** this is a convenience script, and there are times where it's imperfect, for instance, faPerson has curves that exceed the viewbox. When this happens, you can adjust the viewbox in `spa-src/src/components/Logo.tsx`.
+>
+> In the case of faPerson, adjusting the viewBox (in both places) to `viewBox="0 -32 384 576"` solves the problem.
