@@ -4,6 +4,7 @@
     {
       "action": "remove",
       "files": [
+        "./assets/DbScripts/SqlServer/2 - WebAPI logs.sql",
         "./spa-src/generate-api.js",
         "./src/",
         "./setup/set-backend-webapi.ts",
@@ -21,8 +22,8 @@
       "to": "./src/"
     },
     {
-      "action": "rename",
-      "target": "./src/docker-compose.override.yml-template",
+      "action": "copy",
+      "from": "./src/docker-compose.override.yml-template",
       "to": "./src/docker-compose.override.yml"
     },
     {
@@ -35,8 +36,10 @@
     {
       "action": "replace-text",
       "target": [
-        "./assets/DbScripts/SqlServer/Init.sql",
+        "./assets/DbScripts/SqlServer/1 - Init.sql",
+        "./assets/DbScripts/SqlServer/2 - FastAPI logs.sql",
         "./src/docker-compose.override.yml",
+        "./src/docker-compose.override.yml-template",
         "./src/.env.development",
         "./src/ReadMe.md"
       ],
@@ -50,7 +53,9 @@
         "./spa-src/.env",
         "./spa-src/src/appConfig.ts",
         "./src/.vscode/launch.json",
+        "./src/docker-compose.yml",
         "./src/docker-compose.override.yml",
+        "./src/docker-compose.override.yml-template",
         "./src/Dockerfile",
         "./src/ReadMe.md"
       ],

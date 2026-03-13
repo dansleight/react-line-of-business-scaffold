@@ -25,10 +25,6 @@ IF OBJECT_ID('dat_Config') IS NOT NULL
 	DROP TABLE dat_Config
 GO
 
-IF OBJECT_ID('dat_Log') IS NOT NULL
-	DROP TABLE dat_Log
-GO
-
 IF OBJECT_ID('dat_Widget') IS NOT NULL
 	DROP TABLE dat_Widget
 GO
@@ -66,19 +62,6 @@ GO
 INSERT dat_User (Email, Role) 
 VALUES 
 	(N'test@unknown.com', N'Admin')
-GO
-
--- ******************** dat_Log ********************
-CREATE TABLE dat_Log (
-	Id					INT				NOT NULL IDENTITY(1001, 1),
-	[Timestamp]			DATETIME2		NOT NULL,
-	[Level]				NVARCHAR(50)	NOT NULL,
-	[Message]			NVARCHAR(MAX)	NOT NULL,
-	Logger				NVARCHAR(255)	NULL,
-	Context				NVARCHAR(MAX)	NULL,
-	Exception			NVARCHAR(MAX)	NULL,
-	CONSTRAINT pk_dat_Log PRIMARY KEY (Id)
-)
 GO
 
 -- ******************** dat_Widget ********************

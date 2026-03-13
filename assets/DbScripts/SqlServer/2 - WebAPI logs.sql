@@ -1,6 +1,7 @@
 USE Scaff_DB
 GO
 
+-- ******************** dat_SerilogLogs ********************
 IF OBJECT_ID('dat_SerilogLogs') IS NOT NULL
 	DROP TABLE dat_SerilogLogs
 GO

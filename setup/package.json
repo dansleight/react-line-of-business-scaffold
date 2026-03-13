@@ -1,9 +1,26 @@
 {
+  "scripts": {
+    "set-backend-webapi": "pnpm dlx tsx set-backend-webapi.ts",
+    "set-backend-fastapi": "pnpm dlx tsx set-backend-fastapi.ts",
+    "set-logo": "pnpm dlx tsx set-logo.ts"
+  },
   "devDependencies": {
     "@types/inquirer": "^9.0.9",
-    "@types/node": "^24.10.1",
-    "dotenv": "^17.2.3",
-    "glob": "^13.0.0",
-    "inquirer": "^12.11.1"
+    "@types/node": "^25.5.0",
+    "dotenv": "^17.3.1",
+    "glob": "^13.0.6",
+    "inquirer": "^12.11.1",
+    "tsx": "^4.21.0"
+  },
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "onFail": "error"
+    },
+    "packageManager": {
+      "name": "pnpm",
+      "version": "10.30.3",
+      "onFail": "error"
+    }
   }
 }

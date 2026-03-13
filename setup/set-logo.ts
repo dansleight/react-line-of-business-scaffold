@@ -16,7 +16,7 @@ async function resolveIconFile(iconFilePath: string): Promise<string> {
     const content = await fs.readFile(currentPath, "utf-8");
 
     const sourceMatch = content.match(
-      /var\s+source\s*=\s*require\(['"]\.\/([^'"]+)['"]\)/
+      /var\s+source\s*=\s*require\(['"]\.\/([^'"]+)['"]\)/,
     );
     if (!sourceMatch) return currentPath;
 
@@ -79,27 +79,31 @@ async function extractIconMetadata(iconFilePath: string): Promise<{
 async function main() {
   const faBasePath = path.resolve(
     process.cwd(),
-    "../spa-src/node_modules/@fortawesome"
+    "../spa-src/node_modules/.pnpm/",
   );
 
   try {
     await fs.access(faBasePath);
   } catch {
-    console.error("Could not find ../spa-src/node_modules/@fortawesome");
     console.error(
-      "Run: cd ../spa-src && npm install @fortawesome/free-solid-svg-icons etc."
+      `Cound not find ${faBasePath}. You may need to run "pnpm i" in the spa-src folder.`,
     );
     process.exit(1);
   }
 
   const entries = await fs.readdir(faBasePath, { withFileTypes: true });
   const svgIconPackages = entries
-    .filter((d) => d.isDirectory() && d.name.includes("-svg-icons"))
+    .filter(
+      (d) =>
+        d.isDirectory() &&
+        d.name.startsWith("@fortawesome+") &&
+        d.name.includes("-svg-icons"),
+    )
     .map((d) => ({ name: d.name, fullPath: path.join(faBasePath, d.name) }));
 
   if (svgIconPackages.length === 0) {
-    console.log("No FontAwesome SVG icon packages found.");
-    process.exit(0);
+    console.error("No FontAwesome SVG icon packages found.");
+    process.exit(1);
   }
 
   const { selectedPackage } = await inquirer.prompt([
@@ -114,7 +118,10 @@ async function main() {
     },
   ]);
 
-  const iconsDir = selectedPackage.fullPath;
+  const iconsDir =
+    selectedPackage.fullPath +
+    "/node_modules/@" +
+    selectedPackage.name.split("@")[1].replace("+", "/");
   const files = await fs.readdir(iconsDir);
   const jsFiles = files.filter((f) => f.endsWith(".js"));
 
@@ -146,13 +153,15 @@ async function main() {
       .replace(/^-|-$/g, "") // remove leading/trailing hyphens
       .split("-")
       .map((word: string, index: number) =>
-        index === 0 ? word : word.charAt(0).toUpperCase() + word.slice(1)
+        index === 0 ? word : word.charAt(0).toUpperCase() + word.slice(1),
       )
       .join("");
     if (!searchName.toLowerCase().startsWith("fa")) {
       searchName =
         "fa" + searchName.charAt(0).toUpperCase() + searchName.slice(1);
     }
+
+    console.log("searchName: ", searchName);
 
     const iconFilePath = iconMap.get(searchName.toLowerCase());
     if (!iconFilePath) {
@@ -169,9 +178,8 @@ async function main() {
 
     try {
       console.log(`Resolving ${searchName}...`);
-      const { width, height, svgPathData } = await extractIconMetadata(
-        iconFilePath
-      );
+      const { width, height, svgPathData } =
+        await extractIconMetadata(iconFilePath);
 
       const displayName = searchName.replace(/^fa/, "");
 
@@ -221,7 +229,7 @@ export function Logo({ size }: LogoProps) {
 
       const outputPath = path.resolve(
         process.cwd(),
-        "../spa-src/src/components/Logo.tsx"
+        "../spa-src/src/components/Logo.tsx",
       );
       await fs.writeFile(outputPath, logoComponent.trim() + "\n", "utf-8");
 

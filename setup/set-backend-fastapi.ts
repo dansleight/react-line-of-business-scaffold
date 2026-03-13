@@ -30,12 +30,12 @@ async function main() {
       name: "namespace",
       message: "What is the name for your WebAPI project? (No spaces)",
       validate: (v) =>
-        /^[a-zA-Z][a-zA-Z0-9.]*$/.test(v) || "Valid C# namespace required",
+        /^[a-zA-Z][a-zA-Z0-9.]*$/.test(v) || "Valid namespace required",
     },
     {
       type: "input",
       name: "database",
-      message: "Default database name (empty = 'Scaffold'):",
+      message: "Default database name (empty = same as name):",
       default: "",
     },
     {
@@ -62,9 +62,7 @@ async function main() {
   const { namespace: ns, database, title, port } = answers;
   const apiPort = Number(port);
   const spaPort = apiPort - 2000;
-  const dbName = database.trim() || "Scaffold";
-  const projectGuid = generateGuid(ns + ".WebApi");
-  const solutionGuid = generateGuid(ns + ".Solution");
+  const dbName = database.trim() || ns;
   const nslower = ns.toLowerCase();
 
   console.log(`\nConfiguration:`);
@@ -94,7 +92,7 @@ async function main() {
           const to = path.resolve(PROJECT_ROOT, step.to!);
           await fs.rename(from, to);
           console.log(
-            `Renamed: ${step.target} → ${path.relative(PROJECT_ROOT, to)}`
+            `Renamed: ${step.target} → ${path.relative(PROJECT_ROOT, to)}`,
           );
           break;
         case "copy":
@@ -117,7 +115,7 @@ async function main() {
             ? new RegExp(step.match, "g")
             : new RegExp(
                 step.match.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
-                "g"
+                "g",
               );
 
           const replacement = interpolate(step.to, {
@@ -235,14 +233,14 @@ async function main() {
 
     // Run npm install
     const { execSync } = await import("child_process");
-    execSync("npm install", {
+    execSync("pnpm install", {
       cwd: spaDir,
       stdio: "inherit", // shows progress
     });
 
     console.log("\nAll dependencies installed successfully!");
     console.log("You can now run:");
-    console.log("   cd spa-src");
+    console.log("   cd ../spa-src");
     console.log("   npm run dev");
     console.log("");
     console.log("API will be at: https://localhost:" + apiPort);

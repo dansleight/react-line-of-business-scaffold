@@ -4,6 +4,7 @@
     {
       "action": "remove",
       "files": [
+        "./assets/DbScripts/SqlServer/2 - FastAPI logs.sql",
         "./spa-src/generate-python-api.js",
         "./python-src/",
         "./setup/set-backend-fastapi.ts",
@@ -24,7 +25,8 @@
     {
       "action": "replace-text",
       "target": [
-        "./assets/DbScripts/SqlServer/Init.sql",
+        "./assets/DbScripts/SqlServer/1 - Init.sql",
+        "./assets/DbScripts/SqlServer/2 - WebAPI logs.sql",
         "./src/Scaffold/appsettings.Development.json",
         "./src/ReadMe.md"
       ],
