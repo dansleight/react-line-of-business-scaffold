@@ -5,12 +5,17 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
   model_config = SettingsConfigDict(env_file=(".env.development"))
 
+  # environment: development, acceptance, scan or production
+  environment: str = "production" # default to production as it should be most restrictive
+
+  # idp variables
   tenant_id: str
   client_id: str
   api_scope: str
   id_provider: Optional[str] = None
   # jwks_url = f"{authority}/discovery/v2.0/keys"
 
+  # database connection values
   db_server: str = "127.0.0.1:1433"
   db_name: str = "Scaff_DB"
   db_username: str = "user_scaffold"
@@ -19,9 +24,7 @@ class Settings(BaseSettings):
   db_encrypt: str = "yes"
   db_trustservercertificate: str = "yes"
 
-  # db_url = f"mssql+pyodbc://{db_username}:{db_username}@{db_server}/{db_name}?driver={db_driver}&Encrypt={db_encrypt}&TrustServerCertificate={db_trustservercertificate}"
-
-  cors_origins: str
+  # determines paths that don't require authentication
   open_paths: List[str] = ["/", "/about", "/api/settings"]
 
   @property

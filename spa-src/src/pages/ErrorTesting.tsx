@@ -25,7 +25,7 @@ export function ErrorTesting() {
   const [notFound, setNotFound] = useState<boolean>(false);
   const [serverError, setServerError] = useState<any | undefined>(undefined);
   const [requestType, setRequestType] = useState<RequestType>(
-    RequestType.BadRequest
+    RequestType.BadRequest,
   );
   const [handled, setHandled] = useState<boolean>(false);
 
@@ -50,6 +50,12 @@ export function ErrorTesting() {
     } else {
       api.testGet(requestType).then((res) => setGood(res.data));
     }
+  };
+
+  const testWidgetGet = () => {
+    api.widgetGet().then((res) => {
+      console.log(res.data);
+    });
   };
 
   return (
@@ -169,6 +175,11 @@ export function ErrorTesting() {
                 </dl>
               </>
             )}
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <Button onClick={testWidgetGet}>Test Widget Get</Button>
           </Col>
         </Row>
       </Container>

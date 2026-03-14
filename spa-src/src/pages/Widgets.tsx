@@ -1,18 +1,10 @@
-import {
-  Button,
-  Card,
-  Col,
-  Container,
-  Form,
-  ProgressBar,
-  Row,
-} from "react-bootstrap";
+import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
 import { Headcrumb } from "../components/Headcrumb";
 import { useSessionContext } from "../contexts/UseContexts";
 import { useEffect, useState } from "react";
 import { WidgetObject, AddWidgetModel } from "../apiClient/data-contracts";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBan, faPlus, faSave } from "@fortawesome/free-solid-svg-icons";
+import { faSave } from "@fortawesome/free-solid-svg-icons";
 import { WaitBar } from "../components/Loader";
 
 export function Widgets() {
@@ -22,10 +14,10 @@ export function Widgets() {
 
   const updateWidgets = () => {
     setWaiting(true);
-    api.widgetGet().then((res) => {
-      setWidgets(res.data);
-      setWaiting(false);
-    });
+    api
+      .widgetGet()
+      .then((res) => setWidgets(res.data))
+      .finally(() => setWaiting(false));
   };
 
   const widgetFormSuccess = () => {

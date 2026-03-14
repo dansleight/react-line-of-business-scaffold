@@ -1,3 +1,4 @@
+name: scaffold
 services:
   fastapi-app:
     platform: linux/amd64 # Force amd64 for ODBC driver compatibility

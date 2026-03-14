@@ -75,9 +75,6 @@ DB_DRIVER = "ODBC+Driver+17+for+SQL+Server" # on windows, this should be "SQL+Se
 DB_ENCRYPT = "yes"
 DB_TRUSTSERVERCERTIFICATE = "yes"
 
-# CORS origins
-CORS_ORIGINS = "http://localhost"
-
 ```
 
 #### uvicorn command to bind port

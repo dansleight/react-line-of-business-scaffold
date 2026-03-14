@@ -1,8 +1,14 @@
+import re
+
 from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, JSONResponse
+import traceback
 from fastapi.staticfiles import StaticFiles
 from fastapi.openapi.utils import get_openapi
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.exceptions import HTTPException as FastAPIHTTPException
+from starlette.exceptions import HTTPException as StarletteHTTPException
+# from starlette.middleware.cors import CORSMiddleware
 from pathlib import Path
 import os
 import time
@@ -14,7 +20,7 @@ from contextlib import asynccontextmanager
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     #startup
-    logger.info("FastAPI application starting", extra={"version": "0.0.1"})
+    logger.info("FastAPI application starting", extra={"version": "0.0.1", "environment": settings.environment})
     yield
     #shutdown
     logger.info("FastAPI application shutting down")
@@ -31,14 +37,74 @@ app = FastAPI(
     }
 )
 
-# Add CORS middleware
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # Adjust for production
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"]
-)
+# ────────────────────────────────────────────────
+#  Global handler for ALL unhandled exceptions
+# ────────────────────────────────────────────────
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    # Log the full error (very important for debugging)
+    logger.error(
+        "Unhandled exception occurred",
+        extra={
+            "method": request.method,
+            "url": str(request.url),
+            "exception": repr(exc),
+            "traceback": traceback.format_exc(),
+        }
+    )
+
+    # Decide what to send to the client (keep it safe / no stack trace in production)
+    detail = "An internal server error occurred. Consider notifying the development team"
+
+    if settings.environment == "development":
+        detail = f"Internal error: {repr(exc)}"
+
+    response =  JSONResponse(
+        status_code=500,
+        content={
+            "status": "error",
+            "code": 500,
+            "message": detail,
+            "error_type": exc.__class__.__name__,
+        }
+    )
+
+    if settings.environment == "development":
+        origins_regex = r"^http://localhost(:[0-9]+)?$"
+        origin = request.headers.get("origin")
+        referer = request.headers.get("referer")
+        if re.match(origins_regex, origin):
+            response.headers["Access-Control-Allow-Origin"] = origin
+            response.headers["Access-Control-Allow-Credentials"] = "true"
+        elif re.match(origins_regex, referer):
+            response.headers["Access-Control-Allow-Origin"] = origin
+            response.headers["Access-Control-Allow-Credentials"] = "true"
+    
+    return response
+
+@app.exception_handler(StarletteHTTPException)
+@app.exception_handler(FastAPIHTTPException)
+async def http_exception_handler(request: Request, exc: StarletteHTTPException):
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={
+            "status": "error",
+            "code": exc.status_code,
+            "message": exc.detail,
+        },
+        headers=exc.headers if exc.headers else None,
+    )
+
+if (settings.environment == "development"):
+    origins_regex = r"^http://localhost(:[0-9]+)?$"
+    # Add CORS middleware
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origin_regex=origins_regex,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"]
+    )
 
 # Mount static files
 app.mount("/static", StaticFiles(directory="client_app"), name="static")

@@ -33,7 +33,7 @@ export function SessionProvider({
   const [showApiError, setShowApiError] = useState<boolean>(false);
   const [apiErrorMessage, setApiErrorMessage] = useState<string>("");
   const [apiErrorDetails, setApiErrorDetails] = useState<string | undefined>(
-    undefined
+    undefined,
   );
   const [showErrorDetails, setShowErrorDetails] = useState<boolean>(false);
   const [severeError, setSevereError] = useState<boolean>(false);
@@ -47,7 +47,7 @@ export function SessionProvider({
   };
 
   const handleApiError = (error: any) => {
-    console.error(error);
+    console.error("handleApiError error:", error);
     if (error.status && typeof error.status == "number") {
       // going to assume that we have an HttpResponse
       if (error.status == 400) {
@@ -58,7 +58,7 @@ export function SessionProvider({
         else setApiErrorMessage("Server returned BadRequest");
       } else if (error.status == 404) {
         setApiErrorMessage(
-          "Server returned status code 404: Not Found. The record request does not exist."
+          "Server returned status code 404: Not Found. The record request does not exist.",
         );
       } else if (error.status == 500) {
         setSevereError(true);
@@ -69,12 +69,12 @@ export function SessionProvider({
             setApiErrorDetails(error.error.StackTraceString);
         } else {
           setApiErrorMessage(
-            "Server reported a status code 500: Internal Server Error."
+            "Server reported a status code 500: Internal Server Error.",
           );
         }
       } else {
         setApiErrorMessage(
-          `Server returned a status code ${error.status}: ${error.statusText}`
+          `Server returned a status code ${error.status}: ${error.statusText}`,
         );
       }
     } else {
@@ -124,7 +124,7 @@ export function SessionProvider({
           };
         },
         unhandledErrorHandler: handleApiError,
-      })
+      }),
     );
   }, []);
 

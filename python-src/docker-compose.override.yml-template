@@ -18,7 +18,7 @@ services:
       - DB_ENCRYPT=yes
       - DB_TRUSTSERVERCERTIFICATE=yes
       # CORS Settings
-      - CORS_ORIGINS=http://localhost
+      - CORS_ORIGIN=http://localhost
     volumes:
       - ./.vscode_devcontainer:/code/.vscode # Separate .vscode folder for inside the container
     command: >
