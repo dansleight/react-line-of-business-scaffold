@@ -64,6 +64,7 @@ async function main() {
 
   console.log(`\nConfiguration:`);
   console.log(`   Namespace   : ${ns}`);
+  console.log(`    -lower     : ${nslower}`);
   console.log(`   Database    : ${dbName}`);
   console.log(`   Title       : ${title}`);
   console.log(`   API Port    : ${apiPort}`);

@@ -64,9 +64,9 @@
     },
     {
       "action": "replace-text",
-      "target": [" ./src/docker-compose.yml"],
+      "target": ["./src/docker-compose.yml"],
       "match": "scaffold",
-      "to": "{nslower}",
+      "to": "${nslower}zzz",
       "comment": "change the image and container names to match the namespace"
     },
     {
@@ -95,7 +95,7 @@
       "action": "replace-text",
       "target": "./spa-src/package.json",
       "match": "line-of-business",
-      "to": "${nslower}",
+      "to": "${nslower}zzz",
       "comment": "Replace 'line-of-business' witn namespace in package.json"
     },
     {
