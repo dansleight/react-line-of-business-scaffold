@@ -64,6 +64,13 @@
     },
     {
       "action": "replace-text",
+      "target": [" ./src/docker-compose.yml"],
+      "match": "scaffold",
+      "to": "{nslower}",
+      "comment": "change the image and container names to match the namespace"
+    },
+    {
+      "action": "replace-text",
       "target": [
         "./src/.vscode/tasks.json",
         "./src/.vscode/settings.json",

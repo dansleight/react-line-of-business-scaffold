@@ -4,7 +4,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: Scaffold_FastAPI
+    image: scaffold/fastapi-scaffold:dev
+    container_name: scaffold_fastapi
     environment:
       - PYTHONUNBUFFERED=1
       - PYTHONPATH=/app

@@ -1,4 +1,11 @@
-FROM python:3.13-slim
+# If you want to use the standard python slim image:
+# FROM python:3.13-slim
+
+# To use the hardened image with sfw
+# FROM dhi.io/python:3.13-sfw-dev
+
+# To use the hardened image without sfw
+FROM dhi.io/python:3.13-debian13-dev
 
 # Set working directory
 WORKDIR /code
@@ -11,6 +18,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     gnupg2 \
     apt-transport-https \
+    gzip \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -40,6 +48,9 @@ RUN curl -k https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > 
     ACCEPT_EULA=Y apt-get install -y msodbcsql17 unixodbc unixodbc-dev && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
+
+# Rebuild ld.so cache explicitly (required for VS Code Server check-requirements.sh)
+RUN ldconfig || true
 
 # Copy requirements file
 COPY requirements.txt .
