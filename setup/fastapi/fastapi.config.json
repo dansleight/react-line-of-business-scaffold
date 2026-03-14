@@ -64,9 +64,13 @@
     },
     {
       "action": "replace-text",
-      "target": ["./src/docker-compose.yml"],
+      "target": [
+        "./src/docker-compose.yml",
+        "./src/docker-compose.override.yml",
+        "./src/docker-compose.override.yml-template"
+      ],
       "match": "scaffold",
-      "to": "${nslower}zzz",
+      "to": "${nslower}",
       "comment": "change the image and container names to match the namespace"
     },
     {
