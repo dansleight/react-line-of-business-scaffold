@@ -7,13 +7,8 @@
         "./assets/DbScripts/SqlServer/2 - WebAPI logs.sql",
         "./spa-src/generate-api.js",
         "./src/",
-        "./setup/webapi/nothing.txt"
+        "./setup/webapi/"
       ]
-    },
-    {
-      "action": "copy",
-      "from": "./setup/fastapi/env.development",
-      "to": "./src/.env.development"
     },
     {
       "action": "rename",
@@ -39,7 +34,6 @@
         "./assets/DbScripts/SqlServer/2 - FastAPI logs.sql",
         "./src/docker-compose.override.yml",
         "./src/docker-compose.override.yml-template",
-        "./src/.env.development",
         "./src/ReadMe.md"
       ],
       "match": "Scaff_DB",
@@ -86,11 +80,7 @@
     },
     {
       "action": "replace-text",
-      "target": [
-        "./src/.env.development",
-        "./src/app/config.py",
-        "./src/ReadMe.md"
-      ],
+      "target": ["./src/app/config.py", "./src/ReadMe.md"],
       "match": "Scaff_DB",
       "to": "${dbName}",
       "comment": "Replace 'Scaffold' with namespace in multiple files"

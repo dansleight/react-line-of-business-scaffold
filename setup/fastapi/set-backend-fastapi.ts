@@ -241,8 +241,8 @@ async function main() {
     console.log("   cd ../spa-src");
     console.log("   npm run dev");
     console.log("");
-    console.log("API will be at: https://localhost:" + apiPort);
-    console.log("SPA will be at:  http://localhost:" + spaPort);
+    console.log("  FastAPI port is set to " + apiPort);
+    console.log("React SPA port is set to " + spaPort);
   } catch (err) {
     console.error("\nFailed to install dependencies. Run manually:");
     console.error("   cd spa-src && npm install");

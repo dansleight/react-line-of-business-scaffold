@@ -14,8 +14,7 @@ router = APIRouter(prefix="/api/settings", tags=["Settings"])
 )
 async def get_GlobalSettings():
     return { 
-        "ApplicationMode": "Development", 
-        "ConnectionString": settings.db_url,
+        "ApplicationMode": settings.environment, 
         "MsalSettings" : {
             "ClientId": settings.client_id,
             "Authority": settings.authority,
