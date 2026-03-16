@@ -53,6 +53,7 @@
       "target": [
         "./spa-src/.env",
         "./spa-src/src/appConfig.ts",
+        "./src/.vscode_devcontainer/Port-n.txt",
         "./src/.vscode/launch.json",
         "./src/docker-compose.yml",
         "./src/docker-compose.override.yml",
