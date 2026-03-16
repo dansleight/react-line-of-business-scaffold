@@ -5,11 +5,13 @@
     "set-logo": "pnpm dlx tsx ./utils/set-logo.ts"
   },
   "devDependencies": {
+    "@clack/prompts": "^1.1.0",
     "@types/inquirer": "^9.0.9",
     "@types/node": "^25.5.0",
     "dotenv": "^17.3.1",
     "glob": "^13.0.6",
     "inquirer": "^12.11.1",
+    "inquirer-fuzzy-path": "^2.3.0",
     "tsx": "^4.21.0"
   },
   "devEngines": {

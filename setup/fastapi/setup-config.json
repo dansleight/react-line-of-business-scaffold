@@ -1,0 +1,123 @@
+{
+  "name": "FastAPI (Python)",
+  "steps": [
+    {
+      "action": "remove",
+      "files": [
+        "./assets/DbScripts/SqlServer/2 - WebAPI logs.sql",
+        "./spa-src/generate-api.js",
+        "./setup/webapi/"
+      ]
+    },
+    {
+      "action": "copy",
+      "from": "./src/docker-compose.override.yml-template",
+      "to": "./src/docker-compose.override.yml"
+    },
+    {
+      "action": "replace-text",
+      "target": "./spa-src/src/appConfig.ts",
+      "match": "User.ReadWrite",
+      "to": "User.Read",
+      "comment": "Downgrade MS Graph permission"
+    },
+    {
+      "action": "replace-text",
+      "target": [
+        "./assets/DbScripts/SqlServer/1 - Init.sql",
+        "./assets/DbScripts/SqlServer/2 - FastAPI logs.sql",
+        "./assets/DbScripts/SqlServer/3 - DB User.sql",
+        "./src/docker-compose.override.yml",
+        "./src/docker-compose.override.yml-template",
+        "./src/ReadMe.md",
+        "./src/app/config.py",
+        "./src/ReadMe.md"
+      ],
+      "match": "Scaff_DB",
+      "to": "${dbName}",
+      "comment": "Replace 'Scaff_DB' with dbName in multiple files"
+    },
+    {
+      "action": "replace-text",
+      "target": [
+        "./src/docker-compose.override.yml",
+        "./src/docker-compose.override.yml-template",
+        "./src/.devcontainer/devcontainer.json"
+      ],
+      "match": "Scaffold_FastAPI",
+      "to": "${ns}_fastapi",
+      "comment": "Replace 'Scaffold_FastAPI' with namespace in override files"
+    },
+    {
+      "action": "replace-text",
+      "target": [
+        "./spa-src/.env",
+        "./spa-src/src/appConfig.ts",
+        "./src/.vscode/launch.json",
+        "./src/docker-compose.yml",
+        "./src/docker-compose.override.yml",
+        "./src/docker-compose.override.yml-template",
+        "./src/Dockerfile",
+        "./src/ReadMe.md"
+      ],
+      "match": "5011",
+      "to": "${apiPort}",
+      "comment": "Set dynamic API port"
+    },
+    {
+      "action": "replace-text",
+      "target": [
+        "./src/docker-compose.yml",
+        "./src/docker-compose.override.yml",
+        "./src/docker-compose.override.yml-template"
+      ],
+      "match": "scaffold",
+      "to": "${nslower}",
+      "comment": "change the image and container names to match the namespace"
+    },
+    {
+      "action": "replace-text",
+      "target": [
+        "./src/.vscode/settings.json",
+        "./spa-src/.vscode/settings.json"
+      ],
+      "match": "Scaffold",
+      "to": "${ns}",
+      "comment": "Replace 'Scaffold' with namespace in multiple files"
+    },
+    {
+      "action": "replace-text",
+      "target": "./spa-src/package.json",
+      "match": "line-of-business",
+      "to": "${nslower}",
+      "comment": "Replace 'line-of-business' with namespace in package.json"
+    },
+    {
+      "action": "replace-text",
+      "target": "./spa-src/vite.config.ts",
+      "match": "3011",
+      "to": "${spaPort}",
+      "comment": "Replace 'line-of-business' witn namespace in package.json"
+    },
+    {
+      "action": "replace-text",
+      "target": "./spa-src/package.json",
+      "match": "/python-src/",
+      "to": "/src/",
+      "comment": "Replace python-src with src in package.json"
+    },
+    {
+      "action": "replace-text",
+      "target": "./spa-src/src/layout/sidebar/index.tsx",
+      "match": "Scaff <sup>00</sup>",
+      "to": "${title}",
+      "comment": "Title on Sidebar"
+    },
+    {
+      "action": "remove-scripts",
+      "target": "./spa-src/package.json",
+      "scripts": ["pythonbuild", "update-python-api"],
+      "comment": "Safely remove Python-related npm scripts"
+    }
+  ]
+}

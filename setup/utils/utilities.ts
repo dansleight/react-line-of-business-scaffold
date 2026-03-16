@@ -9,24 +9,24 @@ export function generateGuid(seed: string): string {
   const hash = createHash("md5").update(seed).digest("hex");
   return `${hash.substr(0, 8)}-${hash.substr(8, 4)}-${hash.substr(
     12,
-    4
+    4,
   )}-${hash.substr(16, 4)}-${hash.substr(20, 12)}`.toUpperCase();
 }
 
 export async function safeRename(
   oldPath: string,
   newPath: string,
-  description: string
+  description: string,
 ) {
   for (let i = 1; i <= 5; i++) {
     try {
       await fs.rename(oldPath, newPath);
-      console.log(`${description} renamed successfully`);
+      // console.log(`${description} renamed successfully`);
       return;
     } catch (err: any) {
       if ((err.code === "EPERM" || err.code === "EBUSY") && i < 5) {
         console.log(
-          `   Retrying ${description} (${i}/5)... (Windows file lock)`
+          `   Retrying ${description} (${i}/5)... (Windows file lock)`,
         );
         await new Promise((r) => setTimeout(r, 1200));
         continue;
@@ -44,7 +44,7 @@ export async function safeRename(
 export async function recursiveRenameContaining(
   baseDir: string,
   oldName: string,
-  newName: string
+  newName: string,
 ) {
   const items = await fs.readdir(baseDir, { withFileTypes: true });
 
@@ -58,7 +58,7 @@ export async function recursiveRenameContaining(
         await safeRename(
           oldPath,
           newPath,
-          `File: ${item.name} → ${newFileName}`
+          `File: ${item.name} → ${newFileName}`,
         );
       }
     }
@@ -80,7 +80,7 @@ export async function recursiveRenameContaining(
       await safeRename(
         baseDir,
         newDirPath,
-        `Folder: ${path.basename(baseDir)} → ${newDirName}`
+        `Folder: ${path.basename(baseDir)} → ${newDirName}`,
       );
     }
   }
@@ -96,14 +96,14 @@ export async function replaceInFile(
   projectRoot: string,
   filePath: string,
   search: string | RegExp,
-  replacement: string
+  replacement: string,
 ) {
   try {
     const content = await fs.readFile(filePath, "utf-8");
     const updated = content.replace(search, replacement);
     if (updated !== content) {
       await fs.writeFile(filePath, updated);
-      console.log(`Updated: ${path.relative(projectRoot, filePath)}`);
+      // console.log(`Updated: ${path.relative(projectRoot, filePath)}`);
       return true;
     }
   } catch {
@@ -116,7 +116,7 @@ export async function replaceInFile(
 export async function removeFromFile(
   projectRoot: string,
   filePath: string,
-  pattern: RegExp
+  pattern: RegExp,
 ) {
   try {
     const content = await fs.readFile(filePath, "utf-8");
@@ -133,7 +133,7 @@ export async function removeFromFile(
 
     if (cleaned !== content) {
       await fs.writeFile(filePath, cleaned);
-      console.log(`Cleaned lines: ${path.relative(projectRoot, filePath)}`);
+      // console.log(`Cleaned lines: ${path.relative(projectRoot, filePath)}`);
     }
   } catch {
     // ignore missing files
@@ -142,7 +142,7 @@ export async function removeFromFile(
 
 export async function removePackageScripts(
   filePath: string,
-  scriptsToRemove: string[]
+  scriptsToRemove: string[],
 ) {
   let changed = false;
   try {
@@ -153,7 +153,7 @@ export async function removePackageScripts(
       for (const script of scriptsToRemove) {
         if (script in pkg.scripts) {
           delete pkg.scripts[script];
-          console.log(`Removed script: "${script}"`);
+          // console.log(`Removed script: "${script}"`);
           changed = true;
         }
       }
@@ -161,13 +161,21 @@ export async function removePackageScripts(
       if (changed) {
         // Preserve formatting: 2-space indent, trailing newline
         await fs.writeFile(filePath, JSON.stringify(pkg, null, 2) + "\n");
-        console.log(`Updated package.json scripts`);
+        // console.log(`Updated package.json scripts`);
       }
     }
   } catch (err) {
     console.warn(
       `Could not update ${filePath}:`,
-      err instanceof Error ? err.message : err
+      err instanceof Error ? err.message : err,
     );
   }
+}
+
+export function splitByCase(input: string): string {
+  return input
+    .replace(/([a-z])([A-Z])/g, "$1 $2")
+    .replace(/([A-Z])([A-Z][a-z])/g, "$1 $2")
+    .replace(/\s+/g, " ")
+    .trim();
 }

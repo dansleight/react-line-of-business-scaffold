@@ -18,7 +18,7 @@ class Settings(BaseSettings):
   # database connection values
   db_server: str = "127.0.0.1:1433"
   db_name: str = "Scaff_DB"
-  db_username: str = "user_scaffold"
+  db_username: str = "user_Scaff_DB"
   db_password: str = ""
   db_driver: str = "ODBC+Driver+17+for+SQL+Server"
   db_encrypt: str = "yes"
