@@ -3,30 +3,14 @@
   "steps": [
     {
       "action": "remove",
-      "files": [
-        "./assets/DbScripts/SqlServer/2 - FastAPI logs.sql",
-        "./spa-src/generate-python-api.js",
-        "./python-src/",
-        "./setup/set-backend-fastapi.ts",
-        "./setup/fastapi.config.json",
-        "./src/.vs/"
-      ]
-    },
-    {
-      "action": "rename",
-      "target": "./spa-src/scripts/generate-webapi-api.js",
-      "to": "./spa-src/scripts/generate-api.js"
-    },
-    {
-      "action": "replace",
-      "target": "./spa-src/README.md",
-      "with": "./setup/webapi/ReadMe.md"
+      "files": ["./assets/DbScripts/SqlServer/2 - FastAPI logs.sql"]
     },
     {
       "action": "replace-text",
       "target": [
         "./assets/DbScripts/SqlServer/1 - Init.sql",
         "./assets/DbScripts/SqlServer/2 - WebAPI logs.sql",
+        "./assets/DbScripts/SqlServer/3 - DB User.sql",
         "./src/Scaffold/appsettings.Development.json",
         "./src/ReadMe.md"
       ],
@@ -76,7 +60,7 @@
       "target": "./spa-src/vite.config.ts",
       "match": "3011",
       "to": "${spaPort}",
-      "comment": "Replace 'line-of-business' witn namespace in package.json"
+      "comment": "Replace port in vite.config.ts"
     },
     {
       "action": "replace-text",
@@ -88,8 +72,15 @@
     {
       "action": "remove-scripts",
       "target": "./spa-src/package.json",
-      "scripts": ["fastapibuild"],
+      "scripts": ["build:fastapi"],
       "comment": "Safely remove Python-related npm scripts"
+    },
+    {
+      "action": "replace-text",
+      "target": "./spa-src/package.json",
+      "match": "build:webapi",
+      "to": "build:release",
+      "comment": "renaming the build script"
     }
   ]
 }

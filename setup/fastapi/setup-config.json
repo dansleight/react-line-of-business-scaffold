@@ -3,11 +3,7 @@
   "steps": [
     {
       "action": "remove",
-      "files": [
-        "./assets/DbScripts/SqlServer/2 - WebAPI logs.sql",
-        "./spa-src/generate-api.js",
-        "./setup/webapi/"
-      ]
+      "files": ["./assets/DbScripts/SqlServer/2 - WebAPI logs.sql"]
     },
     {
       "action": "copy",
@@ -115,10 +111,24 @@
       "comment": "Title on Sidebar"
     },
     {
+      "action": "replace-text",
+      "target": ["./src/app/main.py", "./src/ReadMe.md"],
+      "match": "FastAPI Prototype",
+      "to": "${title}",
+      "comment": "setting titles in the app"
+    },
+    {
       "action": "remove-scripts",
       "target": "./spa-src/package.json",
-      "scripts": ["pythonbuild", "update-python-api"],
-      "comment": "Safely remove Python-related npm scripts"
+      "scripts": ["build:webapi"],
+      "comment": "Safely remove dotnet related npm scripts"
+    },
+    {
+      "action": "replace-text",
+      "target": "./spa-src/package.json",
+      "match": "build:fastapi",
+      "to": "build:release",
+      "comment": "renaming the build script"
     }
   ]
 }

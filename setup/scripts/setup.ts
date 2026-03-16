@@ -11,6 +11,9 @@ import {
   removeFromFile,
   removePackageScripts,
   splitByCase,
+  generateGuid,
+  safeRename,
+  recursiveRenameContaining,
 } from "../utils/utilities";
 import { validateDirectory } from "../utils/validateDirectory";
 
@@ -100,13 +103,16 @@ async function main() {
     force: true,
   };
 
-  console.info("Copying files...");
+  const be: "python" | "dotnet" = backend.toLowerCase().startsWith("python")
+    ? "python"
+    : "dotnet";
+  const isPython: boolean = be == "python";
+  const isDotnet: boolean = be == "dotnet";
+
+  // console.info("Copying files...");
 
   // src
-  let src_from = path.resolve(PROJECT_ROOT, "src");
-  if (backend == "Python FastAPI") {
-    src_from = path.resolve(PROJECT_ROOT, "python-src");
-  }
+  const src_from = path.resolve(PROJECT_ROOT, isDotnet ? "src" : "python-src");
   const src_to = path.resolve(rootPath, "src");
   await fs.cp(src_from, src_to, cpargs);
 
@@ -128,12 +134,52 @@ async function main() {
     cpargs,
   );
 
+  if (isDotnet) {
+    // clean up files
+    for (const dir of glob
+      .sync("**/bin", { cwd: rootPath })
+      .concat(glob.sync("**/obj", { cwd: rootPath }))
+      .concat(glob.sync("**/.vs", { cwd: rootPath }))) {
+      const full = path.resolve(rootPath, dir);
+      await fs.rm(full, { recursive: true, force: true });
+    }
+
+    // Remove UserSecretsId from all .csproj files (clean template)
+    const csprojFiles = glob.sync("**/*.csproj", {
+      cwd: rootPath,
+      absolute: true,
+    });
+
+    for (const file of csprojFiles) {
+      try {
+        const content = await fs.readFile(file, "utf-8");
+        const cleaned = content
+          .replace(/<UserSecretsId>.*?<\/UserSecretsId>\s*/gis, "")
+          .replace(
+            // Also remove empty <PropertyGroup> if that's all it contained
+            /<PropertyGroup>\s*<\/PropertyGroup>/gis,
+            "",
+          );
+
+        if (cleaned !== content) {
+          await fs.writeFile(file, cleaned);
+          // console.log(
+          //   `Cleaned UserSecretsId: ${path.relative(PROJECT_ROOT, file)}`,
+          // );
+        }
+      } catch (err) {
+        // ignore if file not readable
+      }
+    }
+  }
+
   // Load config
+  const configFile = isDotnet
+    ? "setup/webapi/setup-config.json"
+    : "setup/fastapi/setup-config.json";
+  ``;
   const config = JSON.parse(
-    await fs.readFile(
-      path.resolve(PROJECT_ROOT, "setup/fastapi/setup-config.json"),
-      "utf-8",
-    ),
+    await fs.readFile(path.resolve(PROJECT_ROOT, configFile), "utf-8"),
   );
 
   // Run file operations from config (safe: only explicit paths)
@@ -233,6 +279,28 @@ async function main() {
     }
   }
 
+  if (isDotnet) {
+    // === RECURSIVE RENAME: Scaffold → Namespace (folders + files) ===
+    const srcDir = path.join(rootPath, "src");
+
+    if (await fs.stat(srcDir).catch(() => false)) {
+      // console.log(
+      //   `\nRecursively renaming all 'Scaffold' → '${ns}' in src/ ...`,
+      // );
+      await recursiveRenameContaining(srcDir, "Scaffold", ns.split(".").pop()!);
+    }
+
+    // Rename solution file (outside src/)
+    const oldSln = path.join(rootPath, "Scaffold.sln");
+    const newSlnName = `${ns.split(".").pop()}.sln`;
+    const newSln = path.join(rootPath, newSlnName);
+
+    if (await fs.stat(oldSln).catch(() => false)) {
+      await safeRename(oldSln, newSln, "Solution file");
+      // console.log(`Solution renamed: Scaffold.sln → ${newSlnName}`);
+    }
+  }
+
   // CRITICAL: Title first — prevents "Scaffold" in title from being overwritten
   const titleFiles = [
     "spa-src/src/layout/Layout.tsx",
@@ -249,11 +317,14 @@ async function main() {
   }
 
   // Now do namespace & DB replacements
-  const filesToProcess = glob.sync("**/*.{py,json,ts,tsx,js,jsx,sql}", {
-    cwd: rootPath,
-    absolute: true,
-    ignore: ["**/node_modules/**", "**/bin/**", "**/obj/**", "**/.git/**"],
-  });
+  const filesToProcess = glob.sync(
+    "**/*.{py,cs,csproj,sln,json,ts,tsx,js,jsx,sql}",
+    {
+      cwd: rootPath,
+      absolute: true,
+      ignore: ["**/node_modules/**", "**/bin/**", "**/obj/**", "**/.git/**"],
+    },
+  );
 
   for (const file of filesToProcess) {
     try {
@@ -262,11 +333,39 @@ async function main() {
         .replace(/Scaffold/g, ns) // namespace
         .replace(/\{Database\}/g, dbName); // DB name
 
+      if (isDotnet) {
+        const solutionGuid = generateGuid(ns + ".Solution");
+        const projectGuid = generateGuid(ns + ".WebApi");
+        // Replace old placeholder GUIDs
+        updated = updated.replace(
+          /[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}/gi,
+          (match) => {
+            const lower = match.toLowerCase();
+            if (
+              lower.includes("0000") ||
+              lower.includes("1111") ||
+              content.includes("Scaffold")
+            ) {
+              return file.endsWith(".sln") ? solutionGuid : projectGuid;
+            }
+            return match;
+          },
+        );
+      }
+
       if (updated !== content) {
         await fs.writeFile(file, updated);
         // console.log(`Updated: ${path.relative(rootPath, file)}`);
       }
     } catch {}
+
+    await fs.rm(path.join(rootPath, "spa-src/package-lock.json"), {
+      force: true,
+    });
+    await fs.rm(path.join(rootPath, "spa-src/pnpm-lock.yaml"), {
+      force: true,
+    });
+    await fs.rm(path.join(rootPath, "spa-src/yarn.lock"), { force: true });
   }
 
   console.log("Setup succeeded:");
