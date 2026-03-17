@@ -43,7 +43,7 @@ function App() {
   async function fetchOpenIdConfig(authority: string): Promise<string> {
     try {
       const response = await fetch(
-        `${authority}/.well-known/openid-configuration`
+        `${authority}/.well-known/openid-configuration`,
       );
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -58,7 +58,7 @@ function App() {
   }
 
   const configureMsalInstance = (config: Configuration) => {
-    console.log("configureMsalInstance: ", config);
+    // console.log("configureMsalInstance: ", config);
     const instance = new PublicClientApplication(config);
 
     instance.addEventCallback((event: EventMessage) => {
@@ -96,7 +96,7 @@ function App() {
               msalConfigFull.auth.authority,
             ];
             configureMsalInstance(msalConfigFull);
-          }
+          },
         );
       } else configureMsalInstance(msalConfigFull);
     }

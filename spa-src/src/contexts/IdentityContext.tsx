@@ -20,18 +20,18 @@ export const IdentityProvider = ({
   const { accounts, instance } = msal;
   const [waiting, setWaiting] = useState<boolean>(true);
   const [redirecting, setRedirecting] = useState<boolean | undefined>(
-    undefined
+    undefined,
   );
   const [name, setName] = useState<string>("unknown");
   const [username, setUsername] = useState<string>("unknown");
   const effectCalled = useRef<boolean>(false);
 
-  if (
-    instance.getActiveAccount() === null &&
-    instance.getAllAccounts().length > 0
-  ) {
-    instance.setActiveAccount(instance.getAllAccounts()[0]);
-  }
+  // if (
+  //   instance.getActiveAccount() === null &&
+  //   instance.getAllAccounts().length > 0
+  // ) {
+  //   instance.setActiveAccount(instance.getAllAccounts()[0]);
+  // }
 
   const handleLogin = () => {
     const scopes: string[] = [];
@@ -72,6 +72,16 @@ export const IdentityProvider = ({
       setUsername(accounts[0].username);
     }
   }, [accounts]);
+
+  useEffect(() => {
+    const activeAccount = instance.getActiveAccount();
+    if (!activeAccount) {
+      const accounts = instance.getAllAccounts();
+      if (accounts.length > 0) {
+        instance.setActiveAccount(accounts[0]);
+      }
+    }
+  }, [instance]);
 
   // so, here, we are going to automatically log the user in, remove this entire section to handle login via the handleLogin call
   useEffect(() => {
