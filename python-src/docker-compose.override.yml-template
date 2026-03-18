@@ -10,6 +10,7 @@ services:
       - TENANT_ID=
       - CLIENT_ID=
       - API_SCOPE=
+      - CLIENT_SECRET= # Optional, only necessary for downstream calls
       # Database Settings
       - DB_SERVER=host.docker.internal:1433
       - DB_NAME=Scaff_DB

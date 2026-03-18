@@ -1,6 +1,6 @@
 import re
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import HTMLResponse, JSONResponse
 import traceback
 from fastapi.staticfiles import StaticFiles
@@ -16,6 +16,8 @@ from app.routes import global_settings, auth, widget, test
 from app.logging.config import logger, shutdown_logging
 from app.config import settings
 from contextlib import asynccontextmanager
+
+from app.utils.cors_helper import add_dev_cors_headers
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -55,8 +57,7 @@ async def global_exception_handler(request: Request, exc: Exception):
 
     # Decide what to send to the client (keep it safe / no stack trace in production)
     detail = "An internal server error occurred. Consider notifying the development team"
-
-    if settings.environment == "development":
+    if settings.environment.lower == "development":
         detail = f"Internal error: {repr(exc)}"
 
     response =  JSONResponse(
@@ -68,19 +69,7 @@ async def global_exception_handler(request: Request, exc: Exception):
             "error_type": exc.__class__.__name__,
         }
     )
-
-    if settings.environment == "development":
-        origins_regex = r"^http://localhost(:[0-9]+)?$"
-        origin = request.headers.get("origin")
-        referer = request.headers.get("referer")
-        if re.match(origins_regex, origin):
-            response.headers["Access-Control-Allow-Origin"] = origin
-            response.headers["Access-Control-Allow-Credentials"] = "true"
-        elif re.match(origins_regex, referer):
-            response.headers["Access-Control-Allow-Origin"] = origin
-            response.headers["Access-Control-Allow-Credentials"] = "true"
-    
-    return response
+    return add_dev_cors_headers(request, response)
 
 @app.exception_handler(StarletteHTTPException)
 @app.exception_handler(FastAPIHTTPException)
@@ -119,20 +108,32 @@ app.include_router(test.router)
 @app.middleware("http")
 async def log_requests(request: Request, call_next):
     start_time = time.time()
+    client = request.client.host if request.client else "unknown"
+
     logger.debug("Incoming request", extra={
         "method": request.method,
         "path": request.url.path,
-        "client": request.client.host if request.client else "unknown"
+        "client": client
     })
-    response = await call_next(request)
-    duration = time.time() - start_time
-    logger.info("Request completed", extra={
-        "method": request.method,
-        "path": request.url.path,
-        "client": request.client.host if request.client else "unknown",
-        "duration_ms": duration * 1000
-    })
-    return response
+
+    try:
+        response = await call_next(request)
+        return response
+    except Exception:
+        logger.exception("Request failed", extra={
+            "method": request.method,
+            "path": request.url.path,
+            "client": client
+        })
+        raise
+    finally:
+        duration = time.time() - start_time
+        logger.info("Request completed", extra={
+            "method": request.method,
+            "path": request.url.path,
+            "client": request.client.host if request.client else "unknown",
+            "duration_ms": duration * 1000
+        })
 
 # Serve SPA for non-API, non-WebSocket, non-special routes
 @app.get("/{path:path}")
@@ -140,12 +141,12 @@ async def serve_spa(path: str):
     # Skip API, WebSocket, and special routes
     protected_paths = ("/api", "/ws", "/swagger", "/redoc", "/openapi.json", "/static")
     if path.startswith(protected_paths):
-        return {"error": "Not found"}, 404
+        raise HTTPException(status_code=404, detail="Not found")
 
     # Serve SPA's index.html
     spa_index_path = Path("client_app/index.html")
     if not spa_index_path.exists():
-        return {"error": "SPA index.html not found"}, 404
+        raise HTTPException(status_code=404, detail="SPA index.html not found")
 
     with open(spa_index_path, "r") as file:
         content = file.read()

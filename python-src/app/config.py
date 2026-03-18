@@ -12,6 +12,7 @@ class Settings(BaseSettings):
   tenant_id: str
   client_id: str
   api_scope: str
+  client_secret: Optional[str] = None
   id_provider: Optional[str] = None
   # jwks_url = f"{authority}/discovery/v2.0/keys"
 

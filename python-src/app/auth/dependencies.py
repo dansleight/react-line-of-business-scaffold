@@ -2,8 +2,10 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from jose import jwt, JWTError
 import httpx
-from typing import Dict
+from typing import Dict, Sequence
 import time
+
+import msal
 from app.logging.config import logger
 from app.config import settings
 
@@ -63,3 +65,28 @@ async def validate_token(credentials: HTTPAuthorizationCredentials = Depends(sec
             detail=f"Invalid token: {str(e)}",
             headers={"WWW-Authenticate": "Bearer"},
         )
+    
+def _get_downstream_token(user_token: str, scopes: Sequence[str]) -> str:
+    if (not settings.client_secret):
+        raise Exception("Cannot acquire downstream token from Entra ID without a client_secret.");
+    try:
+        app = msal.ConfidentialClientApplication(
+            client_id=settings.client_id,
+            client_credential=settings.client_secret,
+            authority=f"https://login.microsoftonline.com/{settings.tenant_id}",
+        )
+
+        result = app.acquire_token_on_behalf_of(user_assertion=user_token, scopes=list(scopes))
+
+        if "access_token" in result:
+            logger.info("Acquired downstream token from Entra ID")
+            return result["access_token"]
+        else:
+            error_description = result.get("error_description", "Unknown error")
+            error_code = result.get("error", "unknown_error")
+            logger.error(f"Downstream token acquisition failed: {error_code} - {error_description}")
+            raise Exception(f"Downstream token acquisition failed: {error_description}")
+        
+    except Exception as e:
+        logger.error(f"Error during downstream token acquisition: {str(e)}")
+        raise Exception(f"Error during downstream token acquisition: {str(e)}")
