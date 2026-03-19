@@ -11,7 +11,8 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "update": "npm-check-updates --target minor -u && pnpm i && pnpm update",
-    "generate-api": "node generate-api.js"
+    "generate-api": "node generate-api.js",
+    "set-logo": "pnpm dlx tsx set-logo.ts"
   },
   "dependencies": {
     "@azure/msal-browser": "^5.4.0",
@@ -49,10 +50,12 @@
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.4.0",
+    "inquirer": "^12.11.1",
     "npm-check-updates": "^19.6.3",
     "openapi-types": "^12.1.3",
     "rimraf": "^6.1.3",
     "sass": "^1.97.3",
+    "sharp": "^0.34.5",
     "swagger-typescript-api": "13.3.0",
     "ts-node": "^10.9.2",
     "typescript": "~5.9.3",
