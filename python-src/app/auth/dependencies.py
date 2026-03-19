@@ -56,6 +56,7 @@ async def validate_token(credentials: HTTPAuthorizationCredentials = Depends(sec
             audience=settings.api_audience,
             issuer=issuer,
         )
+        payload["token"] = token
         logger.info("Token validated", extra={"user_id": payload.get("sub")})
         return payload
     except JWTError as e:
@@ -66,7 +67,7 @@ async def validate_token(credentials: HTTPAuthorizationCredentials = Depends(sec
             headers={"WWW-Authenticate": "Bearer"},
         )
     
-def _get_downstream_token(user_token: str, scopes: Sequence[str]) -> str:
+def get_downstream_token(user_token: str, scopes: Sequence[str]) -> str:
     if (not settings.client_secret):
         raise Exception("Cannot acquire downstream token from Entra ID without a client_secret.");
     try:

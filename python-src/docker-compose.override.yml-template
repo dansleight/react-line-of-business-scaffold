@@ -5,7 +5,7 @@ services:
         LOCAL_BUILD: "true" # Set to "false" for production builds
     container_name: Scaffold_FastAPI_dev
     environment:
-      - ENVIRONMENT=development
+      - ENVIRONMENT=Development
       # IdP Settings
       - TENANT_ID=
       - CLIENT_ID=

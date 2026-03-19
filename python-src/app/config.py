@@ -5,8 +5,8 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
   model_config = SettingsConfigDict(env_file=(".env.development"))
 
-  # environment: development, acceptance, scan or production
-  environment: str = "production" # default to production as it should be most restrictive
+  # environment: Development, Acceptance, Scan or Production
+  environment: str = "Production" # default to Production as it should be most restrictive
 
   # idp variables
   tenant_id: str

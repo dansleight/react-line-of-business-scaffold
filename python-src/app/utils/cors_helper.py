@@ -7,7 +7,7 @@ from fastapi.responses import JSONResponse
 LOCALHOST_ORIGIN_REGEX = re.compile(r"^http://localhost(:[0-9]+)?$")
 
 def add_dev_cors_headers(request: Request, response: JSONResponse) -> JSONResponse:
-    if settings.environment.lower != "development":
+    if settings.environment.lower() != "development":
         return response
     
     origin = request.headers.get("origin")

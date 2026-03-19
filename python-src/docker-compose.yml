@@ -10,7 +10,7 @@ services:
     environment:
       - PYTHONUNBUFFERED=1
       - PYTHONPATH=/app
-      - ENVIRONMENT=production
+      - ENVIRONMENT=Production
       # Database Settings
       - DB_DRIVER=ODBC+Driver+17+for+SQL+Server # Be sure we're using the right driver in the container
       - DB_SERVER=host.docker.internal:1433
