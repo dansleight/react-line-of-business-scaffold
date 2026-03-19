@@ -14,18 +14,23 @@ export function Widgets() {
 
   const updateWidgets = () => {
     setWaiting(true);
+    setWidgets(undefined);
+    loadWidgets();
+  };
+  
+  const loadWidgets = () => {    
     api
       .widgetGet()
       .then((res) => setWidgets(res.data))
       .finally(() => setWaiting(false));
-  };
+  }
 
   const widgetFormSuccess = () => {
     updateWidgets();
   };
 
   useEffect(() => {
-    updateWidgets();
+    loadWidgets();
   }, [api]);
 
   return (
@@ -109,7 +114,7 @@ function AddWidgetForm({ showCancel = true, onSuccess }: AddWidgetFormProps) {
     setWaiting(true);
     api
       .widgetAdd({ name: name, description: description } as AddWidgetModel)
-      .then((res) => {
+      .then(() => {
         setName("");
         setDescription("");
         onSuccess();

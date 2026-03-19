@@ -7,7 +7,7 @@
     {
       "name": "Run Dev",
       "request": "launch",
-      "runtimeExecutable": "npm",
+      "runtimeExecutable": "pnpm",
       "runtimeArgs": ["run", "dev"],
       "type": "node",
       "serverReadyAction": {

@@ -129,6 +129,10 @@
       "match": "build:fastapi",
       "to": "build:release",
       "comment": "renaming the build script"
+    },
+    {
+      "action": "remove",
+      "files": ["./spa-src/api-templates-default/", "./spa-src/sample-pages"]
     }
   ]
 }

@@ -2,17 +2,14 @@ import { useMsal } from "@azure/msal-react";
 import React, {
   ComponentType,
   ReactNode,
-  useEffect,
-  useRef,
+  useMemo,
   useState,
 } from "react";
 import { Api } from "../apiClient/Api";
 import { webApiConfig } from "../appConfig";
 import { SilentRequest } from "@azure/msal-browser";
-import { SessionContext, useSettingsContext } from "./UseContexts";
-import { MenuItem } from "../models/Interfaces";
+import { SessionContext, useIdentityContext, useSettingsContext } from "./UseContexts";
 import { Button, Modal } from "react-bootstrap";
-import { InternalServerError } from "../models/InternalServerError";
 import classNames from "classnames";
 
 type SessionProviderProps = {
@@ -24,12 +21,9 @@ export function SessionProvider({
   children,
   messageWrapper,
 }: SessionProviderProps) {
-  const msal = useMsal();
   const { globalSettings } = useSettingsContext();
-  const { accounts, instance } = msal;
-  const [api, setApi] = useState<Api | undefined>(undefined);
-  const effectCalled = useRef<boolean>(false);
-  const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
+  const { getAccount } = useIdentityContext();
+  const { instance } = useMsal();
   const [showApiError, setShowApiError] = useState<boolean>(false);
   const [apiErrorMessage, setApiErrorMessage] = useState<string>("");
   const [apiErrorDetails, setApiErrorDetails] = useState<string | undefined>(
@@ -87,7 +81,7 @@ export function SessionProvider({
     await instance.initialize();
     const request: any = {
       scopes: [globalSettings.msalSettings!.apiScope],
-      accounts: accounts[0],
+      accounts: getAccount()
     };
     const authenticationResult = await instance
       .acquireTokenSilent(request as SilentRequest)
@@ -98,17 +92,14 @@ export function SessionProvider({
     return undefined;
   };
 
-  useEffect(() => {
-    if (effectCalled.current) return;
-    effectCalled.current = true;
-
-    setApi(
-      new Api({
+  const api: Api | undefined = useMemo(() => {
+    if (!instance) return undefined;
+    return new Api({
         baseUrl: webApiConfig.origin,
         securityWorker: async () => {
           const request: any = {
             scopes: [globalSettings.msalSettings!.apiScope],
-            accounts: accounts[0],
+            accounts: getAccount()
           };
           await instance.initialize();
           const authenticationResult = await instance
@@ -124,9 +115,8 @@ export function SessionProvider({
           };
         },
         unhandledErrorHandler: handleApiError,
-      }),
-    );
-  }, []);
+      });
+  }, [instance, globalSettings, getAccount]) 
 
   const Wrapper = messageWrapper ?? React.Fragment;
 
@@ -137,7 +127,7 @@ export function SessionProvider({
           <em>Getting ready...</em>
         </Wrapper>
       ) : (
-        <SessionContext.Provider value={{ api, menuItems, getApiBearer }}>
+        <SessionContext.Provider value={{ api, getApiBearer }}>
           <Modal
             show={showApiError}
             onHide={handleErrorModalClose}

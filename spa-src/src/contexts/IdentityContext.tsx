@@ -1,5 +1,5 @@
 import { useMsal } from "@azure/msal-react";
-import { ComponentType, ReactNode, useEffect, useRef, useState } from "react";
+import { ComponentType, ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { loginRequest } from "../appConfig";
 import React from "react";
 import { IdentityContext, useSettingsContext } from "./UseContexts";
@@ -22,8 +22,8 @@ export const IdentityProvider = ({
   const [redirecting, setRedirecting] = useState<boolean | undefined>(
     undefined,
   );
-  const [name, setName] = useState<string>("unknown");
-  const [username, setUsername] = useState<string>("unknown");
+  // const [name, setName] = useState<string>("unknown");
+  // const [username, setUsername] = useState<string>("unknown");
   const effectCalled = useRef<boolean>(false);
 
   // if (
@@ -56,6 +56,14 @@ export const IdentityProvider = ({
     });
   };
 
+  const getAccount = () => {
+    if (!instance.getActiveAccount()) {
+      if (instance.getAllAccounts().length > 0)
+        instance.setActiveAccount(instance.getAllAccounts()[0]);
+    }
+    return instance.getActiveAccount()!;
+  }
+
   const handleLogout = () => {
     // if you are creating an appliation that is "internal" the logout redirect could be useless and annoying, so, we can also just clear out the session data and start over
     localStorage.clear();
@@ -66,22 +74,19 @@ export const IdentityProvider = ({
     // });
   };
 
-  useEffect(() => {
+  const name = useMemo(() => {
     if (accounts.length > 0) {
-      setName(accounts[0].name ?? accounts[0].username);
-      setUsername(accounts[0].username);
+      return accounts[0].name ?? accounts[0].username;
     }
+    return "unknown";
   }, [accounts]);
 
-  useEffect(() => {
-    const activeAccount = instance.getActiveAccount();
-    if (!activeAccount) {
-      const accounts = instance.getAllAccounts();
-      if (accounts.length > 0) {
-        instance.setActiveAccount(accounts[0]);
-      }
+  const username = useMemo(() => {
+    if (accounts.length > 0) {
+      return accounts[0].username;
     }
-  }, [instance]);
+    return "unknown";
+  }, [accounts]);
 
   // so, here, we are going to automatically log the user in, remove this entire section to handle login via the handleLogin call
   useEffect(() => {
@@ -132,6 +137,7 @@ export const IdentityProvider = ({
           value={{
             handleLogin,
             handleLogout,
+            getAccount,
             name,
             username,
           }}

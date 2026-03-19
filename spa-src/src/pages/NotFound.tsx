@@ -1,11 +1,9 @@
 import { Col, Container, Row } from "react-bootstrap";
 import { Headcrumb } from "../components/Headcrumb";
 import { useIdentityContext } from "../contexts/UseContexts";
-import { useState } from "react";
 
 export function NotFound() {
   const { name, username } = useIdentityContext();
-  const [rodPosition, setRodPosition] = useState(1);
 
   return (
     <Container fluid>
