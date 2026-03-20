@@ -57,7 +57,7 @@ async def global_exception_handler(request: Request, exc: Exception):
 
     # Decide what to send to the client (keep it safe / no stack trace in production)
     detail = "An internal server error occurred. Consider notifying the development team"
-    if settings.environment.lower == "development":
+    if settings.environment.lower() == "development":
         detail = f"Internal error: {repr(exc)}"
 
     response =  JSONResponse(
@@ -84,7 +84,7 @@ async def http_exception_handler(request: Request, exc: StarletteHTTPException):
         headers=exc.headers if exc.headers else None,
     )
 
-if (settings.environment == "development"):
+if (settings.environment.lower() == "development"):
     origins_regex = r"^http://localhost(:[0-9]+)?$"
     # Add CORS middleware
     app.add_middleware(
