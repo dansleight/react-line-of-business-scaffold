@@ -17,14 +17,14 @@ export const layoutConfig: LayoutConfig = {
   sidebarDarkTheme: SidebarTheme.Primary,
   sidebarFull: false,
 
-  includeTopbar: true,
+  includeTopbar: false,
   topbarTheme: TopbarTheme.Tertiary,
   topbarDarkTheme: TopbarTheme.Dark,
 
-  includeNavbar: true,
+  includeNavbar: false,
   navbarTheme: NavbarTheme.Light,
   navbarDarkTheme: NavbarTheme.Dark,
 
-  defaultTitle: "Scaffold",
+  defaultTitle: "Scaffold", // these might not matter?
   titleSuffix: " - Scaffold",
 } as LayoutConfig;

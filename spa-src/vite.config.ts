@@ -3,7 +3,22 @@ import react from "@vitejs/plugin-react";
 
 export default defineConfig({
   plugins: [react()],
-  server: { port: 3011 },
+  server: {
+    port: 3011,
+    proxy: {
+      "/api": {
+        target: "http://localhost:5011",
+        changeOrigin: true,
+        cookieDomainRewrite: "localhost",
+        secure: false,
+      },
+      "/hub": {
+        target: "http://localhost:5011",
+        changeOrigin: true,
+        ws: true,
+      },
+    },
+  },
   css: {
     preprocessorOptions: {
       scss: {

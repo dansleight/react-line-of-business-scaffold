@@ -18,6 +18,7 @@ export const Navbar = ({ menuItems }: MenuProps) => {
   const dropdownsCreated = useRef<boolean>(false);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (!darkMode) setNavbarClass(layoutConfig.navbarTheme);
     else setNavbarClass(layoutConfig.navbarDarkTheme);
   }, [darkMode, layoutConfig]);
@@ -46,7 +47,7 @@ export const Navbar = ({ menuItems }: MenuProps) => {
       {!layoutConfig.includeTopbar && (
         <>
           <Brand
-            className={classNames("", {
+            className={classNames("nav-only", {
               "d-md-none": layoutConfig.includeSidebar,
             })}
           />

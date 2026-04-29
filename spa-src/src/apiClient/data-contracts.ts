@@ -10,71 +10,50 @@
  * ---------------------------------------------------------------
  */
 
-/** AddWidgetModel */
 export interface AddWidgetModel {
-  /** Name */
+  /**
+   * @minLength 1
+   * @maxLength 100
+   */
   name: string;
-  /** Description */
   description: string | null;
 }
 
-/** BadRequestModel */
 export interface BadRequestModel {
-  /** Message */
   message: string;
-  /** Usermessage */
   userMessage: string | null;
 }
 
-/** GlobalSettingsModel */
 export interface GlobalSettingsModel {
-  /** Applicationmode */
   applicationMode: string;
-  msalSettings: MsalSettingsModel;
+  msalSettings: MsalSettingsModel | null;
 }
 
-/** GoodModel */
 export interface GoodModel {
-  /** Id */
+  /** @format int32 */
   id: number;
-  /** Name */
   name: string;
 }
 
-/** HTTPValidationError */
-export interface HTTPValidationError {
-  /** Detail */
-  detail: ValidationError[];
+export interface HttpValidationError {
+  detail: ValidationError[] | null;
 }
 
-/** MsalSettingsModel */
 export interface MsalSettingsModel {
-  /** Clientid */
   clientId: string;
-  /** Authority */
   authority: string;
-  /** Apiscope */
   apiScope: string;
-  /** Provider */
   provider: string | null;
 }
 
-/** ValidationError */
 export interface ValidationError {
-  /** Location */
-  loc: (string | number)[];
-  /** Message */
-  msg: string;
-  /** Error Type */
-  type: string;
+  field: string;
+  message: string;
 }
 
-/** WidgetObject */
 export interface WidgetObject {
-  /** Widgetid */
+  /** @format int32 */
   widgetId: number;
-  /** Name */
   name: string;
-  /** Description */
   description: string | null;
 }

@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "cross-env BROWSER=google-chrome vite",
     "build:webapi": "tsc -b && vite build --emptyOutDir --outDir ../src/Scaffold/ClientApp/dist",
     "build:fastapi": "tsc -b && vite build --emptyOutDir --outDir=../python-src/client_app --base=/static/",
     "build:validate": "tsc -b && vite build && rimraf --glob ./*.tsbuildinfo && rimraf --glob ./dist",
@@ -45,6 +45,7 @@
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.1.4",
+    "cross-env": "^10.1.0",
     "dotenv": "^17.3.1",
     "eslint": "^10.0.2",
     "eslint-plugin-react-hooks": "^7.0.1",

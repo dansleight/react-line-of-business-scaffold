@@ -70,6 +70,28 @@ body[data-sidebar-full="true"] {
 // **************************************************************************************************
 // Three different options for topbar and navbar
 body[data-topbar-include="true"][data-navbar-include="true"] {
+  #layout-navbar {
+    top: $topbar-base-height;
+  }
+
+  @include media-breakpoint-up(md) {
+    #content-wrapper {
+      margin-top: calc($topbar-base-height + $navbar-base-height);
+      min-height: calc(100vh - $topbar-base-height - $navbar-base-height);
+    }
+  }
+
+  @include media-breakpoint-down(md) {
+    #content-wrapper {
+      margin-top: $topbar-base-height;
+      min-height: calc(100vh - $topbar-base-height);
+    }
+    // for md and lower, the navbar hides if there is a topbar
+    #layout-navbar {
+      display: none;
+    }
+  }
+
   &[data-sidebar-full="false"] {
     @include media-breakpoint-up(md) {
       #layout-sidebar {
@@ -78,11 +100,8 @@ body[data-topbar-include="true"][data-navbar-include="true"] {
           max-height: calc(100vh - $topbar-base-height - $navbar-base-height);
         }
       }
-      #content-wrapper {
-        margin-top: calc($topbar-base-height + $navbar-base-height);
-        min-height: calc(100vh - $topbar-base-height - $navbar-base-height);
-      }
     }
+
     @include media-breakpoint-down(md) {
       #layout-sidebar {
         top: $topbar-base-height;
@@ -90,25 +109,16 @@ body[data-topbar-include="true"][data-navbar-include="true"] {
           max-height: calc(100vh - $topbar-base-height);
         }
       }
-      #content-wrapper {
-        margin-top: $topbar-base-height;
-        min-height: calc(100vh - $topbar-base-height);
-      }
-    }
-  }
-  #layout-navbar {
-    top: $topbar-base-height;
-  }
-
-  // for md and lower, the navbar hides if there is a topbar
-  @include media-breakpoint-down(md) {
-    #layout-navbar {
-      display: none;
     }
   }
 }
 
 body[data-topbar-include="true"][data-navbar-include="false"] {
+  #content-wrapper {
+    margin-top: $topbar-base-height;
+    min-height: calc(100vh - $topbar-base-height);
+  }
+
   &[data-sidebar-full="false"] {
     #layout-sidebar {
       top: $topbar-base-height;
@@ -116,26 +126,25 @@ body[data-topbar-include="true"][data-navbar-include="false"] {
         max-height: calc(100vh - $topbar-base-height);
       }
     }
-    #content-wrapper {
-      margin-top: $topbar-base-height;
-      min-height: calc(100vh - $topbar-base-height);
-    }
   }
 }
 
-body[data-topbar-include="false"][data-navbar-include="true"][data-sidebar-full="false"] {
-  #layout-sidebar {
-    top: $navbar-base-height;
-    .sb-wrapper {
-      max-height: calc(100vh - $navbar-base-height);
-    }
-  }
+body[data-topbar-include="false"][data-navbar-include="true"] {
   #content-wrapper {
     margin-top: $navbar-base-height;
     min-height: calc(100vh - $navbar-base-height);
   }
   #layout-navbar {
     top: 0;
+  }
+
+  &[data-sidebar-full="false"] {
+    #layout-sidebar {
+      top: $navbar-base-height;
+      .sb-wrapper {
+        max-height: calc(100vh - $navbar-base-height);
+      }
+    }
   }
 }
 // **************************************************************************************************

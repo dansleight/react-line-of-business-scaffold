@@ -1,11 +1,14 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Reflection;
 using System.Security.Claims;
+using System.Text.Json.Serialization;
 using Lamar;
 using Lamar.Microsoft.DependencyInjection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Identity.Web;
 using Microsoft.OpenApi;
 using Newtonsoft.Json.Converters;
@@ -131,7 +134,10 @@ public class Program
             });
         });
 
-        services.AddControllers()
+        services.AddControllers(options =>
+            {
+                options.Conventions.Add(new RouteTokenTransformerConvention(new SlugifyParameterTransformer()));
+            })
             .ConfigureApiBehaviorOptions(options =>
             {
                 options.InvalidModelStateResponseFactory = context =>
@@ -145,7 +151,10 @@ public class Program
                 options.SerializerSettings.Converters.Add(new StringEnumConverter());
             });
 
-        services.AddSignalR();
+        services.AddSignalR().AddJsonProtocol(options =>
+        {
+            options.PayloadSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        });
 
         services.Configure<AppSettingsBase>(context.Configuration);
         services.Configure<DataAccessSettings>(context.Configuration);
@@ -246,9 +255,11 @@ public class Program
         app.UseAuthentication();
         app.UseAuthorization();
 
-        app.MapControllers();
-
-        app.UseStaticFiles();
+        app.UseStaticFiles(new StaticFileOptions
+        {
+            FileProvider = new PhysicalFileProvider(Path.Combine(app.Environment.ContentRootPath, "ClientApp/dist")),
+            RequestPath = "/static"
+        });
 
         // This not is mostly pointless, because our environment is set up to run the API and the SPA separately during development
         // If you are running them both during development, the Node.JS process doesn't stop with the debug session, you'll have to kill it yourself
@@ -262,6 +273,11 @@ public class Program
                 spa.Options.SourcePath = "ClientApp";
             });
         });
+
+        // app.MapHub<NotificationsHub>("/hub/notificatios");
+
+        app.MapControllers();
+
     }
 
 }

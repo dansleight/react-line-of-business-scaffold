@@ -22,11 +22,7 @@ export const loginRequest = {
 };
 
 export const webApiConfig = {
-  origin: import.meta.env.DEV
-    ? import.meta.env.VITE_API_ORIGIN && import.meta.env.VITE_API_ORIGIN != ""
-      ? import.meta.env.VITE_API_ORIGIN
-      : "http://localhost:5011"
-    : "",
+  origin: "",
 };
 
 export const defaultGlobalSettings: GlobalSettingsModel = {
