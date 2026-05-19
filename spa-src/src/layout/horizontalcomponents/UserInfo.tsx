@@ -19,19 +19,13 @@ export const UserInfo = () => {
   const { name, username, handleLogout } = useIdentityContext();
   const dropdownCreated = useRef<boolean>(false);
 
-  const copyFullBearerToClipboard = async () => {
-    copyBearerToClipboard(true);
-  };
-
-  const copyBearerToClipboard = async (full: boolean = false) => {
+  const copyBearerToClipboard = async () => {
     const bearer: string | undefined = await getApiBearer();
-    if (bearer && full) {
-      navigator.clipboard.writeText(`Bearer ${bearer}`);
-    } else if (bearer) {
+    if (bearer) {
       navigator.clipboard.writeText(bearer);
     } else {
       navigator.clipboard.writeText(
-        "Something went wrong and the bearer wasn't retrieved."
+        "Something went wrong and the bearer wasn't retrieved.",
       );
     }
   };
@@ -102,18 +96,6 @@ export const UserInfo = () => {
             className="me-2 text-gray-400"
           />
           Bearer to Clipboard
-        </a>
-        <a
-          className="dropdown-item"
-          onClick={() => copyBearerToClipboard(true)}
-        >
-          <FontAwesomeIcon
-            icon={faCopy}
-            size="sm"
-            fixedWidth
-            className="me-2 text-gray-400"
-          />
-          Full Bearer to Clipboard
         </a>
         <a
           className="dropdown-item"

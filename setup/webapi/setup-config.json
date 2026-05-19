@@ -30,6 +30,7 @@
       "target": [
         "./spa-src/.env",
         "./spa-src/src/appConfig.ts",
+        "./spa-src/vite.config.ts",
         "./src/.vscode/launch.json"
       ],
       "match": "5011",

@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
-from typing import List, Dict
+from app.auth.auth_user import AuthUser
 from app.auth.dependencies import validate_token
 from app.schemas.test import GoodModel, BadRequestModel
 from app.logging.config import logger
@@ -13,8 +13,8 @@ router = APIRouter(prefix="/api/test", tags=["Test"])
     description="If the id is 0, -1 or -2 will throw a specific error.",
     operation_id="testGet"
 )
-async def get_test(id: int, payload: Dict = Depends(validate_token)):
-    logger.debug("Returning a test result", extra={"id: ": id, "user_id": payload.get("sub")})
+async def get_test(id: int, authUser: AuthUser = Depends(validate_token)):
+    logger.debug("Returning a test result", extra={"id: ": id, "user_id": authUser.claims.get("sub")})
     if (id == -1):
         raise HTTPException(status_code=500, detail="this error was intentionally thrown by specifiying a '-1' as the id value.")
     if (id < -1):
@@ -32,7 +32,7 @@ async def get_test(id: int, payload: Dict = Depends(validate_token)):
     summary="Just gets a bad request response",
     operation_id="testGetBad"
 )
-async def get_badtest(payload: Dict = Depends(validate_token)):
+async def get_badtest(authUser: AuthUser = Depends(validate_token)):
     return {
         "message": "Bad request triggered by id of 0",
         "userMessage": "The value of '0' that was requested is not available to this user."

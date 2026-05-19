@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from sqlalchemy.sql import text
-from typing import List, Dict
+from typing import List
+from app.auth.auth_user import AuthUser
 from app.database.dependencies import get_db
 from app.auth.dependencies import validate_token
 from app.models.widget import Widget
@@ -17,7 +18,7 @@ router = APIRouter(prefix="/api/widget", tags=["Widget"])
     description="Retrieve a list of all widgets from the database. Requires authentication.",
     operation_id="widgetGet"
 )
-async def get_widgets(db: Session = Depends(get_db), payload: Dict = Depends(validate_token)):
+async def get_widgets(db: Session = Depends(get_db), authUser: AuthUser = Depends(validate_token)):
     # logger.debug("Fetching all widgets", extra={"user_id": payload.get("sub")})
     widgets = db.query(Widget).all()
     # Map SQLAlchemy models to Pydantic schemas
@@ -32,8 +33,8 @@ async def get_widgets(db: Session = Depends(get_db), payload: Dict = Depends(val
     description="Add a new widget to the database with name and description. Requires authentication.",
     operation_id="widgetAdd"
 )
-async def create_widget(widget: AddWidgetModel, db: Session = Depends(get_db), payload: Dict = Depends(validate_token)):
-    logger.debug("Creating widget", extra={"name": widget.Name, "widget_id": payload.get("sub")})
+async def create_widget(widget: AddWidgetModel, db: Session = Depends(get_db), authUser: AuthUser = Depends(validate_token)):
+    logger.debug("Creating widget", extra={"name": widget.Name, "widget_id": authUser.claims.get("sub")})
     try:
         db_widget = Widget(Name=widget.Name, Description=widget.Description)
         db.add(db_widget)
@@ -52,8 +53,8 @@ async def create_widget(widget: AddWidgetModel, db: Session = Depends(get_db), p
     description="Retrieve a widget by WidgetId using a raw SQL query. Requires authentication.",
     operation_id="widgetGetOne"
 )
-async def get_widget_by_id(id: int, db: Session = Depends(get_db), payload: Dict = Depends(validate_token)):
-    logger.debug("Fetching widget by WidgetId", extra={"widgetId": id, "user_id": payload.get("sub")})
+async def get_widget_by_id(id: int, db: Session = Depends(get_db), authUser: AuthUser = Depends(validate_token)):
+    logger.debug("Fetching widget by WidgetId", extra={"widgetId": id, "user_id": authUser.claims.get("sub")})
     query = text("SELECT WidgetId, Name, Description FROM dat_Widget WHERE WidgetId = :widgetId")
     result = db.execute(query, {"widgetId": id}).fetchone()
     if not result:

@@ -134,6 +134,12 @@ async function main() {
     cpargs,
   );
 
+  // .gitignore
+  await fs.cp(
+    path.resolve(PROJECT_ROOT, ".gitignore"),
+    path.resolve(rootPath, ".gitignore"),
+  );
+
   if (isDotnet) {
     // clean up files
     for (const dir of glob

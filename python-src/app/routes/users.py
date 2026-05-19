@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from sqlalchemy.sql import text
-from typing import List, Dict
+from typing import List
+from app.auth.auth_user import AuthUser
 from app.database.dependencies import get_db
 from app.auth.dependencies import validate_token
 from app.models.user import User
@@ -16,8 +17,8 @@ router = APIRouter(prefix="/api/users", tags=["Users"])
     summary="Get all users", 
     description="Retrieve a list of all users from the database. Requires authentication."
 )
-async def get_users(db: Session = Depends(get_db), payload: Dict = Depends(validate_token)):
-    logger.debug("Fetching all users", extra={"user_id": payload.get("sub")})
+async def get_users(db: Session = Depends(get_db), authUser: AuthUser = Depends(validate_token)):
+    logger.debug("Fetching all users", extra={"user_id": authUser.claims.get("sub")})
     users = db.query(User).all()
     # Map SQLAlchemy models to Pydantic schemas
     user_responses = [UserBase.model_validate(user) for user in users]
@@ -30,8 +31,8 @@ async def get_users(db: Session = Depends(get_db), payload: Dict = Depends(valid
     summary="Create a new user",
     description="Add a new user to the database with email and role. Requires authentication."
 )
-async def create_user(user: UserBase, db: Session = Depends(get_db), payload: Dict = Depends(validate_token)):
-    logger.debug("Creating user", extra={"email": user.Email, "user_id": payload.get("sub")})
+async def create_user(user: UserBase, db: Session = Depends(get_db), authUser: AuthUser = Depends(validate_token)):
+    logger.debug("Creating user", extra={"email": user.Email, "user_id": authUser.claims.get("sub")})
     try:
         db_user = User(Email=user.Email, Role=user.Role)
         db.add(db_user)
@@ -49,8 +50,8 @@ async def create_user(user: UserBase, db: Session = Depends(get_db), payload: Di
     summary="Get user by email",
     description="Retrieve a user by email using a raw SQL query. Requires authentication."
 )
-async def get_user_by_email(email: str, db: Session = Depends(get_db), payload: Dict = Depends(validate_token)):
-    logger.debug("Fetching user by email", extra={"email": email, "user_id": payload.get("sub")})
+async def get_user_by_email(email: str, db: Session = Depends(get_db), authUser: AuthUser = Depends(validate_token)):
+    logger.debug("Fetching user by email", extra={"email": email, "user_id": authUser.claims.get("sub")})
     query = text("SELECT Email, Role FROM dat_User WHERE Email = :email")
     result = db.execute(query, {"email": email}).fetchone()
     if not result:

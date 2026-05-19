@@ -8,6 +8,7 @@ import time
 import msal
 from app.logging.config import logger
 from app.config import settings
+from app.auth.auth_user import AuthUser
 
 security = HTTPBearer()
 
@@ -42,7 +43,7 @@ async def get_jwks() -> Dict:
                 detail="Unable to fetch JWKS",
             )
 
-async def validate_token(credentials: HTTPAuthorizationCredentials = Depends(security)) -> Dict:
+async def validate_token(credentials: HTTPAuthorizationCredentials = Depends(security)) -> AuthUser:
     token = credentials.credentials
     logger.debug("Validating token", extra={"token_prefix": token[:10]})
     try:
@@ -57,8 +58,9 @@ async def validate_token(credentials: HTTPAuthorizationCredentials = Depends(sec
             issuer=issuer,
         )
         payload["token"] = token
+        user = AuthUser(claims=payload)
         logger.info("Token validated", extra={"user_id": payload.get("sub")})
-        return payload
+        return user
     except JWTError as e:
         logger.error("Token validation failed", extra={"error": str(e)}, exc_info=True)
         raise HTTPException(
