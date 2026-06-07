@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "cross-env BROWSER=google-chrome vite",
+    "dev": "vite",
     "build:webapi": "tsc -b && vite build --emptyOutDir --outDir ../src/Scaffold/ClientApp/dist",
     "build:fastapi": "tsc -b && vite build --emptyOutDir --outDir=../python-src/client_app --base=/static/",
     "build:validate": "tsc -b && vite build && rimraf --glob ./*.tsbuildinfo && rimraf --glob ./dist",
@@ -66,11 +66,12 @@
   "devEngines": {
     "runtime": {
       "name": "node",
+      "version": ">=18",
       "onFail": "error"
     },
     "packageManager": {
       "name": "pnpm",
-      "version": "10.30.3",
+      "version": ">=10.30.0",
       "onFail": "error"
     }
   },
