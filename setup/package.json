@@ -16,11 +16,12 @@
   "devEngines": {
     "runtime": {
       "name": "node",
+      "version": ">=18",
       "onFail": "error"
     },
     "packageManager": {
       "name": "pnpm",
-      "version": "10.30.3",
+      "version": ">=10.30.0",
       "onFail": "error"
     }
   }

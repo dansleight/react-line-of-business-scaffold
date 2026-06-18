@@ -2,12 +2,8 @@
 
 import fs, { readFile, writeFile } from "fs/promises";
 import path from "path";
-import { fileURLToPath } from "url";
 import inquirer from "inquirer";
-import sharp from "sharp";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import { Resvg } from "@resvg/resvg-js";
 
 async function resolveIconFile(iconFilePath: string): Promise<string> {
   let currentPath = iconFilePath;
@@ -37,61 +33,57 @@ async function extractIconMetadata(iconFilePath: string): Promise<{
   const finalPath = await resolveIconFile(iconFilePath);
   const content = await fs.readFile(finalPath, "utf-8");
 
-  // Extract width
   const widthMatch = content.match(/var\s+width\s*=\s*(\d+)/);
   if (!widthMatch) throw new Error("Could not find width in icon file");
 
-  // Extract height
   const heightMatch = content.match(/var\s+height\s*=\s*(\d+)/);
   if (!heightMatch) throw new Error("Could not find height in icon file");
 
-  // Extract svgPathData (supports single or double quotes, multiline with +)
+  // Try single-line first
   const pathMatch = content.match(/svgPathData\s*=\s*['"](.+?)['"]/s);
-  if (!pathMatch) {
-    // Some icons use: svgPathData = '...' + '...' (multiline)
-    const lines = content.split("\n");
-    let pathData = "";
-    let inPath = false;
-    for (const line of lines) {
-      if (line.includes("svgPathData")) {
-        inPath = true;
-      }
-      if (inPath) {
-        const m = line.match(/['"](.+?)['"]/);
-        if (m) pathData += m[1];
-        if (line.includes(";")) break;
-      }
-    }
-    if (!pathData) throw new Error("Could not extract svgPathData");
+  if (pathMatch) {
     return {
       width: Number(widthMatch[1]),
       height: Number(heightMatch[1]),
-      svgPathData: pathData,
+      svgPathData: pathMatch[1],
     };
   }
+
+  // Multiline fallback
+  const lines = content.split("\n");
+  let pathData = "";
+  let inPath = false;
+  for (const line of lines) {
+    if (line.includes("svgPathData")) inPath = true;
+    if (inPath) {
+      const m = line.match(/['"](.+?)['"]/);
+      if (m) pathData += m[1];
+      if (line.includes(";")) break;
+    }
+  }
+  if (!pathData) throw new Error("Could not extract svgPathData");
 
   return {
     width: Number(widthMatch[1]),
     height: Number(heightMatch[1]),
-    svgPathData: pathMatch[1],
+    svgPathData: pathData,
   };
 }
 
-async function svgToPng(
-  inputPath: string,
-  outputPath: string,
-  width = 1200,
-  height?: number,
-) {
+async function svgToPng(inputPath: string, outputPath: string, width: number) {
   const svgBuffer = await readFile(inputPath);
+  const svgString = svgBuffer.toString();
 
-  await sharp(svgBuffer, { density: 300 }) // higher density = better quality
-    .resize(width, height, {
-      fit: "contain",
-      background: { r: 255, g: 255, b: 255, alpha: 1 },
-    })
-    .png({ quality: 95, compressionLevel: 7 })
-    .toFile(outputPath);
+  const resvg = new Resvg(svgString, {
+    fitTo: { mode: "width", value: width },
+    background: "#ffffff", // white background
+    // You can add more options like font rendering if needed
+  });
+
+  const pngBuffer = resvg.render().asPng();
+
+  await writeFile(outputPath, pngBuffer);
+  console.log(`✓ Generated ${path.basename(outputPath)}`);
 }
 
 async function main() {
@@ -101,7 +93,7 @@ async function main() {
     await fs.access(faBasePath);
   } catch {
     console.error(
-      `Cound not find ${faBasePath}. You may need to run "pnpm i" in the spa-src folder.`,
+      `Could not find ${faBasePath}. You may need to run "pnpm i" in the spa-src folder.`,
     );
     process.exit(1);
   }
@@ -111,7 +103,7 @@ async function main() {
     .filter(
       (d) =>
         d.isDirectory() &&
-        d.name.startsWith("@fortawesome+") &&
+        d.name.startsWith("@fortawesome") && // simplified
         d.name.includes("-svg-icons"),
     )
     .map((d) => ({ name: d.name, fullPath: path.join(faBasePath, d.name) }));
@@ -120,8 +112,6 @@ async function main() {
     console.error("No FontAwesome SVG icon packages found.");
     process.exit(1);
   }
-
-  console.log("svgIconPackages", svgIconPackages);
 
   const { selectedPackage } = await inquirer.prompt([
     {
@@ -145,8 +135,9 @@ async function main() {
   const iconMap = new Map<string, string>();
   for (const file of jsFiles) {
     const name = file.replace(/\.js$/i, "");
-    iconMap.set(name.toLowerCase(), path.join(iconsDir, file));
-    if (name.toLowerCase().startsWith("fa")) {
+    const lower = name.toLowerCase();
+    iconMap.set(lower, path.join(iconsDir, file));
+    if (lower.startsWith("fa")) {
       const shortName = name.slice(2);
       const key = shortName.charAt(0).toLowerCase() + shortName.slice(1);
       if (!iconMap.has(key)) iconMap.set(key, path.join(iconsDir, file));
@@ -166,19 +157,18 @@ async function main() {
     let searchName = rawInput
       .trim()
       .toLowerCase()
-      .replace(/-+/g, "-") // collapse multiple hyphens
-      .replace(/^-|-$/g, "") // remove leading/trailing hyphens
+      .replace(/-+/g, "-")
+      .replace(/^-|-$/g, "")
       .split("-")
       .map((word: string, index: number) =>
         index === 0 ? word : word.charAt(0).toUpperCase() + word.slice(1),
       )
       .join("");
+
     if (!searchName.toLowerCase().startsWith("fa")) {
       searchName =
         "fa" + searchName.charAt(0).toUpperCase() + searchName.slice(1);
     }
-
-    console.log("searchName: ", searchName);
 
     const iconFilePath = iconMap.get(searchName.toLowerCase());
     if (!iconFilePath) {
@@ -198,8 +188,7 @@ async function main() {
       const { width, height, svgPathData } =
         await extractIconMetadata(iconFilePath);
 
-      const displayName = searchName.replace(/^fa/, "");
-
+      // ... (your logo component generation logic stays exactly the same)
       let size = 576;
       let adjustedHeight = 576;
       let adjustedYStart = -32;
@@ -263,13 +252,9 @@ export function Logo({ size }: LogoProps) {
       const logoSvg = `<?xml version="1.0" encoding="iso-8859-1"?>
 <svg overflow="visible" id="logo" data-name="layer_0" xmlns="http://www.w3.org/2000/svg" viewBox="${xNeg} ${yNeg} ${size} ${size}">
   <style>
-    style1 {
-      fill: black;
-    }
+    .style1 { fill: black; }
     @media (prefers-color-scheme: dark) {
-      style1 {
-        fill: white;
-      }
+      .style1 { fill: white; }
     }
   </style>
   <g id="logo_1" data-name="layer_1">
@@ -282,43 +267,36 @@ export function Logo({ size }: LogoProps) {
       const svgPath = path.resolve(process.cwd(), "public/favicon.svg");
       await fs.writeFile(svgPath, logoSvg.trim(), "utf-8");
 
+      // Generate PNGs
       await svgToPng(
-        path.resolve(process.cwd(), "public/favicon.svg"),
+        svgPath,
         path.resolve(process.cwd(), "public/favicon-32x32.png"),
         32,
-        32,
-      ).catch(console.error);
-
+      );
       await svgToPng(
-        path.resolve(process.cwd(), "public/favicon.svg"),
+        svgPath,
         path.resolve(process.cwd(), "public/favicon-16x16.png"),
         16,
-        16,
-      ).catch(console.error);
-
+      );
       await svgToPng(
-        path.resolve(process.cwd(), "public/favicon.svg"),
+        svgPath,
         path.resolve(process.cwd(), "public/android-chrome-512x512.png"),
         512,
-        512,
-      ).catch(console.error);
-
+      );
       await svgToPng(
-        path.resolve(process.cwd(), "public/favicon.svg"),
+        svgPath,
         path.resolve(process.cwd(), "public/android-chrome-192x192.png"),
         192,
-        192,
-      ).catch(console.error);
-
+      );
       await svgToPng(
-        path.resolve(process.cwd(), "public/favicon.svg"),
+        svgPath,
         path.resolve(process.cwd(), "public/apple-touch-icon.png"),
         180,
-        180,
-      ).catch(console.error);
+      );
 
-      console.log("\nSuccess! Logo.tsx created/updated");
-
+      console.log(
+        "\nSuccess! Logo.tsx created/updated and favicons generated.",
+      );
       process.exit(0);
     } catch (err: any) {
       console.error("Failed:", err.message);
