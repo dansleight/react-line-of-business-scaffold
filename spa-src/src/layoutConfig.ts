@@ -17,7 +17,7 @@ export const layoutConfig: LayoutConfig = {
   sidebarDarkTheme: SidebarTheme.Primary,
   sidebarFull: false,
 
-  includeTopbar: false,
+  includeTopbar: true,
   topbarTheme: TopbarTheme.Tertiary,
   topbarDarkTheme: TopbarTheme.Dark,
 

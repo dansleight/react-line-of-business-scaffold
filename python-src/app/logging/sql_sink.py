@@ -55,5 +55,6 @@ def setup_async_sql_sink(session_factory: Callable[[], Session]) -> tuple[QueueH
     # Create a listener that processes the queue in a background thread
     # respect_handler_level=True ensures the SQLSink's level is respected
     queue_listener = QueueListener(log_queue, sql_handler, respect_handler_level=True)
+    quque_listener.start()
 
     return queue_handler, queue_listener
