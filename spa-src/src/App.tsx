@@ -1,13 +1,12 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 import "./App.css";
 import "./assets/scss/theme.scss";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { NotFound } from "./pages/NotFound";
 import { routes } from "./routes";
-import { Layout } from "./layout/Layout";
+import { Layout } from "./layouts/Layout";
+import { layoutConfig } from "./layouts/config";
 import { useEffect, useState } from "react";
-import { MenuItem } from "./models/Interfaces";
-import { getUserMenuItems } from "./models/Utilities";
-import { genericMenuBase, sidebarMenuBase } from "./menuConfig";
 import { msalConfig } from "./appConfig";
 import {
   AuthenticationResult,
@@ -31,8 +30,6 @@ function App() {
   const [msalInstance, setMsalInstance] = useState<
     PublicClientApplication | undefined
   >(undefined);
-  const [sidebarMenu, setSidebarMenu] = useState<MenuItem[]>([]);
-  const [navbarMenu, setNavbarMenu] = useState<MenuItem[]>([]);
   const { globalSettings } = useSettingsContext();
 
   const msalConfigFull = {
@@ -76,11 +73,7 @@ function App() {
     setMsalInstance(instance);
   };
 
-  useEffect(() => {
-    setSidebarMenu(getUserMenuItems(sidebarMenuBase, ["Admin"]));
-    setNavbarMenu(getUserMenuItems(genericMenuBase, ["Admin"]));
-  }, [genericMenuBase, sidebarMenuBase]);
-
+  // eslint-disable-next-line react-hooks/immutability
   useEffect(() => {
     if (globalSettings.msalSettings !== null) {
       msalConfigFull.auth.clientId = globalSettings.msalSettings.clientId;
@@ -116,11 +109,7 @@ function App() {
                         path={route.path}
                         key={idx}
                         element={
-                          <Layout
-                            title={route.title}
-                            sidebarMenu={sidebarMenu}
-                            navbarMenu={navbarMenu}
-                          >
+                          <Layout config={layoutConfig} title={route.title}>
                             {route.component}
                           </Layout>
                         }
@@ -129,11 +118,7 @@ function App() {
                     <Route
                       path="*"
                       element={
-                        <Layout
-                          title="Not Found"
-                          sidebarMenu={sidebarMenu}
-                          navbarMenu={navbarMenu}
-                        >
+                        <Layout config={layoutConfig} title="Not Found">
                           <NotFound />
                         </Layout>
                       }

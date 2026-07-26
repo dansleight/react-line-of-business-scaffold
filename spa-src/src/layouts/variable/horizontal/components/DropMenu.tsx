@@ -1,5 +1,5 @@
 import { IconDefinition } from "@fortawesome/fontawesome-common-types";
-import { MenuItem } from "../../models/Interfaces";
+import { MenuItem } from "../../../../models/Interfaces";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleDot, faEllipsisV } from "@fortawesome/free-solid-svg-icons";
 import MetisMenu from "@metismenu/react";
@@ -42,7 +42,7 @@ export const DropMenu = ({ menuitems, icon, id, className }: DropMenuProps) => {
         aria-haspopup="true"
         aria-expanded="false"
       >
-        <FontAwesomeIcon icon={icon ?? faEllipsisV} fixedWidth />
+        <FontAwesomeIcon icon={icon ?? faEllipsisV} />
       </a>
       <div
         className="dropdown-menu dropdown-menu-end shadow animiated--grow-in"
@@ -95,11 +95,7 @@ const RenderItem = ({ item, depth }: RenderItemProps) => {
         <NavLink to={item.path ?? "/"}>
           {!depth ? (
             <>
-              <FontAwesomeIcon
-                icon={item.icon ?? faCircleDot}
-                size="sm"
-                fixedWidth
-              />
+              <FontAwesomeIcon icon={item.icon ?? faCircleDot} size="sm" />
               <span>{item.label}</span>
             </>
           ) : (
@@ -115,11 +111,7 @@ const RenderItem = ({ item, depth }: RenderItemProps) => {
       <Link to="#" className="has-arrow">
         {!depth ? (
           <>
-            <FontAwesomeIcon
-              icon={item.icon ?? faCircleDot}
-              size="sm"
-              fixedWidth
-            />
+            <FontAwesomeIcon icon={item.icon ?? faCircleDot} size="sm" />
             <span>{item.label}</span>
           </>
         ) : (

@@ -35,7 +35,7 @@ export const Alerts = ({ className }: AlertsProps) => {
         aria-haspopup="true"
         aria-expanded="false"
       >
-        <FontAwesomeIcon icon={faBell} fixedWidth />
+        <FontAwesomeIcon icon={faBell} />
         {/* Counter - Alerts */}
         <span className="badge badge-counter text-info">3+</span>
       </a>

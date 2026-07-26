@@ -1,34 +1,40 @@
-import { useSettingsContext } from "../contexts/UseContexts";
-import { BarSearch } from "./horizontalcomponents/BarSearch";
-import { SearchDropdown } from "./horizontalcomponents/SearchDropdown";
-import { Alerts } from "./horizontalcomponents/Alerts";
-import { Messages } from "./horizontalcomponents/Messages";
-import { UserInfo } from "./horizontalcomponents/UserInfo";
-import { LightDarkMode } from "./horizontalcomponents/LightDarkMode";
-import { layoutConfig } from "../layoutConfig";
+import {
+  useSessionContext,
+  useSettingsContext,
+} from "../../../contexts/UseContexts";
+import { BarSearch } from "./components/BarSearch";
+import { SearchDropdown } from "./components/SearchDropdown";
+import { Alerts } from "./components/Alerts";
+import { Messages } from "./components/Messages";
+import { UserInfo } from "./components/UserInfo";
+import { LightDarkMode } from "./components/LightDarkMode";
 import classNames from "classnames";
-import { useEffect, useState } from "react";
-import { Brand } from "./horizontalcomponents/Brand";
-import { DropMenu } from "./horizontalcomponents/DropMenu";
-import { ToggleSidebarSvg } from "../components/ToggleSidebarSvg";
-import { GridBreakpoint } from "../models/Enums";
-import { MenuProps } from "../models/Interfaces";
+import { useMemo } from "react";
+import { Brand } from "./components/Brand";
+import { DropMenu } from "./components/DropMenu";
+import { VariableLayoutConfig } from "../../../models/Interfaces";
 
-export const Topbar = ({ menuItems }: MenuProps) => {
-  const { darkMode, breakpoint } = useSettingsContext();
-  const [topbarClass, setTopbarClass] = useState<string>("");
+interface TopbarProps {
+  variableLayoutConfig: VariableLayoutConfig;
+}
 
-  useEffect(() => {
-    if (!darkMode) setTopbarClass(layoutConfig.topbarTheme);
-    else setTopbarClass(layoutConfig.topbarDarkTheme);
-  }, [darkMode, layoutConfig]);
+export const Topbar = ({ variableLayoutConfig }: TopbarProps) => {
+  const { darkMode } = useSettingsContext();
+  const { menusConfig } = useSessionContext();
+  const { altMenu } = menusConfig;
+
+  const topbarClass: string = useMemo(() => {
+    return darkMode
+      ? variableLayoutConfig.topbarDarkTheme
+      : variableLayoutConfig.topbarTheme;
+  }, [darkMode, variableLayoutConfig]);
 
   return (
     <nav
       id="layout-topbar"
       className={classNames(
         "horizontal-bar navbar navbar-expand static-top " + topbarClass,
-        {}
+        {},
       )}
     >
       {/* 
@@ -37,17 +43,20 @@ export const Topbar = ({ menuItems }: MenuProps) => {
         - SM and XS when there is a sidebar */}
       <Brand
         className={classNames(
-          darkMode ? layoutConfig.sidebarDarkTheme : layoutConfig.sidebarTheme,
+          darkMode
+            ? variableLayoutConfig.sidebarDarkTheme
+            : variableLayoutConfig.sidebarTheme,
           {
-            "d-md-none": layoutConfig.includeSidebar,
-          }
+            "d-md-none": variableLayoutConfig.sidebar,
+          },
         )}
+        sidebar={variableLayoutConfig.sidebar}
       />
 
       {/* Create space when the navbar-brand-icon is visible, since it is absolute positioned  */}
       <div
         className={classNames("hbar-brand-icon-spacer", {
-          "d-md-none": layoutConfig.includeSidebar,
+          "d-md-none": variableLayoutConfig.sidebar,
         })}
       ></div>
       {/* Sidebar Toggle (navbar)
@@ -56,7 +65,7 @@ export const Topbar = ({ menuItems }: MenuProps) => {
           - SM an XS when there is a navbar, maybe MD as well, based on need
           ** should be its own component if there is no sidebar or navbar, and there is still a desire to have it
       */}
-      {layoutConfig.includeSidebar && layoutConfig.sidebarFull && (
+      {variableLayoutConfig.sidebar && variableLayoutConfig.fullSidebar && (
         <div style={{ width: "1rem" }}></div>
       )}
       {/* Topbar Search */}
@@ -82,11 +91,13 @@ export const Topbar = ({ menuItems }: MenuProps) => {
         {/* Nav Item - User Information */}
         <UserInfo />
 
-        <DropMenu
-          id="topbar-sidebar-menu-items"
-          menuitems={menuItems}
-          className="d-md-none"
-        />
+        {altMenu && (
+          <DropMenu
+            id="topbar-sidebar-menu-items"
+            menuitems={altMenu}
+            className="d-md-none"
+          />
+        )}
       </ul>
     </nav>
   );

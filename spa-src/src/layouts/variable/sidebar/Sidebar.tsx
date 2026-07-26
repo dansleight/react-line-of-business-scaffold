@@ -1,18 +1,24 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import SimpleBar from "simplebar-react";
 import "simplebar-react/dist/simplebar.min.css";
 import { Link, useLocation } from "react-router-dom";
 import { FullSidebar } from "./components/FullSidebar";
-import { useSettingsContext } from "../../contexts/UseContexts";
 import { NarrowSidebar } from "./components/NarrowSidebar";
-import { layoutConfig } from "../../layoutConfig";
+import {
+  useSessionContext,
+  useSettingsContext,
+} from "../../../contexts/UseContexts";
 import classNames from "classnames";
-import { GridBreakpoint } from "../../models/Enums";
-import { Logo } from "../../components/Logo";
-import { MenuProps } from "../../models/Interfaces";
-import { ToggleSidebarSvg } from "../../components/ToggleSidebarSvg";
+import { GridBreakpoint } from "../../../models/Enums";
+import { Logo } from "../../../components/Logo";
+import { ToggleSidebarSvg } from "../../../components/ToggleSidebarSvg";
+import { VariableLayoutConfig } from "../../../models/Interfaces";
 
-export const Sidebar = ({ menuItems }: MenuProps) => {
+interface SidebarProps {
+  variableLayoutConfig: VariableLayoutConfig;
+}
+
+export const Sidebar = ({ variableLayoutConfig }: SidebarProps) => {
   const {
     sidebarToggled,
     toggleSidebar,
@@ -20,8 +26,9 @@ export const Sidebar = ({ menuItems }: MenuProps) => {
     breakpoint,
     darkMode,
   } = useSettingsContext();
+  const { menusConfig } = useSessionContext();
+  const { mainMenu } = menusConfig;
   const ref = useRef<any>({});
-  const [sidebarClass, setSidebarClass] = useState<string>("");
 
   const location = useLocation();
 
@@ -31,13 +38,11 @@ export const Sidebar = ({ menuItems }: MenuProps) => {
     }
   }, [location]);
 
-  useEffect(() => {
-    if (darkMode) {
-      setSidebarClass(layoutConfig.sidebarDarkTheme);
-    } else {
-      setSidebarClass(layoutConfig.sidebarTheme);
-    }
-  }, [darkMode, layoutConfig]);
+  const sidebarClass: string = useMemo(() => {
+    return darkMode
+      ? variableLayoutConfig.sidebarDarkTheme
+      : variableLayoutConfig.sidebarTheme;
+  }, [darkMode, variableLayoutConfig]);
 
   return (
     <div
@@ -66,7 +71,7 @@ export const Sidebar = ({ menuItems }: MenuProps) => {
         className={classNames(
           "sidebar-brand d-flex align-items-center justify-content-center",
           {
-            "d-none d-md-flex": !layoutConfig.sidebarFull,
+            "d-none d-md-flex": !variableLayoutConfig.fullSidebar,
           },
         )}
         to="/"
@@ -82,17 +87,17 @@ export const Sidebar = ({ menuItems }: MenuProps) => {
       {/* Divider */}
       <hr
         className={classNames("sidebar-divider my-0", {
-          "d-none d-md-block": !layoutConfig.sidebarFull,
+          "d-none d-md-block": !variableLayoutConfig.fullSidebar,
         })}
       />
 
       {!sidebarToggled ? (
         <SimpleBar ref={ref} className="sb-wrapper">
-          <FullSidebar menuItems={menuItems} />
+          <FullSidebar menuItems={mainMenu} />
         </SimpleBar>
       ) : (
         <div className="bs-wrapper">
-          <NarrowSidebar menuItems={menuItems} />
+          <NarrowSidebar menuItems={mainMenu} />
         </div>
       )}
 

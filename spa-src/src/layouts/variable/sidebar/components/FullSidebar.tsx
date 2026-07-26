@@ -2,7 +2,7 @@ import { Link, NavLink, useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleDot } from "@fortawesome/free-solid-svg-icons";
 import MetisMenu from "@metismenu/react";
-import { MenuItem, MenuProps } from "../../../models/Interfaces";
+import { MenuItem, MenuProps } from "../../../../models/Interfaces";
 import classNames from "classnames";
 
 export const FullSidebar = ({ menuItems }: MenuProps) => {
@@ -61,11 +61,7 @@ const RenderFullItem = ({ item, depth }: RenderFullItemProps) => {
         <NavLink to={item.path ?? "/"}>
           {!depth ? (
             <>
-              <FontAwesomeIcon
-                icon={item.icon ?? faCircleDot}
-                size="sm"
-                fixedWidth
-              />
+              <FontAwesomeIcon icon={item.icon ?? faCircleDot} size="sm" />
               <span>{item.label}</span>
             </>
           ) : (
@@ -81,11 +77,7 @@ const RenderFullItem = ({ item, depth }: RenderFullItemProps) => {
       <Link to="#" className="has-arrow">
         {!depth ? (
           <>
-            <FontAwesomeIcon
-              icon={item.icon ?? faCircleDot}
-              size="sm"
-              fixedWidth
-            />
+            <FontAwesomeIcon icon={item.icon ?? faCircleDot} size="sm" />
             <span>{item.label}</span>
           </>
         ) : (

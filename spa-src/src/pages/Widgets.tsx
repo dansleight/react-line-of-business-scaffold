@@ -17,13 +17,13 @@ export function Widgets() {
     setWidgets(undefined);
     loadWidgets();
   };
-  
-  const loadWidgets = () => {    
+
+  const loadWidgets = () => {
     api
       .widgetGet()
       .then((res) => setWidgets(res.data))
       .finally(() => setWaiting(false));
-  }
+  };
 
   const widgetFormSuccess = () => {
     updateWidgets();
@@ -164,7 +164,7 @@ function AddWidgetForm({ showCancel = true, onSuccess }: AddWidgetFormProps) {
         ) : (
           <>
             <Button type="submit" variant="primary" className="ms-1">
-              <FontAwesomeIcon icon={faSave} fixedWidth /> {" Save"}
+              <FontAwesomeIcon icon={faSave} /> {" Save"}
             </Button>
             {showCancel && (
               <Button

@@ -23,7 +23,7 @@ export const Messages = () => {
         aria-haspopup="true"
         aria-expanded="false"
       >
-        <FontAwesomeIcon icon={faEnvelope} fixedWidth />
+        <FontAwesomeIcon icon={faEnvelope} />
         {/* Counter - Messages */}
         <span className="badge badge-counter text-success">7</span>
       </a>

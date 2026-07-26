@@ -139,7 +139,6 @@ export function Dashboard() {
                   <FontAwesomeIcon
                     icon={faEllipsisV}
                     size="sm"
-                    fixedWidth
                     className="text-gray-400"
                   />
                 </a>
@@ -244,7 +243,6 @@ export function Dashboard() {
                   <FontAwesomeIcon
                     icon={faEllipsisV}
                     size="sm"
-                    fixedWidth
                     className="text-gray-400"
                   />
                 </a>

@@ -30,7 +30,7 @@ export const SearchDropdown = ({ className }: SearchDropdownProps) => {
         aria-haspopup="true"
         aria-expanded="false"
       >
-        <FontAwesomeIcon icon={faSearch} fixedWidth />
+        <FontAwesomeIcon icon={faSearch} />
       </a>
 
       {/* Dropdown - Messages */}

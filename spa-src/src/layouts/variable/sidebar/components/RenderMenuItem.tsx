@@ -22,7 +22,6 @@
 //             <FontAwesomeIcon
 //               icon={menuItem.icon ?? faCircleDot}
 //               size="sm"
-//               fixedWidth
 //             />
 //             <span>{menuItem.label}</span>
 //           </a>
@@ -51,7 +50,6 @@
 //             <FontAwesomeIcon
 //               icon={menuItem.icon ?? faCircleDot}
 //               size="sm"
-//               fixedWidth
 //             />
 //             <span>{menuItem.label}</span>
 //           </Link>

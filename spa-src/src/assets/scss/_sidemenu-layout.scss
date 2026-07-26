@@ -1,0 +1,72 @@
+// Layout Variables
+// Change below variable to change the width fo the sidemenu
+$sidemenu-base-width: 6.5rem !default;
+
+#layout-sidemenu {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: $sidemenu-base-width;
+  z-index: 999;
+}
+
+@include media-breakpoint-up(sm) {
+  #wrapper {
+    #content-wrapper {
+      margin-left: $sidemenu-base-width;
+    }
+  }
+}
+
+@include media-breakpoint-down(sm) {
+  #wrapper {
+    #content-wrapper {
+      margin-top: 2rem;
+    }
+  }
+  #layout-sidemenu {
+    display: none;
+  }
+}
+
+#sidemenu,
+#usermenu {
+  .openright,
+  .openupright {
+    position: relative;
+    .dropdown-menu {
+      position: absolute;
+      left: 100%;
+      margin: 0px;
+    }
+  }
+  .openright {
+    .dropdown-menu {
+      top: 0;
+    }
+  }
+  .openupright {
+    .dropdown-menu {
+      bottom: 0;
+    }
+  }
+  .openright:hover,
+  .openupright:hover {
+    .dropdown-menu,
+    .openright-menu {
+      display: block;
+    }
+  }
+}
+
+#xsmenu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: yellow;
+  z-index: 999;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(2.5px);
+  -webkit-backdrop-filter: blur(10px);
+}

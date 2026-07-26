@@ -1,7 +1,7 @@
 import { NavLink, useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleDot } from "@fortawesome/free-solid-svg-icons";
-import { MenuItem, MenuProps } from "../../../models/Interfaces";
+import { MenuItem, MenuProps } from "../../../../models/Interfaces";
 
 export const NarrowSidebar = ({ menuItems }: MenuProps) => {
   return (
@@ -33,6 +33,8 @@ type RenderMenuItemProps = {
 };
 
 const RenderMenuItem = ({ item, depth }: RenderMenuItemProps) => {
+  const location = useLocation();
+
   if (item.group) {
     return (
       <>
@@ -52,11 +54,7 @@ const RenderMenuItem = ({ item, depth }: RenderMenuItemProps) => {
       >
         {!depth ? (
           <>
-            <FontAwesomeIcon
-              icon={item.icon ?? faCircleDot}
-              size="sm"
-              fixedWidth
-            />
+            <FontAwesomeIcon icon={item.icon ?? faCircleDot} size="sm" />
             <span>{item.label}</span>
           </>
         ) : (
@@ -65,8 +63,6 @@ const RenderMenuItem = ({ item, depth }: RenderMenuItemProps) => {
       </NavLink>
     );
   }
-
-  const location = useLocation();
 
   return (
     <div className="nav-item openright">
@@ -84,11 +80,7 @@ const RenderMenuItem = ({ item, depth }: RenderMenuItemProps) => {
       >
         {!depth ? (
           <>
-            <FontAwesomeIcon
-              icon={item.icon ?? faCircleDot}
-              size="sm"
-              fixedWidth
-            />
+            <FontAwesomeIcon icon={item.icon ?? faCircleDot} size="sm" />
             <span>{item.label}</span>
           </>
         ) : (
@@ -96,7 +88,7 @@ const RenderMenuItem = ({ item, depth }: RenderMenuItemProps) => {
         )}
       </a>
       <div className="dropdown-menu">
-        <RenderMenuItems items={item.items} depth={++depth} />
+        <RenderMenuItems items={item.items} depth={depth + 1} />
       </div>
     </div>
   );

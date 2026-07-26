@@ -10,9 +10,9 @@ import { useEffect, useRef } from "react";
 import {
   useIdentityContext,
   useSessionContext,
-} from "../../contexts/UseContexts";
+} from "../../../../contexts/UseContexts";
 import { Link } from "react-router-dom";
-import { hashCode } from "../../models/Utilities";
+import { hashCode } from "../../../../models/Utilities";
 
 export const UserInfo = () => {
   const { getApiBearer } = useSessionContext();
@@ -64,7 +64,6 @@ export const UserInfo = () => {
           <FontAwesomeIcon
             icon={faUser}
             size="sm"
-            fixedWidth
             className="me-2 text-gray-400"
           />
           Profile
@@ -73,7 +72,6 @@ export const UserInfo = () => {
           <FontAwesomeIcon
             icon={faUser}
             size="sm"
-            fixedWidth
             className="me-2 text-gray-400"
           />
           Settings
@@ -82,7 +80,6 @@ export const UserInfo = () => {
           <FontAwesomeIcon
             icon={faList}
             size="sm"
-            fixedWidth
             className="me-2 text-gray-400"
           />
           Activity Log
@@ -92,7 +89,6 @@ export const UserInfo = () => {
           <FontAwesomeIcon
             icon={faCopy}
             size="sm"
-            fixedWidth
             className="me-2 text-gray-400"
           />
           Bearer to Clipboard
@@ -106,7 +102,6 @@ export const UserInfo = () => {
           <FontAwesomeIcon
             icon={faSignOut}
             size="sm"
-            fixedWidth
             className="me-2 text-gray-400"
           />
           Logout

@@ -1,16 +1,17 @@
 import { useMsal } from "@azure/msal-react";
-import React, {
-  ComponentType,
-  ReactNode,
-  useMemo,
-  useState,
-} from "react";
+import React, { ComponentType, ReactNode, useMemo, useState } from "react";
 import { Api } from "../apiClient/Api";
 import { webApiConfig } from "../appConfig";
 import { SilentRequest } from "@azure/msal-browser";
-import { SessionContext, useIdentityContext, useSettingsContext } from "./UseContexts";
+import {
+  SessionContext,
+  useIdentityContext,
+  useSettingsContext,
+} from "./UseContexts";
 import { Button, Modal } from "react-bootstrap";
 import classNames from "classnames";
+import { menusConfig as baseMenusConfig } from "../menusConfig";
+import { MenusConfig } from "../models/Interfaces";
 
 type SessionProviderProps = {
   children: ReactNode;
@@ -81,7 +82,7 @@ export function SessionProvider({
     await instance.initialize();
     const request: any = {
       scopes: [globalSettings.msalSettings!.apiScope],
-      accounts: getAccount()
+      accounts: getAccount(),
     };
     const authenticationResult = await instance
       .acquireTokenSilent(request as SilentRequest)
@@ -95,28 +96,33 @@ export function SessionProvider({
   const api: Api | undefined = useMemo(() => {
     if (!instance) return undefined;
     return new Api({
-        baseUrl: webApiConfig.origin,
-        securityWorker: async () => {
-          const request: any = {
-            scopes: [globalSettings.msalSettings!.apiScope],
-            accounts: getAccount()
-          };
-          await instance.initialize();
-          const authenticationResult = await instance
-            .acquireTokenSilent(request as SilentRequest)
-            .catch((e: any) => {
-              console.error(e);
-            });
+      baseUrl: webApiConfig.origin,
+      securityWorker: async () => {
+        const request: any = {
+          scopes: [globalSettings.msalSettings!.apiScope],
+          accounts: getAccount(),
+        };
+        await instance.initialize();
+        const authenticationResult = await instance
+          .acquireTokenSilent(request as SilentRequest)
+          .catch((e: any) => {
+            console.error(e);
+          });
 
-          return {
-            headers: {
-              Authorization: `Bearer ${authenticationResult!.accessToken}`,
-            },
-          };
-        },
-        unhandledErrorHandler: handleApiError,
-      });
-  }, [instance, globalSettings, getAccount]) 
+        return {
+          headers: {
+            Authorization: `Bearer ${authenticationResult!.accessToken}`,
+          },
+        };
+      },
+      unhandledErrorHandler: handleApiError,
+    });
+  }, [instance, globalSettings, getAccount]);
+
+  // TODO: Implement roles filter
+  const menusConfig: MenusConfig = useMemo(() => {
+    return baseMenusConfig;
+  }, []);
 
   const Wrapper = messageWrapper ?? React.Fragment;
 
@@ -127,7 +133,7 @@ export function SessionProvider({
           <em>Getting ready...</em>
         </Wrapper>
       ) : (
-        <SessionContext.Provider value={{ api, getApiBearer }}>
+        <SessionContext.Provider value={{ api, getApiBearer, menusConfig }}>
           <Modal
             show={showApiError}
             onHide={handleErrorModalClose}

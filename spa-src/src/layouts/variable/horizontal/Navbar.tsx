@@ -1,27 +1,34 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
-import { useSettingsContext } from "../contexts/UseContexts";
-import { layoutConfig } from "../layoutConfig";
+import {
+  useSessionContext,
+  useSettingsContext,
+} from "../../../contexts/UseContexts";
 import classNames from "classnames";
-import { useEffect, useRef, useState } from "react";
-import { Brand } from "./horizontalcomponents/Brand";
+import { useEffect, useMemo, useRef } from "react";
+import { Brand } from "./components/Brand";
 import { Link } from "react-router-dom";
 import { faQuestionCircle } from "@fortawesome/free-regular-svg-icons";
 import { Dropdown } from "bootstrap";
-import { HMenu } from "./horizontalcomponents/HMenu";
-import { DropMenu } from "./horizontalcomponents/DropMenu";
-import { MenuProps } from "../models/Interfaces";
+import { HMenu } from "./components/HMenu";
+import { DropMenu } from "./components/DropMenu";
+import { VariableLayoutConfig } from "../../../models/Interfaces";
 
-export const Navbar = ({ menuItems }: MenuProps) => {
+interface NavbarProps {
+  variableLayoutConfig: VariableLayoutConfig;
+}
+
+export const Navbar = ({ variableLayoutConfig }: NavbarProps) => {
   const { toggleSidebar, darkMode } = useSettingsContext();
-  const [navbarClass, setNavbarClass] = useState<string>("");
   const dropdownsCreated = useRef<boolean>(false);
+  const { menusConfig } = useSessionContext();
+  const { mainMenu } = menusConfig;
 
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    if (!darkMode) setNavbarClass(layoutConfig.navbarTheme);
-    else setNavbarClass(layoutConfig.navbarDarkTheme);
-  }, [darkMode, layoutConfig]);
+  const navbarClass: string = useMemo(() => {
+    return darkMode
+      ? variableLayoutConfig.navbarDarkTheme
+      : variableLayoutConfig.navbarTheme;
+  }, [darkMode, variableLayoutConfig]);
 
   useEffect(() => {
     if (dropdownsCreated.current) return;
@@ -44,17 +51,18 @@ export const Navbar = ({ menuItems }: MenuProps) => {
             Conditions where the brand should show up:
             - All sizes when there is no sidebar 
             - SM and XS when there is a sidebar */}
-      {!layoutConfig.includeTopbar && (
+      {!variableLayoutConfig.topbar && (
         <>
           <Brand
             className={classNames("nav-only", {
-              "d-md-none": layoutConfig.includeSidebar,
+              "d-md-none": variableLayoutConfig.sidebar,
             })}
+            sidebar={variableLayoutConfig.sidebar}
           />
           {/* Create space when the topbar-brand-icon is visible, since it is absolute positioned  */}
           <div
             className={classNames("hbar-brand-icon-spacer", {
-              "d-md-none": layoutConfig.includeSidebar,
+              "d-md-none": variableLayoutConfig.sidebar,
             })}
           ></div>
 
@@ -64,12 +72,12 @@ export const Navbar = ({ menuItems }: MenuProps) => {
               - SM an XS when there is a navbar, maybe MD as well, based on need
               ** should be its own component if there is no sidebar or navbar, and there is still a desire to have it
               */}
-          {(layoutConfig.includeNavbar || layoutConfig.includeSidebar) && (
+          {(variableLayoutConfig.navbar || variableLayoutConfig.sidebar) && (
             <button
               className={classNames(
                 "sidebar-toggle-hbar btn btn-link rounded-circle ms-2",
                 {
-                  "d-md-none": !layoutConfig.includeSidebar,
+                  "d-md-none": !variableLayoutConfig.sidebar,
                 },
               )}
               onClick={toggleSidebar}
@@ -83,7 +91,7 @@ export const Navbar = ({ menuItems }: MenuProps) => {
       {/* ********************************************************************************************************************
       Menu Items
       */}
-      <HMenu sm menuitems={menuItems} />
+      <HMenu sm menuitems={mainMenu} />
 
       {/* ******************************************************************************************************************** */}
 
@@ -96,7 +104,7 @@ export const Navbar = ({ menuItems }: MenuProps) => {
             <FontAwesomeIcon icon={faQuestionCircle} />
           </Link>
         </li>
-        <DropMenu id="test" menuitems={menuItems} className="d-lg-none" />
+        <DropMenu id="test" menuitems={mainMenu} className="d-lg-none" />
       </ul>
     </nav>
   );

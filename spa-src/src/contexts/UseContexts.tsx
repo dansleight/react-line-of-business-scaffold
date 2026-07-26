@@ -3,16 +3,17 @@ import { GridBreakpoint } from "../models/Enums";
 import { Api } from "../apiClient/Api";
 import { GlobalSettingsModel } from "../apiClient/data-contracts";
 import { AccountInfo } from "@azure/msal-browser";
+import { MenusConfig } from "../models/Interfaces";
 
 // ---- Settings Context -----------------------------------------------------------------------
 type SettingsContextType = {
   setBodyAttribute: (
     attribute: string,
-    value: string | null | undefined
+    value: string | null | undefined,
   ) => void;
   setHtmlAttribute: (
     attribute: string,
-    value: string | null | undefined
+    value: string | null | undefined,
   ) => void;
   sidebarToggled: boolean;
   setSidebarToggled: (sidebarToggled: boolean) => void;
@@ -44,6 +45,7 @@ export const useIdentityContext = () => useContext(IdentityContext);
 type SessionContextType = {
   api: Api;
   getApiBearer: () => Promise<string | undefined>;
+  menusConfig: MenusConfig;
 };
 
 export const SessionContext = createContext({} as SessionContextType);
