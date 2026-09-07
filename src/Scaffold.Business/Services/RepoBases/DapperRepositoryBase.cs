@@ -1,4 +1,3 @@
-using System;
 using System.Data;
 using System.Data.Common;
 using System.Reflection;
@@ -12,81 +11,118 @@ namespace Scaffold.Business.Services.RepoBases;
 
 public abstract class DapperRepositoryBase
 {
-    private readonly ILogger<DapperRepositoryBase> _logger;
     private readonly string _connectionString;
 
     protected DapperRepositoryBase(
         ILogger<DapperRepositoryBase> logger,
         IOptions<DataAccessSettings> config)
     {
-        _logger = logger;
+        _ = logger;
         _connectionString = config.Value.ConnectionStrings!.Single(x => x.Key == "DefaultConnection").Value;
     }
 
     #region Map Dapper Methods
 
-    protected int Execute(string query, object? parameters = null) => GetConnection().Execute(query, AsDapperParams(parameters));
+    protected int Execute(string query, object? parameters = null) =>
+        WithConnection(c => c.Execute(query, AsDapperParams(parameters)));
 
-    protected T? ExecuteScalar<T>(string query, object? parameters = null) => GetConnection().ExecuteScalar<T>(query, AsDapperParams(parameters));
+    protected T? ExecuteScalar<T>(string query, object? parameters = null) =>
+        WithConnection(c => c.ExecuteScalar<T>(query, AsDapperParams(parameters)));
 
-    protected IDataReader ExecuteReader(string query, object? parameters = null) => GetConnection().ExecuteReader(query, AsDapperParams(parameters));
+    protected IEnumerable<dynamic> Query(string query, object? parameters = null) =>
+        WithConnection(c => c.Query(query, AsDapperParams(parameters)));
 
-    protected IEnumerable<dynamic> Query(string query, object? parameters = null) => GetConnection().Query(query, AsDapperParams(parameters));
-
-    protected IEnumerable<T> Query<T>(string query, object? parameters = null) => GetConnection().Query<T>(query, AsDapperParams(parameters));
+    protected IEnumerable<T> Query<T>(string query, object? parameters = null) =>
+        WithConnection(c => c.Query<T>(query, AsDapperParams(parameters)));
 
     protected IEnumerable<TReturn> Query<TFirst, TSecond, TReturn>(string query, Func<TFirst, TSecond, TReturn> map, object? parameters = null, IDbTransaction? transaction = null, bool buffered = true, string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null)
-        => GetConnection().Query(query, map, AsDapperParams(parameters), transaction, buffered, splitOn, commandTimeout, commandType);
+        => WithConnection(c => c.Query(query, map, AsDapperParams(parameters), transaction, buffered, splitOn, commandTimeout, commandType));
 
     protected IEnumerable<TReturn> Query<TFirst, TSecond, TThird, TReturn>(string query, Func<TFirst, TSecond, TThird, TReturn> map, object? parameters = null, IDbTransaction? transaction = null, bool buffered = true, string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null)
-        => GetConnection().Query(query, map, AsDapperParams(parameters), transaction, buffered, splitOn, commandTimeout, commandType);
+        => WithConnection(c => c.Query(query, map, AsDapperParams(parameters), transaction, buffered, splitOn, commandTimeout, commandType));
 
     protected IEnumerable<TReturn> Query<TFirst, TSecond, TThird, TFourth, TReturn>(string query, Func<TFirst, TSecond, TThird, TFourth, TReturn> map, object? parameters = null, IDbTransaction? transaction = null, bool buffered = true, string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null)
-        => GetConnection().Query(query, map, AsDapperParams(parameters), transaction, buffered, splitOn, commandTimeout, commandType);
+        => WithConnection(c => c.Query(query, map, AsDapperParams(parameters), transaction, buffered, splitOn, commandTimeout, commandType));
 
-    protected T QueryFirst<T>(string query, object? parameters = null) => GetConnection().QueryFirst<T>(query, AsDapperParams(parameters));
+    protected T QueryFirst<T>(string query, object? parameters = null) =>
+        WithConnection(c => c.QueryFirst<T>(query, AsDapperParams(parameters)));
 
-    protected T? QueryFirstOrDefault<T>(string query, object? parameters = null) => GetConnection().QueryFirstOrDefault<T>(query, AsDapperParams(parameters));
+    protected T? QueryFirstOrDefault<T>(string query, object? parameters = null) =>
+        WithConnection(c => c.QueryFirstOrDefault<T>(query, AsDapperParams(parameters)));
 
-    protected T QuerySingle<T>(string query, object? parameters = null) => GetConnection().QuerySingle<T>(query, AsDapperParams(parameters));
+    protected T QuerySingle<T>(string query, object? parameters = null) =>
+        WithConnection(c => c.QuerySingle<T>(query, AsDapperParams(parameters)));
 
-    protected T? QuerySingleOrDefault<T>(string query, object? parameters = null) => GetConnection().QuerySingleOrDefault<T>(query, AsDapperParams(parameters));
+    protected T? QuerySingleOrDefault<T>(string query, object? parameters = null) =>
+        WithConnection(c => c.QuerySingleOrDefault<T>(query, AsDapperParams(parameters)));
 
-    protected Task<int> ExecuteAsync(string query, object? parameters = null) => GetConnection().ExecuteAsync(query, AsDapperParams(parameters));
+    protected Task<int> ExecuteAsync(string query, object? parameters = null) =>
+        WithConnectionAsync(c => c.ExecuteAsync(query, AsDapperParams(parameters)));
 
-    protected Task<T?> ExecuteScalarAsync<T>(string query, object? parameters = null) => GetConnection().ExecuteScalarAsync<T>(query, AsDapperParams(parameters));
+    protected Task<T?> ExecuteScalarAsync<T>(string query, object? parameters = null) =>
+        WithConnectionAsync(c => c.ExecuteScalarAsync<T>(query, AsDapperParams(parameters)));
 
-    protected Task<DbDataReader> ExecuteReaderAsync(string query, object? parameters = null) => GetConnection().ExecuteReaderAsync(query, AsDapperParams(parameters));
+    protected Task<IEnumerable<dynamic>> QueryAsync(string query, object? parameters = null) =>
+        WithConnectionAsync(c => c.QueryAsync(query, AsDapperParams(parameters)));
 
-    protected Task<IEnumerable<dynamic>> QueryAsync(string query, object? parameters = null) => GetConnection().QueryAsync(query, AsDapperParams(parameters));
-
-    protected Task<IEnumerable<T>> QueryAsync<T>(string query, object? parameters = null) => GetConnection().QueryAsync<T>(query, AsDapperParams(parameters));
+    protected Task<IEnumerable<T>> QueryAsync<T>(string query, object? parameters = null) =>
+        WithConnectionAsync(c => c.QueryAsync<T>(query, AsDapperParams(parameters)));
 
     protected Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TReturn>(string query, Func<TFirst, TSecond, TReturn> map, object? parameters = null, IDbTransaction? transaction = null, bool buffered = true, string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null)
-        => GetConnection().QueryAsync(query, map, AsDapperParams(parameters), transaction, buffered, splitOn, commandTimeout, commandType);
+        => WithConnectionAsync(c => c.QueryAsync(query, map, AsDapperParams(parameters), transaction, buffered, splitOn, commandTimeout, commandType));
 
     protected Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TThird, TReturn>(string query, Func<TFirst, TSecond, TThird, TReturn> map, object? parameters = null, IDbTransaction? transaction = null, bool buffered = true, string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null)
-        => GetConnection().QueryAsync(query, map, AsDapperParams(parameters), transaction, buffered, splitOn, commandTimeout, commandType);
+        => WithConnectionAsync(c => c.QueryAsync(query, map, AsDapperParams(parameters), transaction, buffered, splitOn, commandTimeout, commandType));
 
     protected Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TThird, TFourth, TReturn>(string query, Func<TFirst, TSecond, TThird, TFourth, TReturn> map, object? parameters = null, IDbTransaction? transaction = null, bool buffered = true, string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null)
-        => GetConnection().QueryAsync(query, map, AsDapperParams(parameters), transaction, buffered, splitOn, commandTimeout, commandType);
+        => WithConnectionAsync(c => c.QueryAsync(query, map, AsDapperParams(parameters), transaction, buffered, splitOn, commandTimeout, commandType));
 
-    protected Task<T> QueryFirstAsync<T>(string query, object? parameters = null) => GetConnection().QueryFirstAsync<T>(query, AsDapperParams(parameters));
+    protected Task<T> QueryFirstAsync<T>(string query, object? parameters = null) =>
+        WithConnectionAsync(c => c.QueryFirstAsync<T>(query, AsDapperParams(parameters)));
 
-    protected Task<T?> QueryFirstOrDefaultAsync<T>(string query, object? parameters = null) => GetConnection().QueryFirstOrDefaultAsync<T>(query, AsDapperParams(parameters));
+    protected Task<T?> QueryFirstOrDefaultAsync<T>(string query, object? parameters = null) =>
+        WithConnectionAsync(c => c.QueryFirstOrDefaultAsync<T>(query, AsDapperParams(parameters)));
 
-    protected Task<T> QuerySingleAsync<T>(string query, object? parameters = null) => GetConnection().QuerySingleAsync<T>(query, AsDapperParams(parameters));
+    protected Task<T> QuerySingleAsync<T>(string query, object? parameters = null) =>
+        WithConnectionAsync(c => c.QuerySingleAsync<T>(query, AsDapperParams(parameters)));
 
-    protected Task<T?> QuerySingleOrDefaultAsync<T>(string query, object? parameters = null) => GetConnection().QuerySingleOrDefaultAsync<T>(query, AsDapperParams(parameters));
+    protected Task<T?> QuerySingleOrDefaultAsync<T>(string query, object? parameters = null) =>
+        WithConnectionAsync(c => c.QuerySingleOrDefaultAsync<T>(query, AsDapperParams(parameters)));
+
+    /// <summary>
+    /// Caller must dispose the session (which disposes the grid reader and the connection).
+    /// </summary>
+    protected async Task<GridReaderSession> QueryMultipleAsync(string query, object? parameters = null)
+    {
+        DbConnection connection = CreateConnection();
+        try
+        {
+            SqlMapper.GridReader reader = await connection.QueryMultipleAsync(query, AsDapperParams(parameters));
+            return new GridReaderSession(connection, reader);
+        }
+        catch
+        {
+            await connection.DisposeAsync();
+            throw;
+        }
+    }
 
     #endregion
 
     #region Helpers
 
-    protected DbConnection GetConnection()
+    protected DbConnection CreateConnection() => new SqlConnection(_connectionString);
+
+    private T WithConnection<T>(Func<DbConnection, T> action)
     {
-        DbConnection sqlConnection = new SqlConnection(_connectionString);
-        return sqlConnection;
+        using DbConnection connection = CreateConnection();
+        return action(connection);
+    }
+
+    private async Task<T> WithConnectionAsync<T>(Func<DbConnection, Task<T>> action)
+    {
+        await using DbConnection connection = CreateConnection();
+        return await action(connection);
     }
 
     public object? AsDapperParams(object? o)
@@ -101,7 +137,6 @@ public abstract class DapperRepositoryBase
                 return o;
         }
 
-        // https://stackoverflow.com/questions/37264655/dapper-and-enums-as-strings
         var properties = o.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(c => c.CanRead).ToArray();
 
         return properties
@@ -113,4 +148,55 @@ public abstract class DapperRepositoryBase
     }
 
     #endregion
+}
+
+public sealed class GridReaderSession : IDisposable, IAsyncDisposable
+{
+    private readonly DbConnection _connection;
+
+    public GridReaderSession(DbConnection connection, SqlMapper.GridReader reader)
+    {
+        _connection = connection;
+        Reader = reader;
+    }
+
+    public SqlMapper.GridReader Reader { get; }
+
+    public bool IsConsumed => Reader.IsConsumed;
+
+    public IEnumerable<dynamic> Read() => Reader.Read();
+
+    public IEnumerable<T> Read<T>() => Reader.Read<T>();
+
+    public T ReadFirst<T>() => Reader.ReadFirst<T>();
+
+    public T? ReadFirstOrDefault<T>() => Reader.ReadFirstOrDefault<T>();
+
+    public T ReadSingle<T>() => Reader.ReadSingle<T>();
+
+    public T? ReadSingleOrDefault<T>() => Reader.ReadSingleOrDefault<T>();
+
+    public Task<IEnumerable<dynamic>> ReadAsync() => Reader.ReadAsync();
+
+    public Task<IEnumerable<T>> ReadAsync<T>() => Reader.ReadAsync<T>();
+
+    public Task<T> ReadFirstAsync<T>() => Reader.ReadFirstAsync<T>();
+
+    public Task<T?> ReadFirstOrDefaultAsync<T>() => Reader.ReadFirstOrDefaultAsync<T>();
+
+    public Task<T> ReadSingleAsync<T>() => Reader.ReadSingleAsync<T>();
+
+    public Task<T?> ReadSingleOrDefaultAsync<T>() => Reader.ReadSingleOrDefaultAsync<T>();
+
+    public void Dispose()
+    {
+        Reader.Dispose();
+        _connection.Dispose();
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        Reader.Dispose();
+        await _connection.DisposeAsync();
+    }
 }

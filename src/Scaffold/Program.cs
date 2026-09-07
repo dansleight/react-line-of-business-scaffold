@@ -5,6 +5,7 @@ using System.Text.Json.Serialization;
 using Lamar;
 using Lamar.Microsoft.DependencyInjection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.AspNetCore.SignalR;
@@ -19,6 +20,9 @@ using Serilog;
 using Serilog.AspNetCore;
 using Serilog.Events;
 using Swashbuckle.AspNetCore.SwaggerUI;
+using Scaffold.Business.Services.Caching;
+using Scaffold.Hubs;
+using Scaffold.SpaModels;
 
 namespace Scaffold;
 
@@ -103,12 +107,9 @@ public class Program
                 {
                     await currentEvents.OnMessageReceived(context);
                     var accessToken = context.Request.Query["access_token"];
-
-                    // If the request is for our hub...
-                    var path = context.HttpContext.Request.Path;
-                    if (!string.IsNullOrEmpty(accessToken))
+                    if (!string.IsNullOrEmpty(accessToken)
+                        && context.HttpContext.Request.Path.StartsWithSegments("/hub"))
                     {
-                        // read the token out of the query string
                         context.Token = accessToken;
                     }
                 }
@@ -118,21 +119,25 @@ public class Program
         services.AddSingleton<IUserIdProvider, NameUserIdProvider>();
 
         services.AddHttpContextAccessor();
-
-        services.AddCors(options =>
+        services.AddSingleton<PersonIdEnricher>();
+        services.AddHttpClient(nameof(Services.AvatarService), client =>
         {
-            options.AddPolicy(corsPolicyName, policy =>
-            {
-                policy.SetIsOriginAllowed(origin =>
-                {
-                    if (origin.StartsWith("https://localhost:") || origin.StartsWith("http://localhost:"))
-                        return true;
-                    return false;
-                });
-                policy.AllowAnyMethod();
-                policy.AllowAnyHeader();
-            });
+            client.Timeout = TimeSpan.FromSeconds(5);
+            client.DefaultRequestHeaders.UserAgent.ParseAdd("Scaffold/1.0");
         });
+
+        if (IsDevelopmentMode(context.Configuration))
+        {
+            services.AddCors(options =>
+            {
+                options.AddPolicy(corsPolicyName, policy =>
+                {
+                    policy.SetIsOriginAllowed(IsLocalhostOrigin);
+                    policy.AllowAnyMethod();
+                    policy.AllowAnyHeader();
+                });
+            });
+        }
 
         services.AddControllers(options =>
             {
@@ -141,10 +146,7 @@ public class Program
             .ConfigureApiBehaviorOptions(options =>
             {
                 options.InvalidModelStateResponseFactory = context =>
-                {
-                    var problems = new CustomBadRequest(context);
-                    return new BadRequestObjectResult(problems);
-                };
+                    new BadRequestObjectResult(ApiError.FromModelState(context));
             })
             .AddNewtonsoftJson(options =>
             {
@@ -161,20 +163,24 @@ public class Program
 
         services.AddSpaStaticFiles(opt => opt.RootPath = "ClientApp/dist");
 
-        services.AddSwaggerGen(c =>
+        if (IsDevelopmentMode(context.Configuration))
         {
-            c.SwaggerDoc("v1", new OpenApiInfo { Title = "Scaffold API", Version = "v1.0", Description = "Scaffold API Prototype" });
-            c.AddJwtBearerSecurity();
-            c.IncludeXmlComments(Assembly.GetExecutingAssembly(), true);
-            c.CustomOperationIds(e => $"{e.ActionDescriptor.RouteValues["controller"]}_{e.ActionDescriptor.RouteValues["action"]}");
-            c.SupportNonNullableReferenceTypes();
-            c.UseAllOfToExtendReferenceSchemas();
-            c.OperationFilter<AuthorizeOperationFilter>();
-        });
-        services.AddSwaggerGenNewtonsoftSupport();
+            services.AddEndpointsApiExplorer();
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Scaffold API", Version = "v1.0", Description = "Scaffold API Prototype" });
+                c.AddJwtBearerSecurity();
+                c.IncludeXmlComments(Assembly.GetExecutingAssembly(), true);
+                c.CustomOperationIds(e => $"{e.ActionDescriptor.RouteValues["controller"]}_{e.ActionDescriptor.RouteValues["action"]}");
+                c.SupportNonNullableReferenceTypes();
+                c.UseAllOfToExtendReferenceSchemas();
+                c.OperationFilter<AuthorizeOperationFilter>();
+            });
+            services.AddSwaggerGenNewtonsoftSupport();
+        }
 
         services.AddMemoryCache();
-        services.AddEndpointsApiExplorer();
+        services.AddAppCache(context.Configuration.GetRequiredSection("MemoryCache"));
         services.AddLogging();
 
         services.Scan(s =>
@@ -188,12 +194,20 @@ public class Program
             s.LookForRegistries();
         });
 
-        _ = services.AddSingleton<Assembly[]>([
-            Assembly.GetExecutingAssembly(),
-            Assembly.GetAssembly(typeof(WidgetObject))!
-        ]);
+        // Lamar does not always surface TryAddEnumerable registrations as IEnumerable<IExceptionHandler>.
+        services.For<IExceptionHandler>().Use<ApiExceptionHandler>().Singleton();
 
-        services.AddScoped<BoundTableBinder>();
+        services.AddMappedTableBinder(
+            Assembly.GetExecutingAssembly(),
+            typeof(DapperRepositoryBase).Assembly);
+
+        services.AddMappedTableChangeHandler(HandleMappedTableChange);
+    }
+
+    private static Task HandleMappedTableChange(MappedTableChange change, CancellationToken cancellationToken)
+    {
+        Log.Debug("Mapped table {Table} ({EntityType}) {Kind}", change.TableName, change.EntityTypeName, change.Kind);
+        return Task.CompletedTask;
     }
 
     public static void Configure(WebApplication app, IWebHostEnvironment env, ConfigurationManager configuration)
@@ -202,6 +216,8 @@ public class Program
         {
             ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedProto
         });
+
+        app.UseExceptionHandler(_ => { });
 
         app.UseSerilogRequestLogging(delegate (RequestLoggingOptions options)
         {
@@ -239,17 +255,19 @@ public class Program
             };
         });
 
-        app.UseCors(corsPolicyName);
-
-        app.UseSwagger();
-        app.UseSwaggerUI(options =>
+        if (IsDevelopmentMode(configuration))
         {
-            options.DocumentTitle = "Scaffold API";
-            options.EnableTryItOutByDefault();
-            options.EnablePersistAuthorization();
-            options.DocExpansion(DocExpansion.List);
-            options.InjectJavascript("/swagger-custom.js");
-        });
+            app.UseCors(corsPolicyName);
+            app.UseSwagger();
+            app.UseSwaggerUI(options =>
+            {
+                options.DocumentTitle = "Scaffold API";
+                options.EnableTryItOutByDefault();
+                options.EnablePersistAuthorization();
+                options.DocExpansion(DocExpansion.List);
+                options.InjectJavascript("/swagger-custom.js");
+            });
+        }
 
         app.UseMiddleware<NormalizeAuthorizationHeaderMiddleware>();
         app.UseAuthentication();
@@ -274,10 +292,22 @@ public class Program
             });
         });
 
-        // app.MapHub<NotificationsHub>("/hub/notificatios");
+        app.MapHub<NotificationsHub>("/hub/notifications").RequireAuthorization();
 
         app.MapControllers();
 
+    }
+
+    private static bool IsDevelopmentMode(IConfiguration configuration) =>
+        configuration.GetValue<ApplicationMode>("ApplicationMode") == ApplicationMode.Development;
+
+    private static bool IsLocalhostOrigin(string origin)
+    {
+        if (!Uri.TryCreate(origin, UriKind.Absolute, out Uri? uri))
+            return false;
+        if (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps)
+            return false;
+        return uri.Host is "localhost" or "127.0.0.1" or "::1";
     }
 
 }

@@ -1,25 +1,19 @@
-using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Diagnostics;
-using System.Linq;
 using System.Reflection;
 
 namespace Scaffold.Business.Services.RepoBases;
 
-public class BoundTableBinder
+public class MappedTableBinder
 {
-    private static ConcurrentDictionary<Type, ITableBinding>? TableBindings { get; set; }
+    private readonly ConcurrentDictionary<Type, ITableBinding> _tableBindings = new();
 
-    public BoundTableBinder(Assembly[] assemblies)
+    public MappedTableBinder(Assembly[] assemblies)
     {
-        TableBindings = new ConcurrentDictionary<Type, ITableBinding>();
-
         PopulateTableBindings(assemblies);
     }
 
-    private static void PopulateTableBindings(IEnumerable<Assembly> assemblies)
+    private void PopulateTableBindings(IEnumerable<Assembly> assemblies)
     {
         IEnumerable<Type> tableTypes = GetTypesWithTableAttribute(assemblies);
 
@@ -27,7 +21,7 @@ public class BoundTableBinder
             SetTableBindingForType(tableType);
     }
 
-    private static void SetTableBindingForType(Type tableType)
+    private void SetTableBindingForType(Type tableType)
     {
         IEnumerable<Column> columns = from propertyInfo in tableType.GetProperties()
                                       let columnAttribute = propertyInfo.GetCustomAttributes(typeof(ColumnAttribute), false).Cast<ColumnAttribute>().SingleOrDefault()
@@ -36,7 +30,7 @@ public class BoundTableBinder
 
         Type tableBindingType = typeof(TableBinding<>).MakeGenericType(tableType);
         var tableBinding = (ITableBinding)Activator.CreateInstance(tableBindingType, columns)!;
-        TableBindings![tableType] = tableBinding;
+        _tableBindings[tableType] = tableBinding;
     }
 
     public TableBinding<T> GetTableBinding<T>() where T : class
@@ -44,7 +38,10 @@ public class BoundTableBinder
         if (typeof(T).GetCustomAttributes(typeof(TableAttribute), false).Cast<TableAttribute>().SingleOrDefault() == null)
             throw new InvalidOperationException($"The given type {typeof(T)} does not have a {nameof(TableAttribute)} and cannot be used with this method.");
 
-        return (TableBinding<T>)TableBindings![typeof(T)];
+        if (!_tableBindings.TryGetValue(typeof(T), out ITableBinding? binding))
+            throw new InvalidOperationException($"No table binding for {typeof(T).Name}. Ensure the type has [Table] and its assembly was passed to {nameof(MappedTableBinder)}.");
+
+        return (TableBinding<T>)binding;
     }
 
     private static IEnumerable<Type> GetTypesWithTableAttribute(IEnumerable<Assembly> assemblies) =>

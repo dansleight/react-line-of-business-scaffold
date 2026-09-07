@@ -1,4 +1,3 @@
-using System;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Reflection;
 
@@ -28,15 +27,21 @@ public class Column
 
     internal bool IsKeyColumn => ColumnAttributes.KeyAttribute != null;
 
-    internal bool IncludeInInsertStatement => IsWritable;
+    /// <summary>
+    /// Identity columns are omitted from INSERT. Assigned keys (composite, string) are included.
+    /// </summary>
+    internal bool IsIdentity { get; set; }
 
-    internal bool IncludeInUpdateStatement => IsWritable;
-
-    private bool IsWritable =>
-        ColumnAttributes.KeyAttribute == null
+    internal bool IncludeInInsertStatement =>
+        !IsIdentity
         && ColumnAttributes.NotMappedAttribute == null
         && ColumnAttributes.ReadOnlyAttribute is not { IsReadOnly: true }
-        && (ColumnAttributes.DatabaseGeneratedAttribute == null
-            || ColumnAttributes.DatabaseGeneratedAttribute.DatabaseGeneratedOption == DatabaseGeneratedOption.None);
+        && ColumnAttributes.DatabaseGeneratedAttribute is not { DatabaseGeneratedOption: DatabaseGeneratedOption.Computed };
 
+    internal bool IncludeInUpdateStatement =>
+        !IsKeyColumn
+        && !IsIdentity
+        && ColumnAttributes.NotMappedAttribute == null
+        && ColumnAttributes.ReadOnlyAttribute is not { IsReadOnly: true }
+        && ColumnAttributes.DatabaseGeneratedAttribute is not { DatabaseGeneratedOption: DatabaseGeneratedOption.Computed };
 }
