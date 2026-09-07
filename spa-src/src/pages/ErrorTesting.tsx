@@ -52,12 +52,6 @@ export function ErrorTesting() {
     }
   };
 
-  const testWidgetGet = () => {
-    api.widgetGet().then((res) => {
-      console.log(res.data);
-    });
-  };
-
   return (
     <>
       <Container fluid>
@@ -175,11 +169,6 @@ export function ErrorTesting() {
                 </dl>
               </>
             )}
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            <Button onClick={testWidgetGet}>Test Widget Get</Button>
           </Col>
         </Row>
       </Container>

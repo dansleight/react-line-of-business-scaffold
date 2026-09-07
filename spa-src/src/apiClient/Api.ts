@@ -10,15 +10,8 @@
  * ---------------------------------------------------------------
  */
 
-import {
-  AddWidgetModel,
-  BadRequestModel,
-  GlobalSettingsModel,
-  GoodModel,
-  HttpValidationError,
-  WidgetObject,
-} from "./data-contracts";
-import { ContentType, HttpClient, RequestParams } from "./http-client";
+import { ApiError, GlobalSettingsModel, GoodModel } from "./data-contracts";
+import { HttpClient, RequestParams } from "./http-client";
 
 export class Api<
   SecurityDataType = unknown,
@@ -32,9 +25,43 @@ export class Api<
    * @request GET:/api/settings
    */
   settingsGet = (params: RequestParams = {}) =>
-    this.request<GlobalSettingsModel, any>({
+    this.request<GlobalSettingsModel, ApiError>({
       path: `/api/settings`,
       method: "GET",
+      format: "json",
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Settings
+   * @name SettingsAvatar
+   * @summary Gets the current user's avatar (Graph, then Gravatar, then initials). Cached for seven days.
+   * @request GET:/api/settings/avatar
+   * @secure
+   */
+  settingsAvatar = (params: RequestParams = {}) =>
+    this.request<File, ApiError>({
+      path: `/api/settings/avatar`,
+      method: "GET",
+      secure: true,
+      format: "json",
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Settings
+   * @name SettingsRefreshAvatar
+   * @summary Forces a refresh of the current user's avatar from Graph / Gravatar / initials.
+   * @request POST:/api/settings/avatar/refresh
+   * @secure
+   */
+  settingsRefreshAvatar = (params: RequestParams = {}) =>
+    this.request<File, ApiError>({
+      path: `/api/settings/avatar/refresh`,
+      method: "POST",
+      secure: true,
       format: "json",
       ...params,
     });
@@ -47,60 +74,8 @@ export class Api<
    * @secure
    */
   testGet = (id: number, params: RequestParams = {}) =>
-    this.request<GoodModel, BadRequestModel>({
+    this.request<GoodModel, ApiError>({
       path: `/api/test/${id}`,
-      method: "GET",
-      secure: true,
-      format: "json",
-      ...params,
-    });
-  /**
-   * No description
-   *
-   * @tags Widget
-   * @name WidgetGet
-   * @request GET:/api/widget
-   * @secure
-   */
-  widgetGet = (params: RequestParams = {}) =>
-    this.request<WidgetObject[], any>({
-      path: `/api/widget`,
-      method: "GET",
-      secure: true,
-      format: "json",
-      ...params,
-    });
-  /**
-   * No description
-   *
-   * @tags Widget
-   * @name WidgetAdd
-   * @request POST:/api/widget
-   * @secure
-   */
-  widgetAdd = (data: AddWidgetModel, params: RequestParams = {}) =>
-    this.request<WidgetObject, HttpValidationError>({
-      path: `/api/widget`,
-      method: "POST",
-      body: data,
-      secure: true,
-      type: ContentType.Json,
-      format: "json",
-      ...params,
-    });
-  /**
-   * No description
-   *
-   * @tags Widget
-   * @name WidgetGet2
-   * @request GET:/api/widget/{widgetId}
-   * @originalName widgetGet
-   * @duplicate
-   * @secure
-   */
-  widgetGet2 = (widgetId: number, params: RequestParams = {}) =>
-    this.request<WidgetObject, any>({
-      path: `/api/widget/${widgetId}`,
       method: "GET",
       secure: true,
       format: "json",

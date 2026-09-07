@@ -79,3 +79,19 @@ VALUES
 	(1, 'Gadget', 'This is a gadget, a kind of Widget'),
 	(2, 'Thingy', 'This is a thingy that I can''t really describe')
 GO
+
+-- ******************** dat_UserAvatar ********************
+IF OBJECT_ID('dat_UserAvatar') IS NOT NULL
+    DROP TABLE dat_UserAvatar
+GO
+
+CREATE TABLE dat_UserAvatar (
+    PersonId        	NVARCHAR(250)       NOT NULL,
+    Source          	NVARCHAR(20)        NOT NULL,
+    ContentType     	NVARCHAR(100)       NOT NULL,
+    Content         	VARBINARY(MAX)      NOT NULL,
+    UpdatedOn       	DATETIME            NOT NULL DEFAULT GETDATE(),
+    CONSTRAINT pk_dat_UserAvatar PRIMARY KEY (PersonId)
+)
+GO
+

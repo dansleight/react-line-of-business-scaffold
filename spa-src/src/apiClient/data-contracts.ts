@@ -10,18 +10,22 @@
  * ---------------------------------------------------------------
  */
 
-export interface AddWidgetModel {
-  /**
-   * @minLength 1
-   * @maxLength 100
-   */
-  name: string;
-  description: string | null;
+export interface ApiError {
+  /** @format int32 */
+  status: number;
+  code: string;
+  userMessage: string;
+  message: string | null;
+  traceId: string;
+  errors: Record<string, string[]> | null;
+  exception: ApiErrorException | null;
 }
 
-export interface BadRequestModel {
-  message: string;
-  userMessage: string | null;
+export interface ApiErrorException {
+  type: string;
+  message: string | null;
+  stackTrace: string | null;
+  inner: ApiErrorException | null;
 }
 
 export interface GlobalSettingsModel {
@@ -35,25 +39,9 @@ export interface GoodModel {
   name: string;
 }
 
-export interface HttpValidationError {
-  detail: ValidationError[] | null;
-}
-
 export interface MsalSettingsModel {
   clientId: string;
   authority: string;
   apiScope: string;
   provider: string | null;
-}
-
-export interface ValidationError {
-  field: string;
-  message: string;
-}
-
-export interface WidgetObject {
-  /** @format int32 */
-  widgetId: number;
-  name: string;
-  description: string | null;
 }

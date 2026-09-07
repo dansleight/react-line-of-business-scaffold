@@ -1,5 +1,4 @@
 import {
-  faCubesStacked,
   faDumpsterFire,
   faExclamationTriangle,
   faGauge,
@@ -11,11 +10,6 @@ const errorTesting: MenuItem = {
   path: "/error-testing",
   label: "Error Testing",
   icon: faExclamationTriangle,
-};
-const widgets: MenuItem = {
-  path: "/widgets",
-  label: "Widgets",
-  icon: faCubesStacked,
 };
 const main: MenuItem = {
   path: "/main",
@@ -38,5 +32,5 @@ const main: MenuItem = {
 };
 
 export const menusConfig: MenusConfig = {
-  mainMenu: [dashboard, widgets, errorTesting, main],
+  mainMenu: [dashboard, errorTesting, main],
 };
