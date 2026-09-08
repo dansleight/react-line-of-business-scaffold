@@ -1,0 +1,52 @@
+@import "bootstrap/scss/functions";
+@import "bootswatch/dist/sandstone/variables";
+@import "bootstrap/scss/bootstrap";
+@import "bootswatch/dist/sandstone/bootswatch";
+
+body {
+  min-height: 100vh;
+}
+
+.connection-value {
+  word-break: break-all;
+  white-space: pre-wrap;
+}
+
+.mapping-table {
+  th,
+  td {
+    vertical-align: middle;
+  }
+
+  code {
+    font-size: 0.875em;
+  }
+}
+
+.enum-audit:last-child {
+  margin-bottom: 0 !important;
+}
+
+.enum-values {
+  list-style: none;
+  padding-left: 1.5rem;
+}
+
+.busy-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1050;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.busy-overlay-dialog {
+  min-width: 16rem;
+  padding: 1.5rem 2rem;
+  text-align: center;
+  background: var(--bs-body-bg);
+  border-radius: 0.5rem;
+  box-shadow: var(--bs-box-shadow-lg);
+}

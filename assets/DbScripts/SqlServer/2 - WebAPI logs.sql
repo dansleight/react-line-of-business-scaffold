@@ -1,4 +1,4 @@
-USE Scaff_DB
+USE Sweetwater
 GO
 
 -- ******************** dat_SerilogLogs ********************
@@ -10,11 +10,11 @@ CREATE TABLE dat_SerilogLogs (
 	Id				INT					IDENTITY(1, 1) NOT NULL,
 	Message			NVARCHAR(MAX)		NULL,
 	MessageTemplate	NVARCHAR(MAX)		NULL,
-	Level			NVARCHAR(MAX)		NULL,
-	TimeStamp		NVARCHAR(MAX)		NULL,
+	Level			NVARCHAR(128)		NULL,
+	TimeStamp		DATETIME2			NOT NULL,
 	Exception		NVARCHAR(MAX)		NULL,
 	LogEvent		NVARCHAR(MAX)		NULL,
-	Username		NVARCHAR(50)		NULL,
+	Username		NVARCHAR(100)		NULL,
 	ApplicationName	NVARCHAR(50)		NULL,
 	MachineName		NVARCHAR(50)		NULL,
 	CONSTRAINT pk_dat_SerilogLogs PRIMARY KEY (Id)

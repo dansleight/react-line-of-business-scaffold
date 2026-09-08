@@ -135,11 +135,25 @@ async function main() {
   );
 
   // assets
+  await fs.mkdir(path.resolve(rootPath, "assets"));
   await fs.cp(
-    path.resolve(PROJECT_ROOT, "assets"),
-    path.resolve(rootPath, "assets"),
+    path.resolve(PROJECT_ROOT, "assets/DbScripts"),
+    path.resolve(rootPath, "assets/DbScripts"),
     cpargs,
   );
+
+  // generator
+  if (isDotnet) {
+    await fs.rm(path.resolve(PROJECT_ROOT, "assets/generator/node_modules"), {
+      recursive: true,
+      force: true,
+    });
+    await fs.cp(
+      path.resolve(PROJECT_ROOT, "assets/generator"),
+      path.resolve(rootPath, "assets/generator"),
+      cpargs,
+    );
+  }
 
   // .gitignore
   await fs.cp(
