@@ -13,6 +13,33 @@ export function generateGuid(seed: string): string {
   )}-${hash.substr(16, 4)}-${hash.substr(20, 12)}`.toUpperCase();
 }
 
+/**
+ * Give each project in a .sln its own GUID. Leaves well-known project-type
+ * GUIDs (the first GUID on a Project line) unchanged.
+ */
+export function rewriteSolutionProjectGuids(
+  slnContent: string,
+  namespace: string,
+): string {
+  const projectLine =
+    /^Project\("\{[0-9A-Fa-f-]+\}"\)\s*=\s*"([^"]+)"\s*,\s*"[^"]+"\s*,\s*"\{([0-9A-Fa-f-]+)\}"/gm;
+
+  const mapping = new Map<string, string>();
+  for (const match of slnContent.matchAll(projectLine)) {
+    const projectName = match[1];
+    const oldGuid = match[2].toUpperCase();
+    if (!mapping.has(oldGuid)) {
+      mapping.set(oldGuid, generateGuid(`${namespace}.${projectName}`));
+    }
+  }
+  if (mapping.size === 0) return slnContent;
+
+  return slnContent.replace(
+    /[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}/g,
+    (guid) => mapping.get(guid.toUpperCase()) ?? guid,
+  );
+}
+
 export async function safeRename(
   oldPath: string,
   newPath: string,

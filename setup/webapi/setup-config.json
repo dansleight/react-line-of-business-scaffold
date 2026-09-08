@@ -31,7 +31,8 @@
         "./spa-src/.env",
         "./spa-src/src/appConfig.ts",
         "./spa-src/vite.config.ts",
-        "./src/.vscode/launch.json"
+        "./src/.vscode/launch.json",
+        "./src/Scaffold/Properties/launchSettings.json"
       ],
       "match": "5011",
       "to": "${apiPort}",
@@ -58,14 +59,14 @@
     },
     {
       "action": "replace-text",
-      "target": "./spa-src/vite.config.ts",
+      "target": ["./spa-src/vite.config.ts", "./spa-src/src/appConfig.ts"],
       "match": "3011",
       "to": "${spaPort}",
       "comment": "Replace port in vite.config.ts"
     },
     {
       "action": "replace-text",
-      "target": "./spa-src/src/layout/sidebar/index.tsx",
+      "target": "./spa-src/src/layouts/variable/sidebar/Sidebar.tsx",
       "match": "Scaff <sup>00</sup>",
       "to": "${title}",
       "comment": "Title on Sidebar"

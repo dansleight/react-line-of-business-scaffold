@@ -11,7 +11,7 @@ import {
   removeFromFile,
   removePackageScripts,
   splitByCase,
-  generateGuid,
+  rewriteSolutionProjectGuids,
   safeRename,
   recursiveRenameContaining,
 } from "../utils/utilities";
@@ -33,12 +33,19 @@ async function main() {
     {
       type: "input",
       name: "namespace",
-      message: "What is the namespace for this project? (No spaces)",
-      validate: (v) =>
-        /^[a-zA-Z][a-zA-Z0-9.]*$/.test(v) || "Valid namespace required",
+      message:
+        "What is the namespace for this project? (letters and digits only, no dots)",
+      validate: (v) => {
+        const trimmed = String(v).trim();
+        if (!/^[A-Za-z][A-Za-z0-9]*$/.test(trimmed)) {
+          return "Use a single identifier: start with a letter, letters and digits only (no dots, spaces, or punctuation).";
+        }
+        return true;
+      },
     },
   ]);
-  const { backend, namespace: ns } = set1;
+  const { backend, namespace: nsRaw } = set1;
+  const ns = nsRaw.trim().charAt(0).toUpperCase() + nsRaw.trim().slice(1);
   const recport = 5000 + Math.floor(Math.random() * (92 - 13 + 1)) + 13;
   const propPath = path.resolve(`../../${ns}`);
   const propPathValid = validateDirectory(propPath);
@@ -293,12 +300,12 @@ async function main() {
       // console.log(
       //   `\nRecursively renaming all 'Scaffold' → '${ns}' in src/ ...`,
       // );
-      await recursiveRenameContaining(srcDir, "Scaffold", ns.split(".").pop()!);
+      await recursiveRenameContaining(srcDir, "Scaffold", ns);
     }
 
     // Rename solution file (outside src/)
     const oldSln = path.join(rootPath, "Scaffold.sln");
-    const newSlnName = `${ns.split(".").pop()}.sln`;
+    const newSlnName = `${ns}.sln`;
     const newSln = path.join(rootPath, newSlnName);
 
     if (await fs.stat(oldSln).catch(() => false)) {
@@ -309,8 +316,8 @@ async function main() {
 
   // CRITICAL: Title first — prevents "Scaffold" in title from being overwritten
   const titleFiles = [
-    "spa-src/src/layout/Layout.tsx",
-    "spa-src/src/layoutConfig.ts",
+    "spa-src/src/layouts/variable/VariableLayout.tsx",
+    "spa-src/src/layouts/variable/config.ts",
   ];
   for (const rel of titleFiles) {
     const file = path.resolve(rootPath, rel);
@@ -339,24 +346,8 @@ async function main() {
         .replace(/Scaffold/g, ns) // namespace
         .replace(/\{Database\}/g, dbName); // DB name
 
-      if (isDotnet) {
-        const solutionGuid = generateGuid(ns + ".Solution");
-        const projectGuid = generateGuid(ns + ".WebApi");
-        // Replace old placeholder GUIDs
-        updated = updated.replace(
-          /[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}/gi,
-          (match) => {
-            const lower = match.toLowerCase();
-            if (
-              lower.includes("0000") ||
-              lower.includes("1111") ||
-              content.includes("Scaffold")
-            ) {
-              return file.endsWith(".sln") ? solutionGuid : projectGuid;
-            }
-            return match;
-          },
-        );
+      if (isDotnet && file.toLowerCase().endsWith(".sln")) {
+        updated = rewriteSolutionProjectGuids(updated, ns);
       }
 
       if (updated !== content) {
