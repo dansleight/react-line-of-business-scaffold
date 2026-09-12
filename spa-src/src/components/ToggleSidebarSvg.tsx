@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useSettingsContext } from "../contexts/UseContexts";
+import { useSettingsContext } from "@/contexts/UseContexts";
 
 type ToggleSidebarSvgProps = {
   reverse?: boolean;
@@ -14,9 +14,11 @@ export function ToggleSidebarSvg({
   const [flipper, setFlipper] = useState<boolean>(true);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (reverse) setFlipper(false);
     else setFlipper(true);
   }, [reverse]);
+
   return (
     <>
       {sidebarToggled == flipper ? (

@@ -1,7 +1,4 @@
-import {
-  useSessionContext,
-  useSettingsContext,
-} from "../../../contexts/UseContexts";
+import { useSessionContext, useSettingsContext } from "@/contexts/UseContexts";
 import { BarSearch } from "./components/BarSearch";
 import { SearchDropdown } from "./components/SearchDropdown";
 import { Alerts } from "./components/Alerts";
@@ -12,7 +9,7 @@ import classNames from "classnames";
 import { useMemo } from "react";
 import { Brand } from "./components/Brand";
 import { DropMenu } from "./components/DropMenu";
-import { VariableLayoutConfig } from "../../../models/Interfaces";
+import { VariableLayoutConfig } from "@/models/Interfaces";
 
 interface TopbarProps {
   variableLayoutConfig: VariableLayoutConfig;

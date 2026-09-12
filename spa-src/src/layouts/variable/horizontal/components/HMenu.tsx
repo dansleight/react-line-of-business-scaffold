@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { MenuItem } from "../../../../models/Interfaces";
+import { MenuItem } from "@/models/Interfaces";
 import { faCircleDot } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";

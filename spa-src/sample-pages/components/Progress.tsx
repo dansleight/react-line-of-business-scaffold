@@ -1,5 +1,5 @@
 import { Col, Container, Row } from "react-bootstrap";
-import { Headcrumb } from "../../components/Headcrumb";
+import { Headcrumb } from "@/components/Headcrumb";
 
 export function Progress() {
   return (

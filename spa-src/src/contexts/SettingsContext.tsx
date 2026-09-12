@@ -1,10 +1,10 @@
 import { ComponentType, ReactNode, useEffect, useState } from "react";
-import { GridBreakpoint, gridBreakpoints } from "../models/Enums";
+import { GridBreakpoint, gridBreakpoints } from "@/models/Enums";
 import { SettingsContext } from "./UseContexts";
 import useCookie from "react-use-cookie";
-import { GlobalSettingsModel } from "../apiClient/data-contracts";
-import { defaultGlobalSettings, webApiConfig } from "../appConfig";
-import { Api } from "../apiClient/Api";
+import { GlobalSettingsModel } from "@/apiClient/data-contracts";
+import { defaultGlobalSettings, webApiConfig } from "@/appConfig";
+import { Api } from "@/apiClient/Api";
 import React from "react";
 
 type SettingsProviderProps = {
@@ -75,6 +75,7 @@ export function SettingsProvider({
   }, [darkMode]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (darkModeCookie === "true") setDarkMode(true);
     // establish some defaults for page loading
     // we could load the layoutConfig here and instantiate it, however

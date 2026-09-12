@@ -7,12 +7,9 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Dropdown } from "bootstrap";
 import { useEffect, useRef } from "react";
-import {
-  useIdentityContext,
-  useSessionContext,
-} from "../../../../contexts/UseContexts";
+import { useIdentityContext, useSessionContext } from "@/contexts/UseContexts";
 import { Link } from "react-router-dom";
-import { hashCode } from "../../../../models/Utilities";
+import { hashCode } from "@/models/Utilities";
 
 export const UserInfo = () => {
   const { getApiBearer } = useSessionContext();

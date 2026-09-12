@@ -2,7 +2,7 @@ import { IconDefinition } from "@fortawesome/fontawesome-common-types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { Card, Col, Row } from "react-bootstrap";
-import { useSettingsContext } from "../contexts/UseContexts";
+import { useSettingsContext } from "@/contexts/UseContexts";
 
 export enum KpiColor {
   Primary,
@@ -33,6 +33,7 @@ export function Kpi({ color, title, value, progress, icon }: KpiProps) {
   useEffect(() => {
     switch (color) {
       case KpiColor.Primary:
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setBorderStart("border-start-primary");
         setText("text-primary");
         break;
@@ -60,6 +61,7 @@ export function Kpi({ color, title, value, progress, icon }: KpiProps) {
   }, [_color, darkMode]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (color) setColor(color);
     if (progress && progress > 0 && progress < 1) setProgress(progress * 100);
     else if (progress && progress < 0) setProgress(0);

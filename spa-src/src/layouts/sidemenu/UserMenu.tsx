@@ -1,8 +1,5 @@
 import classNames from "classnames";
-import {
-  useIdentityContext,
-  useSessionContext,
-} from "../../contexts/UseContexts";
+import { useIdentityContext, useSessionContext } from "@/contexts/UseContexts";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCopy,
@@ -11,7 +8,7 @@ import {
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
-import { hashCode } from "../../models/Utilities";
+import { hashCode } from "@/models/Utilities";
 
 export const UserMenu = () => {
   const { getApiBearer } = useSessionContext();

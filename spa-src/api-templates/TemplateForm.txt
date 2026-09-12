@@ -1,16 +1,16 @@
-import { AutoForm, FormFieldError } from "../components/AutoForm";
-import { useSessionContext } from "../../contexts/UseContexts";
+import { AutoForm, FormFieldError } from "@/components/AutoForm";
+import { useSessionContext } from "@/contexts/UseContexts";
 import {
   {PostObject},
   HttpValidationError,
   ValidationError,
   {BaseObject},
-} from "../../apiClient/data-contracts";
+} from "@/apiClient/data-contracts";
 import { ReactElement, useEffect, useState } from "react";
 import {
   {PostObject}Schema,
   {PostObject}PropDefs,
-} from "../../apiClient/schemas";
+} from "@/apiClient/schemas";
 
 const default{PostObject}Values: {PostObject} = {} as {PostObject};
 

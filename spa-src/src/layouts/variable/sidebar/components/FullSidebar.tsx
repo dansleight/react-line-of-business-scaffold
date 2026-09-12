@@ -2,7 +2,7 @@ import { Link, NavLink, useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleDot } from "@fortawesome/free-solid-svg-icons";
 import MetisMenu from "@metismenu/react";
-import { MenuItem, MenuProps } from "../../../../models/Interfaces";
+import { MenuItem, MenuProps } from "@/models/Interfaces";
 import classNames from "classnames";
 
 export const FullSidebar = ({ menuItems }: MenuProps) => {
@@ -85,7 +85,7 @@ const RenderFullItem = ({ item, depth }: RenderFullItemProps) => {
         )}
       </Link>
       <ul className="sub-menu list-unstyled">
-        <RenderFullItems items={item.items} depth={++depth} />
+        <RenderFullItems items={item.items} depth={depth + 1} />
       </ul>
     </li>
   );

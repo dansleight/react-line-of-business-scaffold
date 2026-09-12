@@ -1,9 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
-import {
-  useSessionContext,
-  useSettingsContext,
-} from "../../../contexts/UseContexts";
+import { useSessionContext, useSettingsContext } from "@/contexts/UseContexts";
 import classNames from "classnames";
 import { useEffect, useMemo, useRef } from "react";
 import { Brand } from "./components/Brand";
@@ -12,7 +9,7 @@ import { faQuestionCircle } from "@fortawesome/free-regular-svg-icons";
 import { Dropdown } from "bootstrap";
 import { HMenu } from "./components/HMenu";
 import { DropMenu } from "./components/DropMenu";
-import { VariableLayoutConfig } from "../../../models/Interfaces";
+import { VariableLayoutConfig } from "@/models/Interfaces";
 
 interface NavbarProps {
   variableLayoutConfig: VariableLayoutConfig;

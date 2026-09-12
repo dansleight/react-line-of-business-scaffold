@@ -1,4 +1,4 @@
-import { GlobalSettingsModel } from "../apiClient/data-contracts";
+import { GlobalSettingsModel } from "@/apiClient/data-contracts";
 
 export const IsMs = (globalSettings: GlobalSettingsModel) => {
   if (

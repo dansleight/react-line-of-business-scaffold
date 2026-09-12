@@ -3,6 +3,7 @@ import { constants } from 'node:fs'
 import path from 'node:path'
 import { tableKind, tableSingularName } from '../shared/conventions.ts'
 import type {
+  BridgePartner,
   ColumnMapping,
   ServiceAudit,
   ServiceMethod,
@@ -492,14 +493,101 @@ ${hydrateMany}
 ${getHydrated}`
 }
 
+function setPartnerMethodName(partner: BridgePartner): string {
+  return `Set${partner.objectsProperty}Async`
+}
+
+function renderBridgeWriteOverrides(
+  objectName: string,
+  param: string,
+  partners: BridgePartner[],
+): string {
+  const stashes = partners
+    .map(
+      (partner) =>
+        `        List<${partner.otherKeyType}>? ${camelName(partner.idsProperty)} = ${param}.${partner.idsProperty};`,
+    )
+    .join('\n')
+  const apply = partners
+    .map((partner) => {
+      const ids = camelName(partner.idsProperty)
+      return `        if (${ids} != null) await ${setPartnerMethodName(partner)}(${param}.${partner.selfKeyColumn}, ${ids});`
+    })
+    .join('\n')
+  const restore = partners
+    .map(
+      (partner) =>
+        `        ${param}.${partner.idsProperty} = ${camelName(partner.idsProperty)};`,
+    )
+    .join('\n')
+
+  return `
+    public override async Task<${objectName}> InsertAsync(${objectName} ${param}, string? personId = null)
+    {
+${stashes}
+        ${param} = await base.InsertAsync(${param}, personId);
+${apply}
+${restore}
+        return ${param};
+    }
+
+    public override async Task<int> UpdateAsync(${objectName} ${param}, string? personId = null)
+    {
+${stashes}
+        int res = await base.UpdateAsync(${param}, personId);
+${apply}
+${restore}
+        return res;
+    }`
+}
+
+function renderSetPartner(
+  table: TableMapping,
+  partner: BridgePartner,
+): string {
+  const selfKey = table.columns.find((column) => column.primaryKey)
+  const paramType = selfKey ? nonNullableType(selfKey) : 'int'
+  const arg = camelName(partner.selfKeyColumn)
+  const idsArg = camelName(partner.idsProperty)
+  const otherArg = camelName(partner.otherKeyColumn)
+  return `
+    public async Task ${setPartnerMethodName(partner)}(${paramType} ${arg}, List<${partner.otherKeyType}> ${idsArg})
+    {
+        string clearSql = """
+            DELETE FROM ${partner.bridgeTableName}
+            WHERE   ${partner.selfKeyColumn} = @${partner.selfKeyColumn}
+            """;
+        await ExecuteAsync(clearSql, new { ${partner.selfKeyColumn} = ${arg} });
+
+        if (${idsArg}.Count == 0) return;
+
+        string addSql = """
+            INSERT INTO ${partner.bridgeTableName}(${partner.selfKeyColumn}, ${partner.otherKeyColumn})
+            VALUES (@${partner.selfKeyColumn}, @${partner.otherKeyColumn})
+            """;
+        await ExecuteAsync(
+            addSql,
+            ${idsArg}.Select(${otherArg} => new { ${partner.selfKeyColumn} = ${arg}, ${partner.otherKeyColumn} = ${otherArg} }));
+    }`
+}
+
 function renderRepositoryExtras(
   table: TableMapping,
   objectName: string,
 ): string {
   const chunks: string[] = []
+  const param = camelName(tableSingularName(table.tableName))
+  const partners = table.bridgePartners ?? []
   const directGetNames = new Set(
     parentFilterColumns(table).map((column) => `GetBy${column.column}Async`),
   )
+
+  if (partners.length > 0) {
+    chunks.push(renderBridgeWriteOverrides(objectName, param, partners))
+    for (const partner of partners) {
+      chunks.push(renderSetPartner(table, partner))
+    }
+  }
 
   for (const incoming of table.bridgeIncoming ?? []) {
     const methodName = `GetBy${incoming.otherKeyColumn}Async`
@@ -519,7 +607,7 @@ function renderRepositoryExtras(
     }`)
   }
 
-  for (const partner of table.bridgePartners ?? []) {
+  for (const partner of partners) {
     const selfKey = table.columns.find((column) => column.primaryKey)
     const paramType = selfKey ? nonNullableType(selfKey) : 'int'
     const arg = camelName(partner.selfKeyColumn)

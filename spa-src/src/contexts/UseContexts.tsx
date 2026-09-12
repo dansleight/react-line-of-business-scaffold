@@ -1,9 +1,9 @@
 import { createContext, useContext } from "react";
-import { GridBreakpoint } from "../models/Enums";
-import { Api } from "../apiClient/Api";
-import { GlobalSettingsModel } from "../apiClient/data-contracts";
+import { GridBreakpoint } from "@/models/Enums";
+import { Api } from "@/apiClient/Api";
+import { GlobalSettingsModel } from "@/apiClient/data-contracts";
 import { AccountInfo } from "@azure/msal-browser";
-import { MenusConfig } from "../models/Interfaces";
+import { MenusConfig } from "@/models/Interfaces";
 
 // ---- Settings Context -----------------------------------------------------------------------
 type SettingsContextType = {
@@ -46,6 +46,7 @@ type SessionContextType = {
   api: Api;
   getApiBearer: () => Promise<string | undefined>;
   menusConfig: MenusConfig;
+  reportApiError: (error: unknown) => void;
 };
 
 export const SessionContext = createContext({} as SessionContextType);

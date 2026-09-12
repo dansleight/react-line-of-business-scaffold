@@ -1,6 +1,6 @@
 import { Col, Container, Row } from "react-bootstrap";
-import { Headcrumb } from "../components/Headcrumb";
-import { useIdentityContext } from "../contexts/UseContexts";
+import { Headcrumb } from "@/components/Headcrumb";
+import { useIdentityContext } from "@/contexts/UseContexts";
 
 export function NotFound() {
   const { name, username } = useIdentityContext();

@@ -1,8 +1,8 @@
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
-import { Headcrumb } from "../components/Headcrumb";
-import { useSessionContext } from "../contexts/UseContexts";
+import { Headcrumb } from "@/components/Headcrumb";
+import { useSessionContext } from "@/contexts/UseContexts";
 import { useState } from "react";
-import { GoodModel } from "../apiClient/data-contracts";
+import { GoodModel } from "@/apiClient/data-contracts";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faMap,

@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
-import { LayoutConfig } from "../models/Interfaces";
-import { LayoutType } from "../models/Enums";
+import { LayoutConfig } from "@/models/Interfaces";
+import { LayoutType } from "@/models/Enums";
 import { SidebarLayout } from "./sidemenu/SideMenuLayout";
 import { VariableLayout } from "./variable/VariableLayout";
 

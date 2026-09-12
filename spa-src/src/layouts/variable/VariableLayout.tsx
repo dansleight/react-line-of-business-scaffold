@@ -1,6 +1,6 @@
 import { ReactNode, useEffect } from "react";
-import { LayoutConfig, VariableLayoutConfig } from "../../models/Interfaces";
-import { useSettingsContext } from "../../contexts/UseContexts";
+import { LayoutConfig, VariableLayoutConfig } from "@/models/Interfaces";
+import { useSettingsContext } from "@/contexts/UseContexts";
 import { Sidebar } from "./sidebar/Sidebar";
 import { Topbar } from "./horizontal/Topbar";
 

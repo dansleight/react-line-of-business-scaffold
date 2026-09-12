@@ -1,9 +1,9 @@
 import classNames from "classnames";
-import { MenuItem } from "../../models/Interfaces";
+import { MenuItem } from "@/models/Interfaces";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faCircleDot, faUser } from "@fortawesome/free-solid-svg-icons";
-import { Logo } from "../../components/Logo";
-import { useSessionContext } from "../../contexts/UseContexts";
+import { Logo } from "@/components/Logo";
+import { useSessionContext } from "@/contexts/UseContexts";
 import { Link } from "react-router-dom";
 import { useEffect } from "react";
 

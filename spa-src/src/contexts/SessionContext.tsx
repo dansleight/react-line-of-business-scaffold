@@ -1,7 +1,7 @@
 import { useMsal } from "@azure/msal-react";
 import React, { ComponentType, ReactNode, useMemo, useState } from "react";
-import { Api } from "../apiClient/Api";
-import { webApiConfig } from "../appConfig";
+import { Api } from "@/apiClient/Api";
+import { webApiConfig } from "@/appConfig";
 import { SilentRequest } from "@azure/msal-browser";
 import {
   SessionContext,
@@ -10,8 +10,8 @@ import {
 } from "./UseContexts";
 import { Button, Modal } from "react-bootstrap";
 import classNames from "classnames";
-import { menusConfig as baseMenusConfig } from "../menusConfig";
-import { MenusConfig } from "../models/Interfaces";
+import { menusConfig as baseMenusConfig } from "@/menusConfig";
+import { MenusConfig } from "@/models/Interfaces";
 
 type SessionProviderProps = {
   children: ReactNode;
@@ -57,16 +57,19 @@ export function SessionProvider({
         );
       } else if (error.status == 500) {
         setSevereError(true);
-        if (error.error.detail) setApiErrorMessage(error.error.detail);
-        else if (error.error.Message) {
-          setApiErrorMessage(error.error.Message);
-          if (error.error.StackTraceString)
-            setApiErrorDetails(error.error.StackTraceString);
-        } else {
+        if (error.error?.userMessage)
+          setApiErrorMessage(error.error.userMessage);
+        else if (error.error?.message) setApiErrorMessage(error.error.message);
+        else if (error.error?.exception?.message)
+          setApiErrorMessage(error.error.exception.message);
+        else if (error.error?.detail) setApiErrorMessage(error.error.detail);
+        else {
           setApiErrorMessage(
             "Server reported a status code 500: Internal Server Error.",
           );
         }
+        if (error.error?.exception?.stackTrace)
+          setApiErrorDetails(error.error.exception.stackTrace);
       } else {
         setApiErrorMessage(
           `Server returned a status code ${error.status}: ${error.statusText}`,
@@ -133,7 +136,14 @@ export function SessionProvider({
           <em>Getting ready...</em>
         </Wrapper>
       ) : (
-        <SessionContext.Provider value={{ api, getApiBearer, menusConfig }}>
+        <SessionContext.Provider
+          value={{
+            api,
+            getApiBearer,
+            menusConfig,
+            reportApiError: handleApiError,
+          }}
+        >
           <Modal
             show={showApiError}
             onHide={handleErrorModalClose}

@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Data;
 using System.Data.Common;
 using System.Reflection;
@@ -135,6 +136,18 @@ public abstract class DapperRepositoryBase
                 return o;
             case IDictionary<string, object> or IDictionary<string, object?>:
                 return o;
+            case string:
+                return o;
+        }
+
+        // Dapper multi-execute takes IEnumerable of row objects. Flattening that
+        // to a property dictionary is what made ExecuteAsync(sql, rows) fail.
+        if (IsDapperMultiExecute(o))
+        {
+            List<object?> rows = [];
+            foreach (object? item in (IEnumerable)o)
+                rows.Add(AsDapperParams(item));
+            return rows;
         }
 
         var properties = o.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(c => c.CanRead).ToArray();
@@ -145,6 +158,38 @@ public abstract class DapperRepositoryBase
                 c => c.Key,
                 c => (c.Type.IsEnum || Nullable.GetUnderlyingType(c.Type)
                     ?.IsEnum == true) ? c.Value?.ToString() : c.Value);
+    }
+
+    private static bool IsDapperMultiExecute(object value)
+    {
+        if (value is not IEnumerable) return false;
+
+        Type? element = GetEnumerableElementType(value.GetType());
+        if (element == null) return false;
+        element = Nullable.GetUnderlyingType(element) ?? element;
+        if (element.IsPrimitive || element.IsEnum) return false;
+        if (element == typeof(string) || element == typeof(decimal) || element == typeof(Guid)
+            || element == typeof(DateTime) || element == typeof(DateTimeOffset)
+            || element == typeof(TimeSpan) || element == typeof(byte[]))
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    private static Type? GetEnumerableElementType(Type type)
+    {
+        if (type.IsArray) return type.GetElementType();
+        foreach (Type iface in type.GetInterfaces())
+        {
+            if (iface.IsGenericType && iface.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+                return iface.GetGenericArguments()[0];
+        }
+
+        if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+            return type.GetGenericArguments()[0];
+        return null;
     }
 
     #endregion

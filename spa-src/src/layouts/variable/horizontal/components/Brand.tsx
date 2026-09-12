@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
-import { Logo } from "../../../../components/Logo";
-import { useSettingsContext } from "../../../../contexts/UseContexts";
+import { Logo } from "@/components/Logo";
+import { useSettingsContext } from "@/contexts/UseContexts";
 
 type BrandProps = {
   className?: string;

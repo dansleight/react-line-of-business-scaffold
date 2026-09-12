@@ -1,7 +1,7 @@
 import { Col, Container, Row } from "react-bootstrap";
 import { Modal, Popover, Tooltip } from "bootstrap";
 import { useEffect, useRef } from "react";
-import { Headcrumb } from "../../components/Headcrumb";
+import { Headcrumb } from "@/components/Headcrumb";
 
 export function Dialogs() {
   const isInitalized = useRef<boolean>(false);

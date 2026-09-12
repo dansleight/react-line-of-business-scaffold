@@ -1,11 +1,11 @@
 import { useEffect, useMemo } from "react";
 import "simplebar-react/dist/simplebar.min.css";
 import { NavLink, useLocation } from "react-router-dom";
-import { useSettingsContext } from "../../contexts/UseContexts";
+import { useSettingsContext } from "@/contexts/UseContexts";
 import classNames from "classnames";
-import { GridBreakpoint } from "../../models/Enums";
-import { SideMenuLayoutConfig } from "../../models/Interfaces";
-import { Logo } from "../../components/Logo";
+import { GridBreakpoint } from "@/models/Enums";
+import { SideMenuLayoutConfig } from "@/models/Interfaces";
+import { Logo } from "@/components/Logo";
 import { MainMenu } from "./MainMenu";
 import { UserMenu } from "./UserMenu";
 

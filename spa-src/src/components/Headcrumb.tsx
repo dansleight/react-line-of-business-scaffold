@@ -21,8 +21,9 @@ export function Headcrumb({ title, parent, titles, paths }: HeadcrumbProps) {
     const workingTitles: string[] | undefined = titles
       ? [...titles]
       : undefined;
-    let workingCrumbs: Crumb[] = [];
+    const workingCrumbs: Crumb[] = [];
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (title) setTitle(title);
     else if (workingTitles && workingTitles.length) {
       setTitle(workingTitles.pop()!);

@@ -4,15 +4,12 @@ import "simplebar-react/dist/simplebar.min.css";
 import { Link, useLocation } from "react-router-dom";
 import { FullSidebar } from "./components/FullSidebar";
 import { NarrowSidebar } from "./components/NarrowSidebar";
-import {
-  useSessionContext,
-  useSettingsContext,
-} from "../../../contexts/UseContexts";
+import { useSessionContext, useSettingsContext } from "@/contexts/UseContexts";
 import classNames from "classnames";
-import { GridBreakpoint } from "../../../models/Enums";
-import { Logo } from "../../../components/Logo";
-import { ToggleSidebarSvg } from "../../../components/ToggleSidebarSvg";
-import { VariableLayoutConfig } from "../../../models/Interfaces";
+import { GridBreakpoint } from "@/models/Enums";
+import { Logo } from "@/components/Logo";
+import { ToggleSidebarSvg } from "@/components/ToggleSidebarSvg";
+import { VariableLayoutConfig } from "@/models/Interfaces";
 
 interface SidebarProps {
   variableLayoutConfig: VariableLayoutConfig;

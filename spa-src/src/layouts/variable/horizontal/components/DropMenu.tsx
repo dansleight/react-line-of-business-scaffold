@@ -1,5 +1,5 @@
 import { IconDefinition } from "@fortawesome/fontawesome-common-types";
-import { MenuItem } from "../../../../models/Interfaces";
+import { MenuItem } from "@/models/Interfaces";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleDot, faEllipsisV } from "@fortawesome/free-solid-svg-icons";
 import MetisMenu from "@metismenu/react";

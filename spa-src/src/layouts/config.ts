@@ -5,12 +5,12 @@ import {
   SideMenuTheme,
   TextColor,
   TopbarTheme,
-} from "../models/Enums";
+} from "@/models/Enums";
 import {
   LayoutConfig,
   SideMenuLayoutConfig,
   VariableLayoutConfig,
-} from "../models/Interfaces";
+} from "@/models/Interfaces";
 
 export const vLayoutConfig: LayoutConfig = {
   type: LayoutType.Variable,

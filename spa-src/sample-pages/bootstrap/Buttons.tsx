@@ -7,7 +7,7 @@ import {
   Row,
   ToggleButton,
 } from "react-bootstrap";
-import { Headcrumb } from "../../components/Headcrumb";
+import { Headcrumb } from "@/components/Headcrumb";
 import { useState } from "react";
 
 export function Buttons() {

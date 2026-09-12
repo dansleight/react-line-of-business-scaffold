@@ -1,10 +1,17 @@
 import { useMsal } from "@azure/msal-react";
-import { ComponentType, ReactNode, useEffect, useMemo, useRef, useState } from "react";
-import { loginRequest } from "../appConfig";
+import {
+  ComponentType,
+  ReactNode,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { loginRequest } from "@/appConfig";
 import React from "react";
 import { IdentityContext, useSettingsContext } from "./UseContexts";
 import { RedirectRequest } from "@azure/msal-browser";
-import { IsMs } from "../Utils/GlobalSettingsHelper";
+import { IsMs } from "@/Utils/GlobalSettingsHelper";
 
 type IdentityProviderProps = {
   children: ReactNode;
@@ -62,7 +69,7 @@ export const IdentityProvider = ({
         instance.setActiveAccount(instance.getAllAccounts()[0]);
     }
     return instance.getActiveAccount()!;
-  }
+  };
 
   const handleLogout = () => {
     // if you are creating an appliation that is "internal" the logout redirect could be useless and annoying, so, we can also just clear out the session data and start over

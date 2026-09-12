@@ -1,8 +1,8 @@
 import { ReactNode, useEffect } from "react";
-import { LayoutConfig, SideMenuLayoutConfig } from "../../models/Interfaces";
+import { LayoutConfig, SideMenuLayoutConfig } from "@/models/Interfaces";
 import { SideMenu } from "./SideMenu";
-import { useSettingsContext } from "../../contexts/UseContexts";
-import { TextColor } from "../../models/Enums";
+import { useSettingsContext } from "@/contexts/UseContexts";
+import { TextColor } from "@/models/Enums";
 import { XsMenu } from "./XsMenu";
 
 type SidebarLayoutProps = {

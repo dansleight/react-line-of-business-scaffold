@@ -1,11 +1,11 @@
 import { NavLink, useLocation } from "react-router-dom";
-import { MenuItem, SideMenuLayoutConfig } from "../../models/Interfaces";
+import { MenuItem, SideMenuLayoutConfig } from "@/models/Interfaces";
 import { useMemo } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleDot } from "@fortawesome/free-solid-svg-icons";
 import classNames from "classnames";
-import { useSessionContext } from "../../contexts/UseContexts";
-import { TextColor } from "../../models/Enums";
+import { useSessionContext } from "@/contexts/UseContexts";
+import { TextColor } from "@/models/Enums";
 
 interface MainMenuProps {
   sideMenuLayoutConfig?: SideMenuLayoutConfig;

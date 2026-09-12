@@ -1,7 +1,7 @@
 import { NavLink, useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleDot } from "@fortawesome/free-solid-svg-icons";
-import { MenuItem, MenuProps } from "../../../../models/Interfaces";
+import { MenuItem, MenuProps } from "@/models/Interfaces";
 
 export const NarrowSidebar = ({ menuItems }: MenuProps) => {
   return (

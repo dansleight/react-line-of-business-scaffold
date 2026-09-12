@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "setup": "pnpm dlx tsx ./scripts/setup.ts",
+    "setup": "tsx ./scripts/setup.ts",
     "set-logo": "pnpm dlx tsx ./utils/set-logo.ts"
   },
   "devDependencies": {

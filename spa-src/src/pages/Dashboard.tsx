@@ -15,12 +15,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Card, Col, Row } from "react-bootstrap";
 import SimpleBar from "simplebar-react";
 import "simplebar-react/dist/simplebar.min.css";
-import { useSettingsContext } from "../contexts/UseContexts";
-import { Headcrumb } from "../components/Headcrumb";
-import { Kpi, KpiColor } from "../components/Kpi";
+import { useSettingsContext } from "@/contexts/UseContexts";
+import { Headcrumb } from "@/components/Headcrumb";
+import { Kpi, KpiColor } from "@/components/Kpi";
 import { useEffect, useRef, useState } from "react";
 import { Dropdown } from "bootstrap";
-import { GridBreakpoint } from "../models/Enums";
+import { GridBreakpoint } from "@/models/Enums";
 
 export function Dashboard() {
   const { darkMode, setDarkMode, sidebarToggled, toggleSidebar, breakpoint } =
@@ -29,6 +29,7 @@ export function Dashboard() {
   const [mediaBreakpoint, setMediaBreakpoint] = useState<string>("");
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (breakpoint === GridBreakpoint.xs) setMediaBreakpoint("XS");
     else if (breakpoint === GridBreakpoint.sm) setMediaBreakpoint("SM");
     else if (breakpoint === GridBreakpoint.md) setMediaBreakpoint("MD");
