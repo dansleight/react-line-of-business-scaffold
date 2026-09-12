@@ -1,6 +1,7 @@
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Scaffold.Business;
 using Scaffold.Business.Models.Config;
 
 namespace Scaffold.SpaModels;
@@ -35,7 +36,10 @@ public class ApiError
             Code = code,
             UserMessage = userMessage,
             Message = $"{exception.GetType().Name}: {exception.Message}",
-            TraceId = traceId
+            TraceId = traceId,
+            Errors = exception is ValidationException validation
+                ? new Dictionary<string, string[]>(validation.Errors)
+                : null
         };
 
         if (mode == ApplicationMode.Development)
@@ -100,6 +104,7 @@ public class ApiError
     private static (int Status, string Code, string UserMessage) Map(Exception exception, string traceId) =>
         exception switch
         {
+            ValidationException => (StatusCodes.Status400BadRequest, "validation", exception.Message),
             KeyNotFoundException => (StatusCodes.Status404NotFound, "not_found", "The requested resource was not found."),
             UnauthorizedAccessException => (StatusCodes.Status401Unauthorized, "unauthorized", "You are not authorized to perform this action."),
             ArgumentException => (StatusCodes.Status400BadRequest, "invalid", "The request is invalid."),
