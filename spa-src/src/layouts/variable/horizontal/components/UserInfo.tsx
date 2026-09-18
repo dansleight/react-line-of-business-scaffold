@@ -9,11 +9,10 @@ import { Dropdown } from "bootstrap";
 import { useEffect, useRef } from "react";
 import { useIdentityContext, useSessionContext } from "@/contexts/UseContexts";
 import { Link } from "react-router-dom";
-import { hashCode } from "@/models/Utilities";
 
 export const UserInfo = () => {
   const { getApiBearer } = useSessionContext();
-  const { name, username, handleLogout } = useIdentityContext();
+  const { name, username, avatarUrl, handleLogout } = useIdentityContext();
   const dropdownCreated = useRef<boolean>(false);
 
   const copyBearerToClipboard = async () => {
@@ -47,7 +46,7 @@ export const UserInfo = () => {
         <span className="me-2 d-none d-lg-inline small">{name}</span>
         <img
           className="img-profile rounded-circle"
-          src={"https://gravatar.com/avatar/" + hashCode(username) + "?d=retro"}
+          src={avatarUrl}
         />
       </a>
       {/* Dropdown - User Information */}

@@ -1,38 +1,22 @@
-# Setup Scripts
+# Setup
 
-These scripts help set up the back-end and clean-up the unused one.
+One-shot wizard that copies this template into an empty directory and names the app. It is not used at runtime. After a successful run, you can delete `setup/` from the **new** repository.
 
-The set-backend scripts will replace strings throughout both the back-end and front-end applications, and clean up items that are related to the unused back-end.
-
-These scripts are of little value after you have setup your application, consider removing the `setup` directory before your first commit.
-
-## Set Backend as Python FastAPI
+From this `setup/` folder:
 
 ```bash
 pnpm i
-pnpm run set-backend-fastapi
+pnpm setup
 ```
 
-Follow the prompts.
+Prompts: backend (C# WebAPI or Python FastAPI), namespace (one identifier, no dots), database name, title, API port (`5000–5099`), and the empty destination path. SPA port is API port minus `2000`.
 
-## Set Backend as C# WebAPI
+The script copies the chosen backend as `src/`, plus `spa-src/`, SQL scripts, and the C# generator. It rewrites namespace, ports, and connection-string placeholders, and strips `UserSecretsId` from copied `.csproj` files.
+
+Optional logo helper (Font Awesome as a placeholder; you need a license for production use of those glyphs):
 
 ```bash
-pnpm i
-pnpm run set-backend-webapi
+pnpm set-logo
 ```
 
-Follow the prompts.
-
-## Set the Logo
-
-This script allows you to change the default, goof logo to an icon from FontAwesome. Recognize this should be a placeholder, or you need to be sure that you are properly licensed to use it in this manor.
-
-```bash
-pnpm i # if you haven't already
-pnpm run set-logo
-```
-
-> **Note** this is a convenience script, and there are times where it's imperfect, for instance, faPerson has curves that exceed the viewbox. When this happens, you can adjust the viewbox in `spa-src/src/components/Logo.tsx`.
->
-> In the case of faPerson, adjusting the viewBox (in both places) to `viewBox="0 -32 384 576"` solves the problem.
+If a glyph exceeds the viewBox (for example `faPerson`), edit `viewBox` in `spa-src/src/components/Logo.tsx`.

@@ -1,62 +1,52 @@
-# react-line-of-business-scaffold
+# Line-of-business scaffold
 
-The intent of this project is to create a React SPA front-end with either a dotnet web-api back-end or a python fastapi back-end, either with a flexible configuration to use as a scaffold for new line-of-business (admin) projects.
+A React SPA plus either a C# ASP.NET Core Web API or a Python FastAPI, meant as a **canvas** for internal line-of-business apps — not a framework you stay inside of. After you instantiate a copy, change whatever you need.
 
-I use scaffold purposefully. The intent is to give the developer a canvas, not a framework. Once you have instantiated your own copy, do what you need to have it fit your needs.
+The C# path is the one this repo is built around (Dapper, Entra, generator, form kit). FastAPI is present and usable, but less complete.
 
-## Current State
+## Setup
 
-Both a WebAPI/C# and a FastAPI/Python are in place, in various states of readiness. The C# probably more ready than the Python, but it's getting there.
+`setup/` is a one-shot wizard. It copies this template into an **empty** directory (or empty git repo), names the projects, picks ports, and removes the backend you did not choose.
 
-The SPA is pretty far along, and really just lacks some polish, and perhaps more examples. I'd really like to establish a few capablities:
+From this repository:
 
-- Create a forms pattern that uses the generated contracts to help with generation and validation. Creating and binding forms should be really easy with this framework.
-- Be able to easiliy bind collections of data to a grid. I'd like to use the free version of AG-Grid, as I believe it is well enhanced by buying licensing, especially in a line-of-bussiness scenario.
-
-## Documentation
-
-I'll be working a bit on documentation, but not comprehensive instructions on how to be a developer.
-
-## Choices
-
-There are a lot of decisions I've made here that I'll work to explain. I don't think that you would use this scaffold inside of an organization without doing some licensing, for instance:
-
-- I've included the free fontwesome libraries, however, if I were using this to produce a production, internal application, I'd license my development team to use the full version.
-- I'm intending to include the free version of AG-Grid, but feel the same about that, I'd license my development team to the full version, especially if I were surfacing any significant amount of financial data.
-
-## Getting up and running: SQL Server
-
-Both back-end applications (.NET WebAPI and Python FastAPI) connect to a Microsoft SQL Server. I generally run SQL Server locally in a docker container. Here are some hints to get that going:
-
-### SQL Server
-
-There are really two primary options for running SQL Server from a container, but it seems that using Azure SQL Edge may be better in most scenarios. I think the biggest drawback is likely going to be whether backups can be used in the final environment you may need to support.
-
-Here is the docker command for Windows:
-
-```
-docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=PlaceHolder&NotARealPassword" -p 1433:1433 --name sql -v C:/SqlServer/data:/var/opt/mssql/data -v C:/SqlServer/log:/var/opt/mssql/log -v C:/SqlServer/secrets:/var/opt/mssql/secrets -v C:/SqlServer/backup:/var/opt/mssql/backup --restart unless-stopped -d mcr.microsoft.com/azure-sql-edge
+```bash
+cd setup
+pnpm i
+pnpm setup
 ```
 
-Broken down:
+You will be asked:
 
-- `-e` is always followed by an environment variable, in our case we need the two:
-  - `ACCEPT_EULA=Y` is just as it says, it is your acceptance of the End User License Agreement with Microsoft
-  - `MSSQL_SA_PASSWORD=PlaceHolder&NotARealPassword` is setting the SA password, and should be changed
-- `-p 1433:1433` exposes the default port to the host OS
-- `-v` maps directories inside of the container to directories on the host, and is important for persistence:
-  - ...data
-  - ...log
-  - ...secrets
-  - ...backup
-- `--restart unless-stopped` tells docker to keep this container running unless it is stopped explicitly. If I were leaving one out, it would be this one, as it may cause a failure loop that would go on forever. That being said, I keep it on.
-- `-d` tells docker to run the container detached (in the background)
-- `azure-sql-edge` is the image we'll be running
+| Prompt | What it is |
+|---|---|
+| Backend | **C# WebAPI** or **Python FastAPI** |
+| Namespace | One identifier, letters and digits only, no dots. First letter is capitalized. Becomes the C# namespace, project names, and (by default) the database name. |
+| Database name | SQL Server database. Defaults to the namespace. |
+| Application title | Shown in the SPA chrome. |
+| WebAPI port | `5000–5099`. The SPA port is this value minus `2000` (API `5069` → SPA `3069`). |
+| Repository root | Empty folder that will receive the new app. |
 
-Before you run this, you'll need to **create the folder** C:\SqlServer, or change the script to point to a directory that best meets your needs.
+The wizard copies `src/` or `python-src/` (as `src/`), `spa-src/`, SQL scripts, and — for C# — the generator. It rewrites names, connection-string placeholders, and launch/proxy ports. It also strips any `UserSecretsId` from the copied `.csproj` files so you start clean.
 
-Mac users will have to adjust the paths, which should be easy enough.
+When it finishes, work in **that new folder**, not this template. You can delete `setup/` from the new app before the first commit; it has no runtime role.
 
-#### Provisioning Script
+Details of the prompts live in [setup/ReadMe.md](setup/ReadMe.md).
 
-`assets/DB Scripts/SQL Server/init.sql` will create a database, create tables and populate a few test tables. You'll need a login and user for the database to configure a connection.
+## After setup
+
+1. Provision SQL Server and run the scripts under `assets/DbScripts/SqlServer/`. See [src/ReadMe.md](src/ReadMe.md).
+2. Put Entra (and the client secret) in user secrets or environment variables. Same file.
+3. Run the API, then the SPA. SPA notes, layouts, and config files: [spa-src/README.md](spa-src/README.md).
+4. C# only: generate business objects from tables with [assets/generator/README.md](assets/generator/README.md).
+
+## Licensing
+
+The template ships free Font Awesome icons. For a production internal app, license the full kit for the team. The same idea will apply if AG Grid is added later.
+
+## Requirements
+
+- Node 18+ (20+ is more comfortable) and **pnpm** 10.30+
+- For C#: **.NET 10** SDK
+- SQL Server (local Docker is fine)
+- An Entra ID (Azure AD) app registration if you want real sign-in

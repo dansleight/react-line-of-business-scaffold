@@ -4,15 +4,16 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCopy,
   faGear,
+  faQuestionCircle,
   faSignOut,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
-import { hashCode } from "@/models/Utilities";
+import { hasValidRole } from "@/models/Utilities";
 
 export const UserMenu = () => {
-  const { getApiBearer } = useSessionContext();
-  const { username, handleLogout } = useIdentityContext();
+  const { getApiBearer, userInfo } = useSessionContext();
+  const { username, avatarUrl, handleLogout } = useIdentityContext();
 
   const copyBearerToClipboard = async () => {
     const bearer: string | undefined = await getApiBearer();
@@ -38,12 +39,22 @@ export const UserMenu = () => {
         <img
           width={48}
           className="img-profile rounded-circle"
-          src={"https://gravatar.com/avatar/" + hashCode(username) + "?d=retro"}
+          src={avatarUrl}
         />
         {/* <FontAwesomeIcon icon={faUser} size="lg" /> */}
       </a>
       <div className="dropdown-menu">
         <h6 className="dropdown-header">{username}</h6>
+        <Link className="nav-link dropdown-item" to="/about">
+          <span>
+            <FontAwesomeIcon
+              icon={faQuestionCircle}
+              size="sm"
+              className="me-2 text-gray-400"
+            />
+            About
+          </span>
+        </Link>
         <Link className="nav-link dropdown-item" to="/user-profile">
           <span>
             <FontAwesomeIcon
@@ -65,21 +76,26 @@ export const UserMenu = () => {
           </span>
         </Link>
         <div className="dropdown-divider"></div>
+        {hasValidRole(["admin", "developer"], userInfo.roles) && (
+          <a
+            className="nav-link dropdown-item"
+            style={{ cursor: "pointer" }}
+            onClick={() => copyBearerToClipboard()}
+          >
+            <span>
+              <FontAwesomeIcon
+                icon={faCopy}
+                size="sm"
+                className="me-2 text-gray-400"
+              />
+              Bearer to Clipboard
+            </span>
+          </a>
+        )}
+
         <a
           className="nav-link dropdown-item"
-          onClick={() => copyBearerToClipboard()}
-        >
-          <span>
-            <FontAwesomeIcon
-              icon={faCopy}
-              size="sm"
-              className="me-2 text-gray-400"
-            />
-            Bearer to Clipboard
-          </span>
-        </a>
-        <a
-          className="nav-link dropdown-item"
+          style={{ cursor: "pointer" }}
           onClick={handleLogout}
           data-toggle="modal"
           data-target="#logoutModal"

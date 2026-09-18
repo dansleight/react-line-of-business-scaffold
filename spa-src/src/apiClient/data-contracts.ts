@@ -31,6 +31,7 @@ export interface ApiErrorException {
 export interface GlobalSettingsModel {
   applicationMode: string;
   msalSettings: MsalSettingsModel | null;
+  buildNumber: string | null;
 }
 
 export interface GoodModel {
@@ -44,4 +45,11 @@ export interface MsalSettingsModel {
   authority: string;
   apiScope: string;
   provider: string | null;
+}
+
+export interface UserInfoModel {
+  personId: string;
+  email: string | null;
+  displayName: string;
+  roles: string[];
 }

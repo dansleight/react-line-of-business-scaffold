@@ -6,6 +6,7 @@ public class GlobalSettingsModel
 
     public string ApplicationMode { get; }
     public MsalSettingsModel? MsalSettings { get; }
+    public string? BuildNumber { get; }
 
     #endregion
 
@@ -15,6 +16,9 @@ public class GlobalSettingsModel
     {
         ApplicationMode = applicationMode;
         MsalSettings = MsalSettingsModel.GetMsalSettings(configuration);
+        string? buildNumber = configuration.GetValue<string>("ReleaseInformation:BuildNumber");
+        if (buildNumber is not null && !buildNumber.StartsWith("#"))
+            BuildNumber = buildNumber;
     }
 
     #endregion

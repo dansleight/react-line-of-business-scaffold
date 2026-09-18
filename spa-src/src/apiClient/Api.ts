@@ -10,12 +10,33 @@
  * ---------------------------------------------------------------
  */
 
-import { ApiError, GlobalSettingsModel, GoodModel } from "./data-contracts";
+import {
+  ApiError,
+  GlobalSettingsModel,
+  GoodModel,
+  UserInfoModel,
+} from "./data-contracts";
 import { HttpClient, RequestParams } from "./http-client";
 
 export class Api<
   SecurityDataType = unknown,
 > extends HttpClient<SecurityDataType> {
+  /**
+   * No description
+   *
+   * @tags Info
+   * @name InfoGetUserInfoModel
+   * @request GET:/api/info
+   * @secure
+   */
+  infoGetUserInfoModel = (params: RequestParams = {}) =>
+    this.request<UserInfoModel, ApiError>({
+      path: `/api/info`,
+      method: "GET",
+      secure: true,
+      format: "json",
+      ...params,
+    });
   /**
    * No description
    *

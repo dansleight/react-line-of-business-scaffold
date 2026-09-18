@@ -1,5 +1,12 @@
 import { MenuItem } from "./Interfaces";
-import sha256 from "crypto-js/sha256";
+
+export const hasValidRole = (
+  valid: string | string[],
+  roles: string[],
+): boolean => {
+  const validSet = new Set(typeof valid === "string" ? [valid] : valid);
+  return roles.some((role) => validSet.has(role));
+};
 
 const menuItemIsVisible = (
   menuItem: MenuItem,
@@ -42,6 +49,11 @@ export const smartSplit = (input: string): string => {
     .replace(/([A-Z])([A-Z][a-z])/g, "$1 $2");
 };
 
-export const hashCode = function (input: string) {
-  return sha256(input);
-};
+/** SHA-256 hex of trimmed lowercase email, as Gravatar requires. */
+export async function gravatarHash(email: string): Promise<string> {
+  const bytes = new TextEncoder().encode(email.trim().toLowerCase());
+  const digest = await crypto.subtle.digest("SHA-256", bytes);
+  return [...new Uint8Array(digest)]
+    .map((byte) => byte.toString(16).padStart(2, "0"))
+    .join("");
+}

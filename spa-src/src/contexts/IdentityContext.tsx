@@ -12,6 +12,9 @@ import React from "react";
 import { IdentityContext, useSettingsContext } from "./UseContexts";
 import { RedirectRequest } from "@azure/msal-browser";
 import { IsMs } from "@/Utils/GlobalSettingsHelper";
+import { gravatarHash } from "@/models/Utilities";
+
+const placeholderAvatar = "https://gravatar.com/avatar/?d=retro";
 
 type IdentityProviderProps = {
   children: ReactNode;
@@ -95,6 +98,29 @@ export const IdentityProvider = ({
     return "unknown";
   }, [accounts]);
 
+  const [avatar, setAvatar] = useState<{ username: string; url: string } | null>(
+    null,
+  );
+
+  useEffect(() => {
+    if (!username || username === "unknown") return;
+    let cancelled = false;
+    void gravatarHash(username).then((hash) => {
+      if (!cancelled) {
+        setAvatar({
+          username,
+          url: `https://gravatar.com/avatar/${hash}?d=retro`,
+        });
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [username]);
+
+  const avatarUrl =
+    avatar?.username === username ? avatar.url : placeholderAvatar;
+
   // so, here, we are going to automatically log the user in, remove this entire section to handle login via the handleLogin call
   useEffect(() => {
     if (effectCalled.current) return;
@@ -147,6 +173,7 @@ export const IdentityProvider = ({
             getAccount,
             name,
             username,
+            avatarUrl,
           }}
         >
           {children}

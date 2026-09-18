@@ -26,6 +26,8 @@ import { LoadingWrapper } from "./components/LoadingWrapper";
 import { useSettingsContext } from "./contexts/UseContexts";
 import { IsMs } from "./Utils/GlobalSettingsHelper";
 
+console.log("App version: ", __APP_VERSION__);
+
 function App() {
   const [msalInstance, setMsalInstance] = useState<
     PublicClientApplication | undefined

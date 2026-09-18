@@ -1,11 +1,20 @@
 import { ComponentType, ReactNode, useEffect, useState } from "react";
 import { GridBreakpoint, gridBreakpoints } from "@/models/Enums";
 import { SettingsContext } from "./UseContexts";
-import useCookie from "react-use-cookie";
 import { GlobalSettingsModel } from "@/apiClient/data-contracts";
 import { defaultGlobalSettings, webApiConfig } from "@/appConfig";
 import { Api } from "@/apiClient/Api";
 import React from "react";
+
+const darkModeKey = "darkmode";
+
+function readDarkMode(): boolean {
+  try {
+    return localStorage.getItem(darkModeKey) === "true";
+  } catch {
+    return false;
+  }
+}
 
 type SettingsProviderProps = {
   children: ReactNode;
@@ -21,8 +30,7 @@ export function SettingsProvider({
   );
   const [loaded, setLoaded] = useState<boolean | undefined>(undefined);
   const [sidebarToggled, setSidebarToggled] = useState<boolean>(false);
-  const [darkMode, setDarkMode] = useState<boolean>(false);
-  const [darkModeCookie, setDarkModeCookie] = useCookie("darkmode", "false");
+  const [darkMode, setDarkMode] = useState<boolean>(readDarkMode);
 
   const toggleSidebar = () => setSidebarToggled(!sidebarToggled);
 
@@ -69,14 +77,33 @@ export function SettingsProvider({
   }, []);
 
   useEffect(() => {
+    if (
+      loaded &&
+      globalSettings.buildNumber &&
+      globalSettings.buildNumber.trim() != "" &&
+      __APP_VERSION__ !== globalSettings.buildNumber
+    ) {
+      const lastAttempt = localStorage.getItem("lastVersionCheck");
+      const now = Date.now();
+
+      if (!lastAttempt || now - parseInt(lastAttempt, 10) > 60000) {
+        // 1 minute cooldown
+        localStorage.setItem("lastVersionCheck", now.toString());
+        window.location.reload();
+      }
+    }
+  }, [globalSettings.buildNumber]);
+
+  useEffect(() => {
     setHtmlAttribute("data-bs-theme", darkMode ? "dark" : "light");
-    if (darkModeCookie != (darkMode ? "true" : "false"))
-      setDarkModeCookie(darkMode ? "true" : "false");
+    try {
+      localStorage.setItem(darkModeKey, darkMode ? "true" : "false");
+    } catch {
+      // storage may be unavailable
+    }
   }, [darkMode]);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    if (darkModeCookie === "true") setDarkMode(true);
     // establish some defaults for page loading
     // we could load the layoutConfig here and instantiate it, however
     // we don't know if the developer will want a server-side implementation

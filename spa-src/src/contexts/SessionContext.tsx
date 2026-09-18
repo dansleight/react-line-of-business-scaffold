@@ -1,5 +1,11 @@
 import { useMsal } from "@azure/msal-react";
-import React, { ComponentType, ReactNode, useMemo, useState } from "react";
+import React, {
+  ComponentType,
+  ReactNode,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { Api } from "@/apiClient/Api";
 import { webApiConfig } from "@/appConfig";
 import { SilentRequest } from "@azure/msal-browser";
@@ -12,6 +18,8 @@ import { Button, Modal } from "react-bootstrap";
 import classNames from "classnames";
 import { menusConfig as baseMenusConfig } from "@/menusConfig";
 import { MenusConfig } from "@/models/Interfaces";
+import { UserInfoModel } from "@/apiClient/data-contracts";
+import { getUserMenuItems } from "@/models/Utilities";
 
 type SessionProviderProps = {
   children: ReactNode;
@@ -32,6 +40,9 @@ export function SessionProvider({
   );
   const [showErrorDetails, setShowErrorDetails] = useState<boolean>(false);
   const [severeError, setSevereError] = useState<boolean>(false);
+  const [userInfo, setUserInfo] = useState<UserInfoModel | undefined>(
+    undefined,
+  );
 
   const handleErrorModalClose = () => {
     setShowApiError(false);
@@ -122,16 +133,29 @@ export function SessionProvider({
     });
   }, [instance, globalSettings, getAccount]);
 
+  useEffect(() => {
+    if (api) {
+      api.infoGetUserInfoModel().then((res) => setUserInfo(res.data));
+    }
+  }, [api]);
+
   // TODO: Implement roles filter
   const menusConfig: MenusConfig = useMemo(() => {
-    return baseMenusConfig;
-  }, []);
+    const userRoles: string[] = userInfo?.roles ?? [];
+    const res: MenusConfig = {
+      mainMenu: getUserMenuItems(baseMenusConfig.mainMenu, userRoles),
+      altMenu: baseMenusConfig.altMenu
+        ? getUserMenuItems(baseMenusConfig.altMenu, userRoles)
+        : undefined,
+    };
+    return res;
+  }, [userInfo]);
 
   const Wrapper = messageWrapper ?? React.Fragment;
 
   return (
     <>
-      {api === undefined ? (
+      {api === undefined || userInfo === undefined ? (
         <Wrapper>
           <em>Getting ready...</em>
         </Wrapper>
@@ -140,6 +164,7 @@ export function SessionProvider({
           value={{
             api,
             getApiBearer,
+            userInfo,
             menusConfig,
             reportApiError: handleApiError,
           }}

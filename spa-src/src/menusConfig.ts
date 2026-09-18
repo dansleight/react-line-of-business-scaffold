@@ -18,11 +18,13 @@ const main: MenuItem = {
   items: [
     {
       path: "/main/sub1",
-      label: "Sub One",
+      label: "For Admins",
+      roles: "admin",
     },
     {
       path: "/main/sub2",
-      label: "Sub Two",
+      label: "For Developors",
+      roles: "developer",
     },
     {
       path: "/main/sub3",

@@ -1,7 +1,6 @@
 allowBuilds:
   "@parcel/watcher": false
   esbuild: true
-  sharp: false
 minimumReleaseAgeExclude:
   - eslint@10.8.0
   - react-hook-form@7.83.0
