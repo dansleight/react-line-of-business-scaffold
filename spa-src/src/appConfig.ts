@@ -32,4 +32,5 @@ export const webApiConfig = {
 export const defaultGlobalSettings: GlobalSettingsModel = {
   applicationMode: "Development",
   msalSettings: {} as MsalSettingsModel,
-};
+  buildNumber: null,
+} as GlobalSettingsModel;

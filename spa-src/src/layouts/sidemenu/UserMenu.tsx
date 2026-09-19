@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCopy,
   faGear,
+  faInfo,
   faQuestionCircle,
   faSignOut,
   faUser,
@@ -77,20 +78,32 @@ export const UserMenu = () => {
         </Link>
         <div className="dropdown-divider"></div>
         {hasValidRole(["admin", "developer"], userInfo.roles) && (
-          <a
-            className="nav-link dropdown-item"
-            style={{ cursor: "pointer" }}
-            onClick={() => copyBearerToClipboard()}
-          >
-            <span>
-              <FontAwesomeIcon
-                icon={faCopy}
-                size="sm"
-                className="me-2 text-gray-400"
-              />
-              Bearer to Clipboard
-            </span>
-          </a>
+          <>
+            <a
+              className="nav-link dropdown-item"
+              style={{ cursor: "pointer" }}
+              onClick={() => copyBearerToClipboard()}
+            >
+              <span>
+                <FontAwesomeIcon
+                  icon={faCopy}
+                  size="sm"
+                  className="me-2 text-gray-400"
+                />
+                Bearer to Clipboard
+              </span>
+            </a>
+            <Link className="nav-link dropdown-item" to="/jwt">
+              <span>
+                <FontAwesomeIcon
+                  icon={faInfo}
+                  size="sm"
+                  className="me-2 text-gray-400"
+                />
+                JWT Info
+              </span>
+            </Link>
+          </>
         )}
 
         <a
