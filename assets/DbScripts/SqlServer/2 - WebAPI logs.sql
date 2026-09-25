@@ -1,4 +1,4 @@
-USE Sweetwater
+USE Scaff_DB
 GO
 
 -- ******************** dat_SerilogLogs ********************
