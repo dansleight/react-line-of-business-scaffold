@@ -10,6 +10,10 @@
  * ---------------------------------------------------------------
  */
 
+export enum LookupType {
+  Unknown = "Unknown",
+}
+
 export interface ApiError {
   /** @format int32 */
   status: number;
@@ -38,6 +42,23 @@ export interface GoodModel {
   /** @format int32 */
   id: number;
   name: string;
+}
+
+export interface ILookupItem {
+  /** @format int32 */
+  id: number;
+  /** @format int32 */
+  parentId: number | null;
+  name: string;
+  active: boolean;
+}
+
+export interface LookupModel {
+  /** @format date-time */
+  loadTime: string;
+  lookupType: LookupType;
+  parentLookupType: LookupType | null;
+  items: ILookupItem[];
 }
 
 export interface MsalSettingsModel {

@@ -1,9 +1,14 @@
-import { createContext, useContext } from "react";
+import { createContext, ReactNode, useContext } from "react";
 import { GridBreakpoint } from "@/models/Enums";
 import { Api } from "@/apiClient/Api";
-import { GlobalSettingsModel, UserInfoModel } from "@/apiClient/data-contracts";
+import {
+  GlobalSettingsModel,
+  LookupType,
+  UserInfoModel,
+} from "@/apiClient/data-contracts";
 import { AccountInfo } from "@azure/msal-browser";
 import { MenusConfig } from "@/models/Interfaces";
+import LookupClass from "@/models/LookupClass";
 
 // ---- Settings Context -----------------------------------------------------------------------
 type SettingsContextType = {
@@ -54,3 +59,13 @@ type SessionContextType = {
 export const SessionContext = createContext({} as SessionContextType);
 
 export const useSessionContext = () => useContext(SessionContext);
+
+// ---- Session Context -----------------------------------------------------------------------
+type LookupContextType = {
+  lookups: Record<string, LookupClass>;
+  display: (lookupType: LookupType, id?: number | null) => ReactNode;
+};
+
+export const LookupContext = createContext({} as LookupContextType);
+
+export const useLookupContext = () => useContext(LookupContext);

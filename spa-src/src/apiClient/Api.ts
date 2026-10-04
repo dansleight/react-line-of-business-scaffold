@@ -14,6 +14,7 @@ import {
   ApiError,
   GlobalSettingsModel,
   GoodModel,
+  LookupModel,
   UserInfoModel,
 } from "./data-contracts";
 import { HttpClient, RequestParams } from "./http-client";
@@ -32,6 +33,22 @@ export class Api<
   infoGetUserInfoModel = (params: RequestParams = {}) =>
     this.request<UserInfoModel, ApiError>({
       path: `/api/info`,
+      method: "GET",
+      secure: true,
+      format: "json",
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Lookup
+   * @name LookupAll
+   * @request GET:/api/lookup
+   * @secure
+   */
+  lookupAll = (params: RequestParams = {}) =>
+    this.request<LookupModel[], any>({
+      path: `/api/lookup`,
       method: "GET",
       secure: true,
       format: "json",

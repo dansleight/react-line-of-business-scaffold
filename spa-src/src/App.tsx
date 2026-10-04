@@ -25,6 +25,7 @@ import { SessionProvider } from "./contexts/SessionContext";
 import { LoadingWrapper } from "./components/LoadingWrapper";
 import { useSettingsContext } from "./contexts/UseContexts";
 import { IsMs } from "./Utils/GlobalSettingsHelper";
+import { LookupProvider } from "./contexts/LookupContext";
 
 console.log("App version: ", __APP_VERSION__);
 
@@ -105,27 +106,29 @@ function App() {
             <IdentityProvider messageWrapper={LoadingWrapper}>
               <AuthenticatedTemplate>
                 <SessionProvider messageWrapper={LoadingWrapper}>
-                  <Routes>
-                    {routes.map((route, idx) => (
+                  <LookupProvider messageWrapper={LoadingWrapper}>
+                    <Routes>
+                      {routes.map((route, idx) => (
+                        <Route
+                          path={route.path}
+                          key={idx}
+                          element={
+                            <Layout config={layoutConfig} title={route.title}>
+                              {route.component}
+                            </Layout>
+                          }
+                        />
+                      ))}
                       <Route
-                        path={route.path}
-                        key={idx}
+                        path="*"
                         element={
-                          <Layout config={layoutConfig} title={route.title}>
-                            {route.component}
+                          <Layout config={layoutConfig} title="Not Found">
+                            <NotFound />
                           </Layout>
                         }
                       />
-                    ))}
-                    <Route
-                      path="*"
-                      element={
-                        <Layout config={layoutConfig} title="Not Found">
-                          <NotFound />
-                        </Layout>
-                      }
-                    />
-                  </Routes>
+                    </Routes>
+                  </LookupProvider>
                 </SessionProvider>
               </AuthenticatedTemplate>
               <UnauthenticatedTemplate>
