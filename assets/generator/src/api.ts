@@ -58,6 +58,10 @@ export async function setTableNotes(
   return postJson('/api/set-notes', { path, tableName, notes })
 }
 
+export async function fixLookups(path: string): Promise<SolutionLoadResult> {
+  return postJson('/api/fix-lookups', { path })
+}
+
 export async function writeController(
   path: string,
   tableName: string,

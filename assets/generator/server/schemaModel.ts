@@ -4,7 +4,11 @@ import {
   isActiveColumn,
   isHistoryStamp,
   isIgnoredTable,
+  isLookupEligible,
   isPersonStamp,
+  lookupDisplayColumn,
+  lookupParentColumn,
+  lookupTypeName,
   plannedBaseObjectName,
   plannedObjectName,
   plannedServiceName,
@@ -102,7 +106,31 @@ export function toTableMappings(
 
   const tables = [...byTable.values()].sort(compareTables)
   attachBridges(tables)
+  attachLookupMetadata(tables)
   return tables
+}
+
+function attachLookupMetadata(tables: TableMapping[]): void {
+  for (const table of tables) {
+    if (table.kind !== 'lookup') {
+      table.lookupEligible = false
+      table.lookupTypeName = null
+      table.lookupDisplayColumn = null
+      table.lookupParentTypeName = null
+      table.lookupParentIdColumn = null
+      continue
+    }
+
+    const display = lookupDisplayColumn(table)
+    const parent = lookupParentColumn(table)
+    table.lookupTypeName = lookupTypeName(table)
+    table.lookupDisplayColumn = display?.column ?? null
+    table.lookupParentIdColumn = parent?.column ?? null
+    table.lookupParentTypeName = parent?.foreignKey
+      ? tableSingularName(parent.foreignKey.tableName)
+      : null
+    table.lookupEligible = isLookupEligible(table)
+  }
 }
 
 function attachBridges(tables: TableMapping[]): void {

@@ -85,6 +85,14 @@ export type ObjectAudit = {
   invalidProperties: string[]
 }
 
+export type LookupControllerAudit = {
+  status: AuditStatus
+  filePath: string
+  expectedTypes: string[]
+  missingTypes: string[]
+  extraTypes: string[]
+}
+
 export type ServiceMethod = {
   name: string
   parameters: string[]
@@ -119,6 +127,11 @@ export type TableMapping = {
   enumAudit?: EnumAudit
   objectAudit?: ObjectAudit
   serviceAudit?: ServiceAudit
+  lookupTypeName?: string | null
+  lookupDisplayColumn?: string | null
+  lookupParentTypeName?: string | null
+  lookupParentIdColumn?: string | null
+  lookupEligible?: boolean
 }
 
 export type SolutionLoadResult = {
@@ -139,4 +152,6 @@ export type SolutionLoadResult = {
   generatorConfigPath?: string
   controllers?: string[]
   spaModels?: string[]
+  lookupTypeAudit?: EnumAudit
+  lookupControllerAudit?: LookupControllerAudit
 }

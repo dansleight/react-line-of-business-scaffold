@@ -6,6 +6,10 @@ import { findDefaultConnection } from './findConnectionString.ts'
 import { loadOrCreateGeneratorConfig } from './generatorConfig.ts'
 import { identifyProjects } from './identifyProjects.ts'
 import { parseSolutionFile } from './parseSolution.ts'
+import {
+  auditLookupControllerFile,
+  auditLookupTypeFile,
+} from './auditLookups.ts'
 import { projectFolders, webApiFolders } from './projectPaths.ts'
 import { readSchema } from './readSchema.ts'
 
@@ -87,6 +91,21 @@ export async function loadSolution(
       error instanceof Error
         ? error.message
         : 'Failed to read the database schema.'
+  }
+
+  if (result.tables) {
+    if (folders) {
+      result.lookupTypeAudit = await auditLookupTypeFile(
+        folders.enumsFolder,
+        result.tables,
+      )
+    }
+    if (apiFolders) {
+      result.lookupControllerAudit = await auditLookupControllerFile(
+        apiFolders.controllersFolder,
+        result.tables,
+      )
+    }
   }
 
   return result

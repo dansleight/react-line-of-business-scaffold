@@ -169,11 +169,13 @@ export function renderObjectFile(
     ? undefined
     : renderExtendedPropertiesRegion(table)
   const derived = renderDerivedPropertiesRegion(table, allTables)
+  const lookup = renderLookupRegion(table)
   const dates = renderDatesAsStringsRegion(owned)
   const regions = [
     renderNamedRegion('Properties', renderPropertiesRegion(owned)),
   ]
   if (extended) regions.push(renderNamedRegion('Extended Properties', extended))
+  if (lookup) regions.push(renderNamedRegion('ILookup Properties', lookup))
   if (derived) regions.push(renderNamedRegion('Derived Properties', derived))
   if (dates) regions.push(renderNamedRegion('Dates As Strings', dates))
   regions.push(
@@ -191,7 +193,7 @@ export function renderObjectFile(
     )
   }
 
-  const inherits = table.baseObjectName ? ` : ${table.baseObjectName}` : ''
+  const inherits = objectInheritance(table)
 
   return collapseExcessBlankLines(`${objectUsings(table, owned)}
 
@@ -238,8 +240,9 @@ export function extractPublicProperties(
 ): { name: string; type: string }[] {
   const properties: { name: string; type: string }[] = []
   const pattern =
-    /public\s+([\w.?[\]<>]+)\s+(\w+)\s*(?:\{|=>)/g
+    /public\s+(?:static\s+)?([\w.?[\]<>]+)\s+(\w+)\s*(?:\{|=>)/g
   for (const match of source.matchAll(pattern)) {
+    if (match[0].startsWith('public static')) continue
     properties.push({ type: match[1], name: match[2] })
   }
   return properties
@@ -267,6 +270,12 @@ function expectedProperties(
 
   for (const navigation of lookupNavigations(table, allTables)) {
     expected.push(navigation)
+  }
+
+  for (const property of lookupInterfaceProperties(table)) {
+    if (!expected.some((entry) => entry.name === property.name)) {
+      expected.push(property)
+    }
   }
 
   for (const column of table.columns.filter((entry) =>
@@ -297,10 +306,73 @@ function objectUsings(table: TableMapping, columns: ColumnMapping[]): string {
   if ((table.bridgePartners ?? []).length > 0) {
     usings.splice(2, 0, 'using System.Collections.Generic;')
   }
-  if (columns.some((column) => isDateTimeProperty(column))) {
+  if (
+    table.lookupEligible ||
+    columns.some((column) => isDateTimeProperty(column))
+  ) {
     usings.push('using Newtonsoft.Json;')
   }
   return usings.join('\n')
+}
+
+function objectInheritance(table: TableMapping): string {
+  const parts: string[] = []
+  if (table.baseObjectName) parts.push(table.baseObjectName)
+  if (table.lookupEligible) parts.push('IStaticLookupItem')
+  return parts.length > 0 ? ` : ${parts.join(', ')}` : ''
+}
+
+function hasMappedProperty(table: TableMapping, name: string): boolean {
+  return table.columns.some((column) => column.column === name)
+}
+
+function lookupInterfaceProperties(
+  table: TableMapping,
+): { name: string; type: string }[] {
+  if (!table.lookupEligible) return []
+  const properties: { name: string; type: string }[] = []
+  if (!hasMappedProperty(table, 'Id')) {
+    properties.push({ name: 'Id', type: 'int' })
+  }
+  if (!hasMappedProperty(table, 'ParentId')) {
+    properties.push({ name: 'ParentId', type: 'int?' })
+  }
+  if (!hasMappedProperty(table, 'Name')) {
+    properties.push({ name: 'Name', type: 'string' })
+  }
+  if (!hasMappedProperty(table, 'Active')) {
+    properties.push({ name: 'Active', type: 'bool' })
+  }
+  return properties
+}
+
+function renderLookupRegion(table: TableMapping): string | undefined {
+  if (!table.lookupEligible) return undefined
+  const key = table.columns.find((column) => column.primaryKey)
+  const display = table.lookupDisplayColumn
+  if (!key || !display) return undefined
+
+  const typeName = table.lookupTypeName ?? tableSingularName(table.tableName)
+  const parentType = table.lookupParentTypeName
+    ? `LookupType.${table.lookupParentTypeName}`
+    : 'null'
+  const parentId = table.lookupParentIdColumn ?? 'null'
+
+  const lines = [
+    `    public static LookupType LookupType => LookupType.${typeName};`,
+    `    public static LookupType? ParentLookupType => ${parentType};`,
+    '',
+    '    [JsonIgnore]',
+    `    public int Id => ${key.column};`,
+    '    [JsonIgnore]',
+    `    public int? ParentId => ${parentId};`,
+    '    [JsonIgnore]',
+    `    public string Name => ${display};`,
+  ]
+  if (!hasMappedProperty(table, 'Active')) {
+    lines.push('    [JsonIgnore]', '    public bool Active => true;')
+  }
+  return lines.join('\n')
 }
 
 function renderNamedRegion(name: string, body: string): string {

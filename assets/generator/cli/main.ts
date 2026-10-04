@@ -7,6 +7,7 @@ import { setTableNotes } from "../server/setNotes.ts";
 import { setPrimaryTable } from "../server/setPrimaryTable.ts";
 import { writeController } from "../server/writeController.ts";
 import { fixEnums } from "../server/writeEnum.ts";
+import { fixLookups } from "../server/writeLookup.ts";
 import type { SolutionLoadResult } from "../shared/types.ts";
 
 async function main(): Promise<void> {
@@ -32,6 +33,11 @@ async function main(): Promise<void> {
     case "enums":
       result = args.fix
         ? await fixEnums(solutionPath)
+        : await loadSolution(solutionPath);
+      break;
+    case "lookups":
+      result = args.fix
+        ? await fixLookups(solutionPath)
         : await loadSolution(solutionPath);
       break;
     case "generate":
@@ -155,6 +161,7 @@ function printUsage(): void {
 Usage:
   pnpm generator status [--sln path] [--json]
   pnpm generator enums --fix [--sln path] [--json]
+  pnpm generator lookups --fix [--sln path] [--json]
   pnpm generator generate --table dat_Widget [--sln path] [--json]
   pnpm generator replace --table lu_Color [--sln path] [--json]
   pnpm generator primary --table dat_Widget --on|--off [--sln path] [--json]
@@ -181,6 +188,13 @@ function printResult(result: SolutionLoadResult): void {
     (table) => (table.enumAudit?.status ?? "missing") !== "correct",
   );
   console.log(`Enums: ${enums.length} (${pendingEnums.length} need fix)`);
+  const lookups = tables.filter((table) => table.kind === "lookup");
+  const lookupTypeStatus = result.lookupTypeAudit?.status ?? "missing";
+  const lookupControllerStatus =
+    result.lookupControllerAudit?.status ?? "missing";
+  console.log(
+    `Lookups: ${lookups.length} (LookupType=${lookupTypeStatus}, LookupController=${lookupControllerStatus})`,
+  );
   for (const table of tables.filter((entry) => entry.kind !== "enum")) {
     const objectStatus = table.objectAudit?.status ?? "n/a";
     const serviceStatus = table.serviceAudit?.status ?? "n/a";

@@ -284,3 +284,53 @@ export function uniqueNames(names: string[]): string[] {
   }
   return unique
 }
+
+export function lookupTypeName(table: TableMapping): string {
+  return tableSingularName(table.tableName)
+}
+
+export function lookupDisplayColumn(
+  table: TableMapping,
+): ColumnMapping | undefined {
+  const singular = tableSingularName(table.tableName)
+  const stringColumns = table.columns.filter(
+    (column) => column.csharpType === 'string',
+  )
+  return (
+    stringColumns.find((column) => equalsIgnoreCase(column.column, singular)) ??
+    stringColumns.find((column) => equalsIgnoreCase(column.column, 'Name')) ??
+    stringColumns.find(
+      (column) =>
+        !column.primaryKey && !equalsIgnoreCase(column.column, 'Code'),
+    )
+  )
+}
+
+export function lookupParentColumn(
+  table: TableMapping,
+): ColumnMapping | undefined {
+  const parents = table.columns.filter((column) => {
+    if (!column.foreignKey) return false
+    if (tableKind(column.foreignKey.tableName) !== 'lookup') return false
+    return !equalsIgnoreCase(column.foreignKey.tableName, table.tableName)
+  })
+  return parents.length === 1 ? parents[0] : undefined
+}
+
+export function isLookupEligible(table: TableMapping): boolean {
+  if (table.kind !== 'lookup') return false
+  const key = singlePrimaryKey(table)
+  if (!key || key.csharpType !== 'int') return false
+  return lookupDisplayColumn(table) != null
+}
+
+export function eligibleLookupTables(tables: TableMapping[]): TableMapping[] {
+  return tables.filter(isLookupEligible).sort(compareTables)
+}
+
+export function lookupTypeValues(tables: TableMapping[]): string[] {
+  return [
+    'Unknown',
+    ...eligibleLookupTables(tables).map((table) => lookupTypeName(table)),
+  ]
+}

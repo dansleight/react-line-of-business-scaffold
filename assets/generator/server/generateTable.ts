@@ -4,6 +4,7 @@ import { isScaffoldedObject, writeObjectFiles } from './auditObjects.ts'
 import { serviceFilePath, writeServiceFile } from './auditServices.ts'
 import { loadSolution } from './loadSolution.ts'
 import { projectFolders } from './projectPaths.ts'
+import { writeLookupBag } from './writeLookup.ts'
 
 export type GenerateMode = 'generate' | 'replace'
 
@@ -45,6 +46,7 @@ export async function generateTables(
   const overwrite = mode === 'replace'
   const missing: string[] = []
   let wrote = false
+  let touchedLookup = false
 
   for (const name of names) {
     const table = findGeneratableTable(loaded.tables ?? [], name)
@@ -52,6 +54,8 @@ export async function generateTables(
       missing.push(name)
       continue
     }
+
+    if (table.kind === 'lookup') touchedLookup = true
 
     const objectWrote = await writeObjectFiles(
       folders.modelsFolder,
@@ -68,6 +72,12 @@ export async function generateTables(
       overwrite,
     )
     wrote = wrote || objectWrote || serviceWrote
+  }
+
+  if (touchedLookup) {
+    const bag = await writeLookupBag(solutionPath)
+    if (bag.error && missing.length === names.length) return bag
+    wrote = true
   }
 
   if (missing.length === names.length) {

@@ -23,6 +23,7 @@ import {
 import {
   defaultSolution,
   fixEnums,
+  fixLookups,
   generateTable,
   loadSolution,
   replaceTable,
@@ -66,6 +67,7 @@ export default function App() {
   const [busyLabel, setBusyLabel] = useState<string | null>(null);
   const [result, setResult] = useState<SolutionLoadResult | null>(null);
   const [enumsOpen, setEnumsOpen] = useState(false);
+  const [lookupsOpen, setLookupsOpen] = useState(false);
   const [selectedTable, setSelectedTable] = useState<string | null>(null);
   const busy = busyLabel !== null;
 
@@ -140,10 +142,53 @@ export default function App() {
   const enumIssues = enumTables.filter(
     (table) => (table.enumAudit?.status ?? "missing") !== "correct",
   );
-  const visibleTables = tables.filter((table) => table.kind !== "enum");
+  const dataTables = tables.filter(
+    (table) => table.kind === "data" || table.kind === "bridge",
+  );
+  const lookupTables = tables.filter((table) => table.kind === "lookup");
+  const lookupBagNeedsFix =
+    (result?.lookupTypeAudit?.status ?? "missing") !== "correct" ||
+    (result?.lookupControllerAudit?.status ?? "missing") !== "correct";
+  const visibleTables = [...dataTables, ...lookupTables];
   const selected = visibleTables.find(
     (table) => table.tableName === selectedTable,
   );
+
+  const renderTableRows = (rows: TableMapping[]) =>
+    rows.map((table) => (
+      <TableRow
+        key={`${table.schema}.${table.tableName}`}
+        table={table}
+        busy={busy}
+        onGenerate={() =>
+          apply(`Generating ${table.tableName}…`, () =>
+            generateTable(result!.solutionPath!, table.tableName),
+          )
+        }
+        onReplace={() => {
+          if (
+            !window.confirm(
+              `Replace ${table.objectName} and ${table.serviceName}? Custom methods will be overwritten.`,
+            )
+          ) {
+            return;
+          }
+          apply(`Replacing ${table.tableName}…`, () =>
+            replaceTable(result!.solutionPath!, table.tableName),
+          );
+        }}
+        onPrimary={(primary) =>
+          apply("Updating generator.json…", () =>
+            setPrimaryTable(
+              result!.solutionPath!,
+              table.tableName,
+              primary,
+            ),
+          )
+        }
+        onMore={() => setSelectedTable(table.tableName)}
+      />
+    ));
 
   return (
     <div className="min-vh-100 bg-light">
@@ -206,6 +251,20 @@ export default function App() {
                   {enumIssues.length > 0 && (
                     <Badge bg="warning" text="dark" className="ms-2">
                       {enumIssues.length}
+                    </Badge>
+                  )}
+                </Button>
+              )}
+              {(lookupTables.length > 0 || result?.lookupTypeAudit) && (
+                <Button
+                  variant="outline-secondary"
+                  disabled={busy}
+                  onClick={() => setLookupsOpen(true)}
+                >
+                  Lookups
+                  {lookupBagNeedsFix && (
+                    <Badge bg="warning" text="dark" className="ms-2">
+                      Fix
                     </Badge>
                   )}
                 </Button>
@@ -279,40 +338,25 @@ export default function App() {
             existingSpaModels={result.spaModels ?? []}
           />
         ) : (
-          visibleTables.map((table) => (
-            <TableRow
-              key={`${table.schema}.${table.tableName}`}
-              table={table}
-              busy={busy}
-              onGenerate={() =>
-                apply(`Generating ${table.tableName}…`, () =>
-                  generateTable(result!.solutionPath!, table.tableName),
-                )
-              }
-              onReplace={() => {
-                if (
-                  !window.confirm(
-                    `Replace ${table.objectName} and ${table.serviceName}? Custom methods will be overwritten.`,
-                  )
-                ) {
-                  return;
-                }
-                apply(`Replacing ${table.tableName}…`, () =>
-                  replaceTable(result!.solutionPath!, table.tableName),
-                );
-              }}
-              onPrimary={(primary) =>
-                apply("Updating generator.json…", () =>
-                  setPrimaryTable(
-                    result!.solutionPath!,
-                    table.tableName,
-                    primary,
-                  ),
-                )
-              }
-              onMore={() => setSelectedTable(table.tableName)}
-            />
-          ))
+          <>
+            {dataTables.length > 0 && (
+              <>
+                <h2 className="h5 mb-3">Data</h2>
+                {renderTableRows(dataTables)}
+              </>
+            )}
+            {lookupTables.length > 0 && (
+              <>
+                <h2 className="h5 mt-4 mb-3">Lookups</h2>
+                <p className="text-body-secondary small mb-3">
+                  Lookup objects implement <code>IStaticLookupItem</code> and
+                  are aggregated by <code>LookupController</code>. Generate or
+                  replace a lookup to refresh the bag.
+                </p>
+                {renderTableRows(lookupTables)}
+              </>
+            )}
+          </>
         )}
 
         {visibleTables.length === 0 && result?.tables && (
@@ -335,6 +379,17 @@ export default function App() {
         }
         onFixAll={() =>
           apply("Fixing enums…", () => fixEnums(result!.solutionPath!))
+        }
+      />
+
+      <LookupsModal
+        show={lookupsOpen}
+        result={result}
+        lookupTables={lookupTables}
+        busy={busy}
+        onHide={() => setLookupsOpen(false)}
+        onFix={() =>
+          apply("Fixing lookups…", () => fixLookups(result!.solutionPath!))
         }
       />
 
@@ -602,6 +657,16 @@ function ObjectPage({
             </Button>
             <strong>{table.objectName}</strong>
             <span className="opacity-50 ms-2">{table.tableName}</span>
+            {table.kind === "lookup" && table.lookupTypeName && (
+              <Badge bg="info" className="ms-2">
+                LookupType.{table.lookupTypeName}
+              </Badge>
+            )}
+            {table.kind === "lookup" && table.lookupParentTypeName && (
+              <Badge bg="light" text="dark" className="ms-2">
+                parent {table.lookupParentTypeName}
+              </Badge>
+            )}
           </div>
           <div className="d-flex align-items-center gap-2">
             {table.kind === "data" && (
@@ -921,6 +986,144 @@ function EnumsModal({
             </div>
           );
         })}
+      </Modal.Body>
+    </Modal>
+  );
+}
+
+function LookupsModal({
+  show,
+  result,
+  lookupTables,
+  busy,
+  onHide,
+  onFix,
+}: {
+  show: boolean;
+  result: SolutionLoadResult | null;
+  lookupTables: TableMapping[];
+  busy: boolean;
+  onHide: () => void;
+  onFix: () => void;
+}) {
+  const typeAudit = result?.lookupTypeAudit;
+  const typeStatus: AuditStatus = typeAudit?.status ?? "missing";
+  const controllerAudit = result?.lookupControllerAudit;
+  const controllerStatus: AuditStatus = controllerAudit?.status ?? "missing";
+  const needsFix =
+    typeStatus !== "correct" || controllerStatus !== "correct";
+  const expectedValues = typeAudit?.expectedValues ?? ["Unknown"];
+
+  return (
+    <Modal show={show} onHide={onHide} size="lg">
+      <Modal.Header closeButton>
+        <Modal.Title>Lookups</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        {needsFix && (
+          <div className="mb-3 text-end">
+            <Button size="sm" disabled={busy} onClick={onFix}>
+              <FontAwesomeIcon icon={faWrench} className="me-2" />
+              Fix LookupType and LookupController
+            </Button>
+          </div>
+        )}
+
+        <div className="enum-audit mb-3">
+          <div>
+            <FontAwesomeIcon
+              icon={statusIcon(typeStatus)}
+              className={`me-2 ${statusClass(typeStatus)}`}
+            />
+            <strong className="me-2">LookupType</strong>
+            <span className="opacity-50">Enums/LookupType.cs</span>
+          </div>
+          <ul className="enum-values mt-2 mb-0">
+            {expectedValues.map((value) => {
+              const missing =
+                typeStatus === "missing" ||
+                (typeAudit?.missingValues.includes(value) ?? false);
+              return (
+                <li key={value}>
+                  <FontAwesomeIcon
+                    icon={missing ? faCircleQuestion : faCircleCheck}
+                    className={`me-2 ${missing ? "text-warning" : "text-success"}`}
+                    size="sm"
+                    fixedWidth
+                  />
+                  {value}
+                </li>
+              );
+            })}
+            {typeAudit?.extraValues.map((value) => (
+              <li key={`extra-${value}`}>
+                <FontAwesomeIcon
+                  icon={faCircleMinus}
+                  className="me-2 text-warning"
+                  size="sm"
+                  fixedWidth
+                />
+                {value} <span className="text-body-secondary">(extra)</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="enum-audit mb-3">
+          <div>
+            <FontAwesomeIcon
+              icon={statusIcon(controllerStatus)}
+              className={`me-2 ${statusClass(controllerStatus)}`}
+            />
+            <strong className="me-2">LookupController</strong>
+            <span className="opacity-50">Controllers/LookupController.cs</span>
+          </div>
+          {lookupTables.length === 0 ? (
+            <p className="small text-body-secondary mt-2 mb-0">
+              No <code>lu_*</code> tables. The controller returns an empty bag.
+            </p>
+          ) : (
+            <ul className="enum-values mt-2 mb-0">
+              {lookupTables.map((table) => {
+                const typeName = table.lookupTypeName ?? table.objectName;
+                const missing =
+                  controllerStatus === "missing" ||
+                  (typeName != null &&
+                    (controllerAudit?.missingTypes.includes(typeName) ??
+                      false));
+                return (
+                  <li key={table.tableName}>
+                    <FontAwesomeIcon
+                      icon={missing ? faCircleQuestion : faCircleCheck}
+                      className={`me-2 ${missing ? "text-warning" : "text-success"}`}
+                      size="sm"
+                      fixedWidth
+                    />
+                    {typeName}
+                    <span className="opacity-50 ms-2">{table.tableName}</span>
+                    {!table.lookupEligible && (
+                      <span className="text-warning ms-2">
+                        (not eligible: int PK and display column required)
+                      </span>
+                    )}
+                  </li>
+                );
+              })}
+              {controllerAudit?.extraTypes.map((value) => (
+                <li key={`extra-ctrl-${value}`}>
+                  <FontAwesomeIcon
+                    icon={faCircleMinus}
+                    className="me-2 text-warning"
+                    size="sm"
+                    fixedWidth
+                  />
+                  {value}{" "}
+                  <span className="text-body-secondary">(extra)</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
       </Modal.Body>
     </Modal>
   );

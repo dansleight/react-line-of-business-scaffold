@@ -8,6 +8,7 @@ import { setTableNotes } from './setNotes.ts'
 import { setPrimaryTable } from './setPrimaryTable.ts'
 import { writeController } from './writeController.ts'
 import { fixEnums, writeEnums } from './writeEnum.ts'
+import { fixLookups } from './writeLookup.ts'
 
 export function plateServerPlugin(): Plugin {
   return {
@@ -91,6 +92,14 @@ export function plateServerPlugin(): Plugin {
           return
         }
         void handleWriteController(req, res)
+      })
+
+      server.middlewares.use('/api/fix-lookups', (req, res, next) => {
+        if (req.method !== 'POST') {
+          next()
+          return
+        }
+        void handleFixLookups(req, res)
       })
     },
   }
@@ -249,6 +258,25 @@ async function handleSetNotes(
     }
 
     const result = await setTableNotes(solutionPath, tableName, body.notes)
+    sendJson(res, result.error ? 422 : 200, result)
+  } catch (error) {
+    sendJson(res, 500, { error: errorMessage(error) })
+  }
+}
+
+async function handleFixLookups(
+  req: IncomingMessage,
+  res: ServerResponse,
+): Promise<void> {
+  try {
+    const body = await readJsonBody(req)
+    const solutionPath = readString(body.path)
+    if (!solutionPath) {
+      sendJson(res, 400, { error: 'A solution path is required.' })
+      return
+    }
+
+    const result = await fixLookups(solutionPath)
     sendJson(res, result.error ? 422 : 200, result)
   } catch (error) {
     sendJson(res, 500, { error: errorMessage(error) })

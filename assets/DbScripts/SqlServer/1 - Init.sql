@@ -25,10 +25,6 @@ IF OBJECT_ID('dat_Config') IS NOT NULL
 	DROP TABLE dat_Config
 GO
 
-IF OBJECT_ID('dat_Widget') IS NOT NULL
-	DROP TABLE dat_Widget
-GO
-
 -- ******************** dat_Config ********************
 CREATE TABLE dat_Config (
 	ConfigKey			nvarchar(100)	NOT NULL,
@@ -62,22 +58,6 @@ GO
 INSERT dat_User (Email, Role) 
 VALUES 
 	(N'test@unknown.com', N'Admin')
-GO
-
--- ******************** dat_Widget ********************
-CREATE TABLE dat_Widget (
-	WidgetId			INT				NOT NULL IDENTITY(1001, 1),
-	[Name]				NVARCHAR(100)	NOT NULL,
-	[Description]		NVARCHAR(MAX)	NOT NULL,
-	CONSTRAINT pk_dat_Widget PRIMARY KEY (WidgetId)
-)
-GO
-
-SET IDENTITY_INSERT dat_Widget ON;
-INSERT INTO dat_Widget (WidgetId, [Name], [Description])
-VALUES
-	(1, 'Gadget', 'This is a gadget, a kind of Widget'),
-	(2, 'Thingy', 'This is a thingy that I can''t really describe')
 GO
 
 -- ******************** dat_UserAvatar ********************

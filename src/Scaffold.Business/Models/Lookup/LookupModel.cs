@@ -21,7 +21,7 @@ public class LookupModel
         {
             LookupType = T.LookupType,
             ParentLookupType = T.ParentLookupType,
-            Items = items.Cast<ILookupItem>()
+            Items = items.Select(item => LookupItem.From(item))
         };
     }
 
