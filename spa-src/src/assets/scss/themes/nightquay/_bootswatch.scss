@@ -1,0 +1,28 @@
+// Night Quay
+
+$web-font-path: "https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" !default;
+@if $web-font-path {
+  @import url("#{$web-font-path}");
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+}
+
+.navbar {
+  font-weight: $headings-font-weight;
+}
+
+.btn-info,
+.btn-warning {
+  color: $white;
+}
+
+.badge {
+  &.bg-secondary,
+  &.bg-light,
+  &.bg-tertiary,
+  &.bg-warning {
+    color: $dark;
+  }
+}

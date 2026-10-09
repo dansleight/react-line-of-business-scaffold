@@ -34,10 +34,13 @@ Which shell, colors, which Variable regions are on. This is the layout product s
 Visual theme. Exactly **one** of the first imports should be active:
 
 - `./bootstrap.scss` — stock Bootstrap 5, plus this repo's variable overrides
-- `themes/reedo` or `themes/hockeyclub` — themes that ship with the scaffold
+- `themes/reedo` or `themes/hockeyclub` — original scaffold themes
+- `themes/nightquay`, `draftsman`, `marquee`, `plakat`, `pilothouse`, or `gloaming` — Color Hunt palettes expanded to primary, secondary, tertiary, success, info, warning, and danger
 - a file under `bootswatch/` — Cosmo, Flatly, etc.
 
-Then `app.scss` (layout CSS) always loads. Comment the others. This is SCSS rather than a runtime switch so unused Bootswatch CSS never ships.
+Then `app.scss` (layout CSS) always loads. Comment the others. This is SCSS rather than a runtime switch so unused theme CSS never ships.
+
+**Theme Lab** (`/samples/gallery`) is a live gallery of the active theme: semantic swatches, buttons, alerts, badges, progress, tables, and the form kit. Nested sample pages cover the rest of Bootstrap. Switch the import above and reload to compare.
 
 Theme SCSS uses the modern Sass API (`color.mix`, `color.adjust`, `math.div`, and so on). Bootstrap 5.3 and Bootswatch still load through `@import`; Vite `quietDeps` plus `silenceDeprecations: ["import"]` cover that until Bootstrap 6. Do not add the other Sass silences back — those were hiding first-party code.
 
@@ -48,6 +51,10 @@ Left-nav (and Variable sidebar) items: `path`, `label`, `icon`, optional nested 
 ### `src/routes.tsx`
 
 URL → page component → window title. `App.tsx` wraps each route in `Layout`. Add pages here when you add screens.
+
+### Toasts
+
+`ToastProvider` wraps the app in `main.tsx`. Call `useToast().notify(message, { accent, timeout })` from any screen. Timed toasts use `toastTimeoutMs` in `src/toastConfig.ts` (4 seconds). The host stacks at most three, oldest at the top, top-right; hovering the stack pauses every visible countdown. Theme Lab → Dialogs has fire buttons.
 
 ### `src/appConfig.ts`
 
@@ -74,4 +81,4 @@ pnpm dev
 
 `pnpm generate-api` with Swagger up. Production builds: `pnpm build:webapi` (output under the C# `ClientApp/dist`) or `pnpm build:fastapi`.
 
-Sample Bootstrap/theme pages live in `sample-pages/` and are not routed. Open them if you are picking a Bootswatch file; they are not part of the app shell.
+Theme Lab pages live in `src/pages/samples/` and are routed under `/samples`. Use them while picking a theme; they are tooling, not product screens.

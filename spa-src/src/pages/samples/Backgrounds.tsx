@@ -4,7 +4,11 @@ import { Headcrumb } from "@/components/Headcrumb";
 export function Backgrounds() {
   return (
     <Container fluid>
-      <Headcrumb parent="Bootstrap" title="Background Colors" />
+      <Headcrumb
+        title="Background Colors"
+        titles={["Theme Lab"]}
+        paths={["/samples/gallery"]}
+      />
 
       <Row>
         <Col lg={12}>

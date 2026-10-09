@@ -4,7 +4,7 @@ import { Headcrumb } from "@/components/Headcrumb";
 export function Tables() {
   return (
     <Container fluid>
-      <Headcrumb title="Tables" />
+      <Headcrumb title="Tables" titles={["Theme Lab"]} paths={["/samples/gallery"]} />
 
       {/* Tables ================================================== */}
       <Row>

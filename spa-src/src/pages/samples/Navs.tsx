@@ -4,7 +4,7 @@ import { Headcrumb } from "@/components/Headcrumb";
 export function Navs() {
   return (
     <Container fluid>
-      <Headcrumb parent="Components" title="Navs" />
+      <Headcrumb title="Navs" titles={["Theme Lab"]} paths={["/samples/gallery"]} />
 
       <Row className="mb-5">
         <Col md={6}>

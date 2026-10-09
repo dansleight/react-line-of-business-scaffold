@@ -18,7 +18,7 @@ export function Buttons() {
 
   return (
     <div className="container-fluid">
-      <Headcrumb parent="Bootstrap" title="Buttons" />
+      <Headcrumb title="Buttons" titles={["Theme Lab"]} paths={["/samples/gallery"]} />
 
       <Row>
         <Col lg={6}>
@@ -663,8 +663,8 @@ export function Buttons() {
               <div className="spaced-elements">
                 <ButtonGroup className="mb-2">
                   <ToggleButton
-                    id="radio-1"
-                    type="radio"
+                    id="checkbox-1"
+                    type="checkbox"
                     variant="primary"
                     value={1}
                     checked={checked1}
@@ -673,8 +673,8 @@ export function Buttons() {
                     Checkbox 1
                   </ToggleButton>
                   <ToggleButton
-                    id="radio-2"
-                    type="radio"
+                    id="checkbox-2"
+                    type="checkbox"
                     variant="primary"
                     value={2}
                     checked={checked2}
@@ -683,8 +683,8 @@ export function Buttons() {
                     Checkbox 2
                   </ToggleButton>
                   <ToggleButton
-                    id="radio-3"
-                    type="radio"
+                    id="checkbox-3"
+                    type="checkbox"
                     variant="primary"
                     value={3}
                     checked={checked3}

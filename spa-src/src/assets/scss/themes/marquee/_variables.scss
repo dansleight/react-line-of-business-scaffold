@@ -1,0 +1,71 @@
+@use "sass:color";
+
+// Marquee
+// Color Hunt: https://colorhunt.co/palette/003049d62828f77f00fcbf49
+// Lobby navy, house red, sodium orange, marquee gold. A forest green and
+// steel cyan keep success and info from borrowing the poster colors.
+
+$theme: "marquee" !default;
+
+$white: #fff !default;
+$gray-100: #f8f1e3 !default;
+$gray-200: #eadfc8 !default;
+$gray-300: #d4c7a8 !default;
+$gray-400: #b3a686 !default;
+$gray-500: #8c8066 !default;
+$gray-600: #6b6150 !default;
+$gray-700: #4a4550 !default;
+$gray-800: #1e3a4c !default;
+$gray-900: #003049 !default;
+$black: #000 !default;
+
+$blue: #003049 !default;
+$indigo: #1b3a6b !default;
+$purple: #6b3a6e !default;
+$pink: #e05a6f !default;
+$red: #d62828 !default;
+$orange: #f77f00 !default;
+$yellow: #fcbf49 !default;
+$green: #2a9d5c !default;
+$teal: #1f7a8c !default;
+$cyan: #4a90a4 !default;
+
+$primary: $blue !default;
+$secondary: $gray-700 !default;
+$tertiary: $gray-400 !default;
+$success: $green !default;
+$info: $cyan !default;
+$warning: $orange !default;
+$danger: $red !default;
+$light: $gray-100 !default;
+$dark: $gray-900 !default;
+
+$min-contrast-ratio: 2.6 !default;
+
+$border-radius: 0.2rem !default;
+$border-radius-sm: 0.15rem !default;
+$border-radius-lg: 0.3rem !default;
+
+$body-color: $gray-800 !default;
+
+$font-family-sans-serif:
+  "Barlow",
+  -apple-system,
+  BlinkMacSystemFont,
+  "Segoe UI",
+  Roboto,
+  "Helvetica Neue",
+  Arial,
+  sans-serif,
+  "Apple Color Emoji",
+  "Segoe UI Emoji",
+  "Segoe UI Symbol" !default;
+$headings-font-weight: 600 !default;
+
+$navbar-dark-color: rgba($white, 0.78) !default;
+$navbar-dark-hover-color: $white !default;
+
+$pagination-active-border-color: color.adjust(
+  $primary,
+  $lightness: -4%
+) !default;

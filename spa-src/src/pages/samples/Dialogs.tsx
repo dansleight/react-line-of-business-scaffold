@@ -2,9 +2,32 @@ import { Col, Container, Row } from "react-bootstrap";
 import { Modal, Popover, Tooltip } from "bootstrap";
 import { useEffect, useRef } from "react";
 import { Headcrumb } from "@/components/Headcrumb";
+import { ToastAccent, useToast } from "@/contexts/UseContexts";
+
+const accents: ToastAccent[] = [
+  "primary",
+  "success",
+  "info",
+  "warning",
+  "danger",
+];
 
 export function Dialogs() {
   const isInitalized = useRef<boolean>(false);
+  const { notify } = useToast();
+  const toastSeq = useRef(0);
+
+  const fireToast = (accent: ToastAccent, timeout = true) => {
+    toastSeq.current += 1;
+    const sticky = timeout ? "" : " · sticky";
+    notify(
+      `Toast ${toastSeq.current}: ${accent}${sticky}, we the people of the united states, in order to form a more perfect union, establish justice and ensure domestic tranquility.`,
+      {
+        accent,
+        timeout,
+      },
+    );
+  };
 
   useEffect(() => {
     if (!isInitalized.current) {
@@ -28,7 +51,11 @@ export function Dialogs() {
   }, []);
   return (
     <Container fluid>
-      <Headcrumb parent="Bootstrap" title="Dialogs" />
+      <Headcrumb
+        title="Dialogs"
+        titles={["Theme Lab"]}
+        paths={["/samples/gallery"]}
+      />
 
       <Row>
         <Col md={6}>
@@ -247,29 +274,40 @@ export function Dialogs() {
 
           <div className="mb-3">
             <h2>Toasts</h2>
-            <div className="bs-component">
-              <div
-                className="toast show"
-                role="alert"
-                aria-live="assertive"
-                aria-atomic="true"
+            <p className="small text-body-secondary">
+              App toasts stack top-right. Timed ones dismiss after four seconds;
+              hover the stack to pause every visible countdown. At most three
+              show at once, oldest at the top.
+            </p>
+            <div className="spaced-elements mb-3">
+              {accents.map((accent) => (
+                <button
+                  key={accent}
+                  type="button"
+                  className={`btn btn-${accent}`}
+                  onClick={() => fireToast(accent)}
+                >
+                  {accent}
+                </button>
+              ))}
+            </div>
+            <div className="spaced-elements">
+              <button
+                type="button"
+                className="btn btn-outline-primary"
+                onClick={() => fireToast("primary", false)}
               >
-                <div className="toast-header">
-                  <strong className="me-auto">Bootstrap</strong>
-                  <small>11 mins ago</small>
-                  <button
-                    type="button"
-                    className="btn-close ms-2 mb-1"
-                    data-bs-dismiss="toast"
-                    aria-label="Close"
-                  >
-                    <span aria-hidden="true"></span>
-                  </button>
-                </div>
-                <div className="toast-body">
-                  Hello, world! This is a toast message.
-                </div>
-              </div>
+                Sticky
+              </button>
+              <button
+                type="button"
+                className="btn btn-outline-secondary"
+                onClick={() => {
+                  accents.forEach((accent) => fireToast(accent));
+                }}
+              >
+                Fire five (queue)
+              </button>
             </div>
           </div>
         </Col>

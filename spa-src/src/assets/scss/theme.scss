@@ -1,11 +1,23 @@
-/* For Default bootstrap, keep this active */
+/* Exactly one of the theme imports below should be active. */
+
+/* Stock Bootstrap 5, plus this repo's variable overrides */
 // @import "./bootstrap.scss";
 
-/* For the themes that come with this scaffold */
+/* Themes that ship with this scaffold */
 // @import "themes/hockeyclub";
-@import "themes/reedo";
+// @import "themes/reedo";
 
-/* For Bootswatch themes, comment out the bootstrap import above, and uncomment the specific theme you want */
+/* Color Hunt palettes expanded to the semantic set
+   (primary, secondary, tertiary, success, info, warning, danger).
+   Preview them on /samples. */
+@import "themes/nightquay";
+// @import "themes/draftsman";
+// @import "themes/marquee";
+// @import "themes/plakat";
+// @import "themes/pilothouse";
+// @import "themes/gloaming";
+
+/* Bootswatch themes */
 // @import "bootswatch/cosmo";
 // @import "bootswatch/flatly";
 // @import "bootswatch/journal";

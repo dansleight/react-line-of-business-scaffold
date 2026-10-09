@@ -4,7 +4,11 @@ import { Headcrumb } from "@/components/Headcrumb";
 export function Containers() {
   return (
     <Container fluid className="pb-5">
-      <Headcrumb parent="Bootstrap" title="Containers" />
+      <Headcrumb
+        title="Containers"
+        titles={["Theme Lab"]}
+        paths={["/samples/gallery"]}
+      />
 
       {/* List Groups */}
       <Row>

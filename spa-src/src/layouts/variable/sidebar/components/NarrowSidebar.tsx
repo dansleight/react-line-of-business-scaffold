@@ -1,7 +1,9 @@
 import { NavLink, useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleDot } from "@fortawesome/free-solid-svg-icons";
+import classNames from "classnames";
 import { MenuItem, MenuProps } from "@/models/Interfaces";
+import { useHoverMenuLock } from "@/layouts/useHoverMenuLock";
 
 export const NarrowSidebar = ({ menuItems }: MenuProps) => {
   return (
@@ -34,6 +36,7 @@ type RenderMenuItemProps = {
 
 const RenderMenuItem = ({ item, depth }: RenderMenuItemProps) => {
   const location = useLocation();
+  const { locked, lock, unlock, rootRef } = useHoverMenuLock();
 
   if (item.group) {
     return (
@@ -65,7 +68,11 @@ const RenderMenuItem = ({ item, depth }: RenderMenuItemProps) => {
   }
 
   return (
-    <div className="nav-item openright">
+    <div
+      ref={rootRef}
+      className={classNames("nav-item openright", { "is-locked": locked })}
+      onMouseLeave={unlock}
+    >
       <a
         aria-expanded="false"
         role="button"
@@ -87,7 +94,7 @@ const RenderMenuItem = ({ item, depth }: RenderMenuItemProps) => {
           <span>{item.label}</span>
         )}
       </a>
-      <div className="dropdown-menu">
+      <div className="dropdown-menu" onClick={lock}>
         <RenderMenuItems items={item.items} depth={depth + 1} />
       </div>
     </div>

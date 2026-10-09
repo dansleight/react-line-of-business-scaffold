@@ -50,8 +50,8 @@ $sidemenu-base-width: 6.5rem !default;
       bottom: 0;
     }
   }
-  .openright:hover,
-  .openupright:hover {
+  .openright:hover:not(.is-locked),
+  .openupright:hover:not(.is-locked) {
     .dropdown-menu,
     .openright-menu {
       display: block;

@@ -6,6 +6,7 @@ import { faCircleDot } from "@fortawesome/free-solid-svg-icons";
 import classNames from "classnames";
 import { useSessionContext } from "@/contexts/UseContexts";
 import { TextColor } from "@/models/Enums";
+import { useHoverMenuLock } from "@/layouts/useHoverMenuLock";
 
 interface MainMenuProps {
   sideMenuLayoutConfig?: SideMenuLayoutConfig;
@@ -61,6 +62,7 @@ const RenderMenuItem = ({
   sideMenuLayoutConfig,
 }: RenderMenuItemProps) => {
   const location = useLocation();
+  const { locked, lock, unlock, rootRef } = useHoverMenuLock();
 
   const isActive = useMemo(() => {
     if (location.pathname === "/" && item.path === "/") return true;
@@ -104,7 +106,11 @@ const RenderMenuItem = ({
   }
 
   return (
-    <div className="nav-item openright">
+    <div
+      ref={rootRef}
+      className={classNames("nav-item openright", { "is-locked": locked })}
+      onMouseLeave={unlock}
+    >
       <a
         aria-expanded="false"
         role="button"
@@ -129,7 +135,7 @@ const RenderMenuItem = ({
         )}
         <span>{item.label}</span>
       </a>
-      <div className="dropdown-menu">
+      <div className="dropdown-menu" onClick={lock}>
         <RenderMenuItems items={item.items} depth={true} />
       </div>
     </div>

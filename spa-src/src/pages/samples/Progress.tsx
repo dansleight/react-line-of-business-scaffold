@@ -4,7 +4,7 @@ import { Headcrumb } from "@/components/Headcrumb";
 export function Progress() {
   return (
     <Container fluid>
-      <Headcrumb parent="Components" title="Progress" />
+      <Headcrumb title="Progress" titles={["Theme Lab"]} paths={["/samples/gallery"]} />
 
       <Row>
         <Col md={12}>

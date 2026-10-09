@@ -11,10 +11,12 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import { hasValidRole } from "@/models/Utilities";
+import { useHoverMenuLock } from "@/layouts/useHoverMenuLock";
 
 export const UserMenu = () => {
   const { getApiBearer, userInfo } = useSessionContext();
   const { username, avatarUrl, handleLogout } = useIdentityContext();
+  const { locked, lock, unlock, rootRef } = useHoverMenuLock();
 
   const copyBearerToClipboard = async () => {
     const bearer: string | undefined = await getApiBearer();
@@ -26,7 +28,11 @@ export const UserMenu = () => {
   };
 
   return (
-    <div className="nav-item openupright">
+    <div
+      ref={rootRef}
+      className={classNames("nav-item openupright", { "is-locked": locked })}
+      onMouseLeave={unlock}
+    >
       <a
         aria-expanded="false"
         role="button"
@@ -44,7 +50,7 @@ export const UserMenu = () => {
         />
         {/* <FontAwesomeIcon icon={faUser} size="lg" /> */}
       </a>
-      <div className="dropdown-menu">
+      <div className="dropdown-menu" onClick={lock}>
         <h6 className="dropdown-header">{username}</h6>
         <Link className="nav-link dropdown-item" to="/about">
           <span>

@@ -133,7 +133,7 @@
     },
     {
       "action": "remove",
-      "files": ["./spa-src/api-templates-default/", "./spa-src/sample-pages"]
+      "files": ["./spa-src/api-templates-default/"]
     }
   ]
 }

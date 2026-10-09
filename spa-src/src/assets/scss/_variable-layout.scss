@@ -214,7 +214,7 @@ body[data-topbar-include="false"][data-navbar-include="true"] {
       margin: 0px;
     }
   }
-  .openright:hover {
+  .openright:hover:not(.is-locked) {
     .dropdown-menu,
     .openright-menu {
       display: block;

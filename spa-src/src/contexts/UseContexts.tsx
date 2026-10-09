@@ -69,3 +69,26 @@ type LookupContextType = {
 export const LookupContext = createContext({} as LookupContextType);
 
 export const useLookupContext = () => useContext(LookupContext);
+
+// ---- Toast Context -----------------------------------------------------------------------
+export type ToastAccent =
+  | "primary"
+  | "success"
+  | "info"
+  | "warning"
+  | "danger";
+
+export type ToastOptions = {
+  /** Auto-dismiss after `toastTimeoutMs`. Default true. */
+  timeout?: boolean;
+  accent?: ToastAccent;
+};
+
+type ToastContextType = {
+  notify: (message: string, options?: ToastOptions) => string;
+  dismiss: (id: string) => void;
+};
+
+export const ToastContext = createContext({} as ToastContextType);
+
+export const useToast = () => useContext(ToastContext);

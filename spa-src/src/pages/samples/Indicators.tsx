@@ -4,7 +4,11 @@ import { Headcrumb } from "@/components/Headcrumb";
 export function Indicators() {
   return (
     <Container fluid className="pb-4">
-      <Headcrumb parent="Components" title="Indicators" />
+      <Headcrumb
+        title="Indicators"
+        titles={["Theme Lab"]}
+        paths={["/samples/gallery"]}
+      />
 
       <Row>
         <Col md={12}>

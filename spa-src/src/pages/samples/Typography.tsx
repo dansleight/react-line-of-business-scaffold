@@ -4,7 +4,11 @@ import { Headcrumb } from "@/components/Headcrumb";
 export function Typography() {
   return (
     <Container fluid>
-      <Headcrumb parent="Bootstrap" title="Typography" />
+      <Headcrumb
+        title="Typography"
+        titles={["Theme Lab"]}
+        paths={["/samples/gallery"]}
+      />
 
       <Row>
         <Col md={6}>
