@@ -1,9 +1,9 @@
 // Core Files
-@import "../../../node_modules/bootstrap/scss/functions";
-@import "../../../node_modules/bootstrap/scss/variables";
+@import "bootstrap/scss/functions";
+@import "bootstrap/scss/variables";
 @import "variables";
 @import "variables-dark";
-@import "../../../node_modules/bootstrap/scss/mixins.scss";
+@import "bootstrap/scss/mixins";
 
 // Utilities
 @import "custom/utilities/animation";

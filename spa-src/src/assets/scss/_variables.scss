@@ -1,3 +1,6 @@
+@use "sass:color";
+@use "sass:string";
+
 // Variables
 //
 // Variables should follow the `$component-state-property-size` formula for
@@ -344,7 +347,7 @@ $success-bg-subtle: tint-color($success, 80%) !default;
 $info-bg-subtle: tint-color($info, 80%) !default;
 $warning-bg-subtle: tint-color($warning, 80%) !default;
 $danger-bg-subtle: tint-color($danger, 80%) !default;
-$light-bg-subtle: mix($gray-100, $white) !default;
+$light-bg-subtle: color.mix($gray-100, $white) !default;
 $dark-bg-subtle: $gray-400 !default;
 // scss-docs-end theme-bg-subtle-variables
 
@@ -868,7 +871,7 @@ $btn-link-color: var(--#{$prefix}link-color) !default;
 $btn-link-hover-color: var(--#{$prefix}link-hover-color) !default;
 $btn-link-disabled-color: $gray-600 !default;
 $btn-link-focus-shadow-rgb: to-rgb(
-  mix(color-contrast($link-color), $link-color, 15%)
+  color.mix(color-contrast($link-color), $link-color, 15%)
 ) !default;
 
 // Allows for customizing button radius independently from global border radius
@@ -1717,7 +1720,7 @@ $breadcrumb-margin-bottom: 1rem !default;
 $breadcrumb-bg: null !default;
 $breadcrumb-divider-color: var(--#{$prefix}secondary-color) !default;
 $breadcrumb-active-color: var(--#{$prefix}secondary-color) !default;
-$breadcrumb-divider: quote("/") !default;
+$breadcrumb-divider: string.quote("/") !default;
 $breadcrumb-divider-flipped: $breadcrumb-divider !default;
 $breadcrumb-border-radius: null !default;
 // scss-docs-end breadcrumb-variables

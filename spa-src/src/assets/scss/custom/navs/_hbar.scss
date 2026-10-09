@@ -164,7 +164,7 @@
   @include media-breakpoint-down(md) {
     .dropdown {
       .dropdown-menu {
-        right: $grid-gutter-width / 2;
+        right: $grid-gutter-width * 0.5;
       }
     }
   }
@@ -174,7 +174,7 @@
   .navbar-nav {
     .nav-item {
       .nav-link {
-        color: fade-out($white, 0.2);
+        color: rgba($white, 0.8);
         &:hover {
           color: $white;
         }

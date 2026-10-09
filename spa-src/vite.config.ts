@@ -27,14 +27,11 @@ export default defineConfig({
     preprocessorOptions: {
       scss: {
         quietDeps: true,
-        silenceDeprecations: [
-          "legacy-js-api",
-          "color-functions",
-          "import",
-          "global-builtin",
-          "slash-div",
-          "if-function",
-        ],
+        loadPaths: [path.resolve(__dirname, "node_modules")],
+        // Bootstrap 5.3 and Bootswatch still use @import. quietDeps hides
+        // their other Sass deprecations; this is the one our files must
+        // still use to load those packages. Drop it when Bootstrap 6 ships.
+        silenceDeprecations: ["import"],
       },
     },
   },

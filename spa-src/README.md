@@ -39,6 +39,8 @@ Visual theme. Exactly **one** of the first imports should be active:
 
 Then `app.scss` (layout CSS) always loads. Comment the others. This is SCSS rather than a runtime switch so unused Bootswatch CSS never ships.
 
+Theme SCSS uses the modern Sass API (`color.mix`, `color.adjust`, `math.div`, and so on). Bootstrap 5.3 and Bootswatch still load through `@import`; Vite `quietDeps` plus `silenceDeprecations: ["import"]` cover that until Bootstrap 6. Do not add the other Sass silences back — those were hiding first-party code.
+
 ### `src/menusConfig.ts`
 
 Left-nav (and Variable sidebar) items: `path`, `label`, `icon`, optional nested `items`. Keep paths aligned with `src/routes.tsx`. Role filtering is stubbed in `SessionContext` (`TODO`); `getUserMenuItems` in `models/Utilities.ts` is the intended helper once you wire roles from the API.
