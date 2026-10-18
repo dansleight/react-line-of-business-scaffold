@@ -1,6 +1,6 @@
 import { forwardRef, ReactNode, useImperativeHandle } from "react";
 import { FormProvider } from "react-hook-form";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Icon } from "@/components/Icon";
 import { faSave } from "@fortawesome/free-solid-svg-icons";
 import { WaitBar } from "@/components/Loader";
 import { FormAlert } from "./FormAlert";
@@ -48,7 +48,7 @@ export const EntityForm = forwardRef<
               className="btn btn-primary"
               disabled={entity.saving}
             >
-              <FontAwesomeIcon icon={faSave} className="me-1" />
+              <Icon icon={faSave} className="me-1" spin={entity.saving} />
               Save
             </button>
           </div>

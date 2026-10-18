@@ -3,7 +3,7 @@ import "simplebar-react/dist/simplebar.min.css";
 import { useIdentityContext } from "../contexts/UseContexts";
 import { useEffect, useMemo, useState } from "react";
 import React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Icon } from "@/components/Icon";
 import { faCopy } from "@fortawesome/free-solid-svg-icons";
 
 type DecodedJwt = {
@@ -80,7 +80,7 @@ export function Jwt() {
                 </span>
               </Card.Title>
               <Button variant="success" size="sm" onClick={copyToClipboard}>
-                <FontAwesomeIcon icon={faCopy} />
+                <Icon icon={faCopy} />
               </Button>
             </Card.Header>
             <Card.Body>

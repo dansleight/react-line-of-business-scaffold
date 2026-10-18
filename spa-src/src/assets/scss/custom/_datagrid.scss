@@ -1,0 +1,142 @@
+.app-datagrid-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.app-datagrid-search {
+  flex: 1 1 12rem;
+  max-width: 24rem;
+}
+
+.app-datagrid-pagesize {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: auto;
+
+  .form-select {
+    width: auto;
+  }
+}
+
+.app-datagrid-table {
+  margin-bottom: 0;
+  vertical-align: middle;
+
+  > thead > tr > th {
+    white-space: nowrap;
+  }
+}
+
+.app-datagrid-sort {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  max-width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-weight: 600;
+  text-align: inherit;
+  cursor: pointer;
+}
+
+.app-datagrid-sort-icon {
+  opacity: 0.4;
+  flex-shrink: 0;
+
+  &.is-active {
+    opacity: 1;
+  }
+}
+
+.app-datagrid-pin {
+  // Stripe/hover tokens are translucent overlays. Keep the opaque table
+  // background so scrolling cells cannot show through a sticky pin.
+  background-color: var(--bs-table-bg);
+  background-clip: padding-box;
+  z-index: 1;
+}
+
+thead th.app-datagrid-pin {
+  z-index: 3;
+}
+
+$app-datagrid-pin-overlay: inset 0 0 0 9999px
+  var(--bs-table-bg-state, var(--bs-table-bg-type, var(--bs-table-accent-bg)));
+
+.app-datagrid-pin-start.is-last-start {
+  box-shadow:
+    $app-datagrid-pin-overlay,
+    6px 0 8px -6px rgba(0, 0, 0, 0.18);
+}
+
+.app-datagrid-pin-end.is-first-end {
+  box-shadow:
+    $app-datagrid-pin-overlay,
+    -6px 0 8px -6px rgba(0, 0, 0, 0.18);
+}
+
+.app-datagrid-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.app-datagrid-cards {
+  display: none;
+}
+
+.app-datagrid-card-row {
+  display: grid;
+  grid-template-columns: minmax(6rem, 35%) 1fr;
+  gap: 0.35rem 1rem;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid var(--bs-border-color);
+
+  &:last-child {
+    border-bottom: 0;
+  }
+}
+
+.app-datagrid-card-label {
+  color: var(--bs-secondary-color);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+@mixin app-datagrid-stack {
+  .app-datagrid-table-wrap {
+    display: none;
+  }
+
+  .app-datagrid-cards {
+    display: block;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .app-datagrid--stack-sm {
+    @include app-datagrid-stack;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .app-datagrid--stack-md {
+    @include app-datagrid-stack;
+  }
+}
+
+@media (max-width: 991.98px) {
+  .app-datagrid--stack-lg {
+    @include app-datagrid-stack;
+  }
+}

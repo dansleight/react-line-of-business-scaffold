@@ -1,15 +1,27 @@
-import { faCircleHalfStroke } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faCircleHalfStroke,
+  faMoon,
+  faSun,
+} from "@fortawesome/free-solid-svg-icons";
+import { Icon } from "@/components/Icon";
 import { useSettingsContext } from "@/contexts/UseContexts";
+import { ColorMode, colorModeLabel, nextColorMode } from "@/models/Enums";
 import { MouseEventHandler } from "react";
 
 export function LightDarkMode() {
-  const { darkMode, setDarkMode } = useSettingsContext();
+  const { colorMode, setColorMode } = useSettingsContext();
 
-  const toggleDarkMode: MouseEventHandler<HTMLAnchorElement> = (event) => {
+  const cycleColorMode: MouseEventHandler<HTMLAnchorElement> = (event) => {
     event.preventDefault();
-    setDarkMode(!darkMode);
+    setColorMode(nextColorMode(colorMode));
   };
+
+  const icon =
+    colorMode === ColorMode.Dark
+      ? faMoon
+      : colorMode === ColorMode.Follow
+        ? faCircleHalfStroke
+        : faSun;
 
   return (
     <li id="light-dark-switch" className="nav-item mx-1">
@@ -17,9 +29,10 @@ export function LightDarkMode() {
         className="nav-link"
         id="light-dark-switch-link"
         role="button"
-        onClick={toggleDarkMode}
+        title={`Color mode: ${colorModeLabel(colorMode)}`}
+        onClick={cycleColorMode}
       >
-        <FontAwesomeIcon icon={faCircleHalfStroke} />
+        <Icon icon={icon} />
       </a>
     </li>
   );

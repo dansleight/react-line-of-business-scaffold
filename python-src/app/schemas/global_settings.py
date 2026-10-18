@@ -1,6 +1,9 @@
-from pydantic import BaseModel, ConfigDict
-from app.utils.naming import to_camel_case
 from typing import Optional
+
+from pydantic import BaseModel, ConfigDict
+
+from app.utils.naming import to_camel_case
+
 
 class MsalSettingsModel(BaseModel):
     model_config = ConfigDict(
@@ -11,7 +14,8 @@ class MsalSettingsModel(BaseModel):
     ClientId: str
     Authority: str
     ApiScope: str
-    Provider: Optional[str]
+    Provider: Optional[str] = None
+
 
 class GlobalSettingsModel(BaseModel):
     model_config = ConfigDict(
@@ -20,4 +24,5 @@ class GlobalSettingsModel(BaseModel):
         from_attributes=True,
     )
     ApplicationMode: str
-    MsalSettings: MsalSettingsModel
+    MsalSettings: Optional[MsalSettingsModel] = None
+    BuildNumber: Optional[str] = None

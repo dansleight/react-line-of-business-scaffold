@@ -18,10 +18,10 @@ export const vLayoutConfig: LayoutConfig = {
     sidebar: true,
     sidebarTheme: SidebarTheme.Primary,
     sidebarDarkTheme: SidebarTheme.Primary,
-    fullSidebar: false,
+    fullSidebar: true,
 
     topbar: true,
-    topbarTheme: TopbarTheme.Tertiary,
+    topbarTheme: TopbarTheme.Light,
     topbarDarkTheme: TopbarTheme.Dark,
 
     navbar: false,
@@ -42,7 +42,7 @@ export const smLayoutConfig: LayoutConfig = {
     activeClass: TextColor.BgBody,
     inactiveClass: TextColor.Tertiary,
     border: false,
-    shadow: false,
+    shadow: true,
   } as SideMenuLayoutConfig,
   defaultTitle: "Scaffold",
   titleSuffix: " - Scaffold",

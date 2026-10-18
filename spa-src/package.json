@@ -12,7 +12,8 @@
     "preview": "vite preview",
     "update": "npm-check-updates --target minor -u && pnpm i && pnpm update",
     "generate-api": "node generate-api.js",
-    "set-logo": "pnpm dlx tsx set-logo.ts"
+    "set-logo": "pnpm dlx tsx set-logo.ts",
+    "remove-lab": "pnpm dlx tsx remove-lab.ts"
   },
   "dependencies": {
     "@azure/msal-browser": "^5.25.0",
@@ -23,9 +24,11 @@
     "@fortawesome/react-fontawesome": "^3.5.0",
     "@hookform/resolvers": "^5.9.1",
     "@metismenu/react": "^0.0.3",
+    "@tanstack/react-table": "^9.3.1",
     "bootstrap": "^5.3.8",
     "bootswatch": "^5.3.8",
     "classnames": "^2.5.1",
+    "lucide-react": "^1.57.0",
     "react": "^19.3.0",
     "react-bootstrap": "^2.10.10",
     "react-dom": "^19.3.0",

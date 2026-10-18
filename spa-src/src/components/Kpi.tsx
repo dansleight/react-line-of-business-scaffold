@@ -1,5 +1,4 @@
-import { IconDefinition } from "@fortawesome/fontawesome-common-types";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { AppIcon, Icon } from "@/components/Icon";
 import { useEffect, useState } from "react";
 import { Card, Col, Row } from "react-bootstrap";
 import { useSettingsContext } from "@/contexts/UseContexts";
@@ -18,7 +17,7 @@ type KpiProps = {
   title: string;
   value: string;
   progress?: number | undefined;
-  icon: IconDefinition;
+  icon: AppIcon;
 };
 
 export function Kpi({ color, title, value, progress, icon }: KpiProps) {
@@ -104,7 +103,7 @@ export function Kpi({ color, title, value, progress, icon }: KpiProps) {
             )}
           </Col>
           <Col className="col-auto">
-            <FontAwesomeIcon
+            <Icon
               icon={icon}
               size="2x"
               className="text-body text-opacity-25"

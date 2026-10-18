@@ -1,4 +1,4 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Icon } from "@/components/Icon";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { useSessionContext, useSettingsContext } from "@/contexts/UseContexts";
 import classNames from "classnames";
@@ -79,7 +79,7 @@ export const Navbar = ({ variableLayoutConfig }: NavbarProps) => {
               )}
               onClick={toggleSidebar}
             >
-              <FontAwesomeIcon icon={faBars} />
+              <Icon icon={faBars} />
             </button>
           )}
         </>
@@ -98,7 +98,7 @@ export const Navbar = ({ variableLayoutConfig }: NavbarProps) => {
       <ul className="navbar-nav ms-auto">
         <li className="nav-item mx-1">
           <Link to={"/help"} className="nav-link">
-            <FontAwesomeIcon icon={faQuestionCircle} />
+            <Icon icon={faQuestionCircle} />
           </Link>
         </li>
         <DropMenu id="test" menuitems={mainMenu} className="d-lg-none" />

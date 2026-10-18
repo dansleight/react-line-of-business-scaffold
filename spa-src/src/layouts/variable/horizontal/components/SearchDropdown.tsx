@@ -1,5 +1,5 @@
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Icon } from "@/components/Icon";
 import { Dropdown } from "bootstrap";
 import { useEffect, useRef } from "react";
 
@@ -30,7 +30,7 @@ export const SearchDropdown = ({ className }: SearchDropdownProps) => {
         aria-haspopup="true"
         aria-expanded="false"
       >
-        <FontAwesomeIcon icon={faSearch} />
+        <Icon icon={faSearch} />
       </a>
 
       {/* Dropdown - Messages */}
@@ -50,7 +50,7 @@ export const SearchDropdown = ({ className }: SearchDropdownProps) => {
             />
             <div className="input-group-append">
               <button className="btn btn-primary" type="button">
-                <FontAwesomeIcon icon={faSearch} size="sm" />
+                <Icon icon={faSearch} size="sm" />
               </button>
             </div>
           </div>

@@ -1,19 +1,49 @@
 import { ComponentType, ReactNode, useEffect, useState } from "react";
-import { GridBreakpoint, gridBreakpoints } from "@/models/Enums";
+import {
+  ColorMode,
+  GridBreakpoint,
+  gridBreakpoints,
+} from "@/models/Enums";
 import { SettingsContext } from "./UseContexts";
 import { GlobalSettingsModel } from "@/apiClient/data-contracts";
 import { defaultGlobalSettings, webApiConfig } from "@/appConfig";
 import { Api } from "@/apiClient/Api";
 import React from "react";
 
-const darkModeKey = "darkmode";
+const colorModeKey = "colormode";
+const legacyDarkModeKey = "darkmode";
 
-function readDarkMode(): boolean {
+function prefersDark(): boolean {
   try {
-    return localStorage.getItem(darkModeKey) === "true";
+    return window.matchMedia("(prefers-color-scheme: dark)").matches;
   } catch {
     return false;
   }
+}
+
+function readColorMode(): ColorMode {
+  try {
+    const stored = localStorage.getItem(colorModeKey);
+    if (
+      stored === ColorMode.Light ||
+      stored === ColorMode.Dark ||
+      stored === ColorMode.Follow
+    ) {
+      return stored;
+    }
+    const legacy = localStorage.getItem(legacyDarkModeKey);
+    if (legacy === "true") return ColorMode.Dark;
+    if (legacy === "false") return ColorMode.Light;
+  } catch {
+    // storage may be unavailable
+  }
+  return ColorMode.Follow;
+}
+
+function resolveDarkMode(mode: ColorMode): boolean {
+  if (mode === ColorMode.Dark) return true;
+  if (mode === ColorMode.Light) return false;
+  return prefersDark();
 }
 
 type SettingsProviderProps = {
@@ -30,7 +60,10 @@ export function SettingsProvider({
   );
   const [loaded, setLoaded] = useState<boolean | undefined>(undefined);
   const [sidebarToggled, setSidebarToggled] = useState<boolean>(false);
-  const [darkMode, setDarkMode] = useState<boolean>(readDarkMode);
+  const [colorMode, setColorMode] = useState<ColorMode>(readColorMode);
+  const [darkMode, setResolvedDarkMode] = useState<boolean>(() =>
+    resolveDarkMode(readColorMode()),
+  );
 
   const toggleSidebar = () => setSidebarToggled(!sidebarToggled);
 
@@ -95,13 +128,24 @@ export function SettingsProvider({
   }, [globalSettings.buildNumber]);
 
   useEffect(() => {
-    setHtmlAttribute("data-bs-theme", darkMode ? "dark" : "light");
+    const apply = () => {
+      const dark = resolveDarkMode(colorMode);
+      setResolvedDarkMode(dark);
+      setHtmlAttribute("data-bs-theme", dark ? "dark" : "light");
+    };
+    apply();
     try {
-      localStorage.setItem(darkModeKey, darkMode ? "true" : "false");
+      localStorage.setItem(colorModeKey, colorMode);
+      localStorage.removeItem(legacyDarkModeKey);
     } catch {
       // storage may be unavailable
     }
-  }, [darkMode]);
+    if (colorMode !== ColorMode.Follow) return;
+    const media = window.matchMedia("(prefers-color-scheme: dark)");
+    const onChange = () => apply();
+    media.addEventListener("change", onChange);
+    return () => media.removeEventListener("change", onChange);
+  }, [colorMode]);
 
   useEffect(() => {
     // establish some defaults for page loading
@@ -151,8 +195,9 @@ export function SettingsProvider({
         setSidebarToggled,
         toggleSidebar,
         breakpoint,
+        colorMode,
+        setColorMode,
         darkMode,
-        setDarkMode,
         globalSettings,
       }}
     >

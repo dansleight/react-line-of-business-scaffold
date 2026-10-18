@@ -1,6 +1,5 @@
-import { IconDefinition } from "@fortawesome/fontawesome-common-types";
+import { AppIcon, Icon } from "@/components/Icon";
 import { MenuItem } from "@/models/Interfaces";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleDot, faEllipsisV } from "@fortawesome/free-solid-svg-icons";
 import MetisMenu from "@metismenu/react";
 import { Link, NavLink, useLocation } from "react-router-dom";
@@ -9,7 +8,7 @@ import { Dropdown } from "bootstrap";
 
 type DropMenuProps = {
   menuitems: MenuItem[];
-  icon?: IconDefinition;
+  icon?: AppIcon;
   id?: string;
   className?: string;
 };
@@ -42,7 +41,7 @@ export const DropMenu = ({ menuitems, icon, id, className }: DropMenuProps) => {
         aria-haspopup="true"
         aria-expanded="false"
       >
-        <FontAwesomeIcon icon={icon ?? faEllipsisV} />
+        <Icon icon={icon ?? faEllipsisV} />
       </a>
       <div
         className="dropdown-menu dropdown-menu-end shadow animiated--grow-in"
@@ -95,7 +94,7 @@ const RenderItem = ({ item, depth }: RenderItemProps) => {
         <NavLink to={item.path ?? "/"}>
           {!depth ? (
             <>
-              <FontAwesomeIcon icon={item.icon ?? faCircleDot} size="sm" />
+              <Icon icon={item.icon ?? faCircleDot} size="sm" />
               <span>{item.label}</span>
             </>
           ) : (
@@ -111,7 +110,7 @@ const RenderItem = ({ item, depth }: RenderItemProps) => {
       <Link to="#" className="has-arrow">
         {!depth ? (
           <>
-            <FontAwesomeIcon icon={item.icon ?? faCircleDot} size="sm" />
+            <Icon icon={item.icon ?? faCircleDot} size="sm" />
             <span>{item.label}</span>
           </>
         ) : (

@@ -69,6 +69,34 @@ export enum LayoutType {
   Variable = "variable",
 }
 
+export enum ColorMode {
+  Light = "light",
+  Dark = "dark",
+  Follow = "follow",
+}
+
+export const colorModes: ColorMode[] = [
+  ColorMode.Light,
+  ColorMode.Dark,
+  ColorMode.Follow,
+];
+
+export function colorModeLabel(mode: ColorMode): string {
+  switch (mode) {
+    case ColorMode.Dark:
+      return "Dark";
+    case ColorMode.Follow:
+      return "Follow";
+    default:
+      return "Light";
+  }
+}
+
+export function nextColorMode(current: ColorMode): ColorMode {
+  const index = colorModes.indexOf(current);
+  return colorModes[(index < 0 ? 0 : index + 1) % colorModes.length];
+}
+
 /*
 ------------------------------------------------------------------------------------------------------
 Grid Breakpoints

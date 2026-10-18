@@ -4,7 +4,7 @@ import {
   faSignOut,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Icon } from "@/components/Icon";
 import { Dropdown } from "bootstrap";
 import { useEffect, useRef } from "react";
 import { useIdentityContext, useSessionContext } from "@/contexts/UseContexts";
@@ -57,7 +57,7 @@ export const UserInfo = () => {
         <h6 className="dropdown-header d-lg-none">{name}</h6>
         <h6 className="dropdown-header">{username}</h6>
         <Link className="dropdown-item" to="/user-profile">
-          <FontAwesomeIcon
+          <Icon
             icon={faUser}
             size="sm"
             className="me-2 text-gray-400"
@@ -65,7 +65,7 @@ export const UserInfo = () => {
           Profile
         </Link>
         <Link className="dropdown-item" to="/user-settings">
-          <FontAwesomeIcon
+          <Icon
             icon={faUser}
             size="sm"
             className="me-2 text-gray-400"
@@ -73,7 +73,7 @@ export const UserInfo = () => {
           Settings
         </Link>
         <Link className="dropdown-item" to="/activity-log">
-          <FontAwesomeIcon
+          <Icon
             icon={faList}
             size="sm"
             className="me-2 text-gray-400"
@@ -82,7 +82,7 @@ export const UserInfo = () => {
         </Link>
         <div className="dropdown-divider"></div>
         <a className="dropdown-item" onClick={() => copyBearerToClipboard()}>
-          <FontAwesomeIcon
+          <Icon
             icon={faCopy}
             size="sm"
             className="me-2 text-gray-400"
@@ -95,7 +95,7 @@ export const UserInfo = () => {
           data-toggle="modal"
           data-target="#logoutModal"
         >
-          <FontAwesomeIcon
+          <Icon
             icon={faSignOut}
             size="sm"
             className="me-2 text-gray-400"

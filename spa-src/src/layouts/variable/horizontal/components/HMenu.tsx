@@ -1,7 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { MenuItem } from "@/models/Interfaces";
 import { faCircleDot } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Icon } from "@/components/Icon";
 import classNames from "classnames";
 
 type HMenuProps = {
@@ -70,7 +70,7 @@ const RenderMenuItem = ({ item, depth, idx }: RenderMenuItemProps) => {
       return (
         <li className="nav-item me-1">
           <Link to={item.path ?? "#"} className="nav-link">
-            <FontAwesomeIcon
+            <Icon
               icon={item.icon ?? faCircleDot}
               size="sm"
               className="me-1"
@@ -93,7 +93,7 @@ const RenderMenuItem = ({ item, depth, idx }: RenderMenuItemProps) => {
           className="nav-link dropdown-toggle"
           data-bs-toggle="dropdown"
         >
-          <FontAwesomeIcon
+          <Icon
             icon={item.icon ?? faCircleDot}
             size="sm"
             className="me-1"

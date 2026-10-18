@@ -1,7 +1,16 @@
 import { Col, Container, Row } from "react-bootstrap";
 import { Headcrumb } from "@/components/Headcrumb";
+import { Icon } from "@/components/Icon";
+import { EllipsisVertical } from "lucide-react";
+import { NoteCard } from "@/components/NoteCard";
+import { useState } from "react";
+import { faCompress, faExpand } from "@fortawesome/free-solid-svg-icons";
 
 export function Containers() {
+  const [dense, setDense] = useState<boolean>(false);
+  const [maximized, setMaximized] = useState<boolean>(false);
+  const [alerts, setAlerts] = useState<boolean>(false);
+
   return (
     <Container fluid className="pb-5">
       <Headcrumb
@@ -124,6 +133,135 @@ export function Containers() {
               </a>
             </div>
           </div>
+        </Col>
+      </Row>
+
+      {/* NoteCards */}
+      <Row className="mt-5">
+        <Col md={12}>
+          <h2>NoteCards</h2>
+        </Col>
+      </Row>
+
+      <Row>
+        <Col md={4}>
+          <div className="card note-card rounded-3">
+            <div className="card-header">
+              <div className="card-header-title">Header</div>
+              <div className="card-header-tools">
+                <div className="form-check form-switch">
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    role="switch"
+                    id="switchCheckChecked"
+                    defaultChecked
+                  />
+                  <label
+                    className="form-check-label"
+                    htmlFor="switchCheckChecked"
+                  >
+                    Dense
+                  </label>
+                </div>
+                <div className="dropdown">
+                  <button
+                    className="btn btn-sm btn-link"
+                    type="button"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                    aria-label="More actions"
+                  >
+                    <Icon icon={EllipsisVertical} />
+                  </button>
+                  <ul className="dropdown-menu dropdown-menu-end">
+                    <li>
+                      <a className="dropdown-item" href="#">
+                        Action
+                      </a>
+                    </li>
+                    <li>
+                      <a className="dropdown-item" href="#">
+                        Action 2
+                      </a>
+                    </li>
+                    <li>
+                      <a className="dropdown-item" href="#">
+                        Action 3
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div className="card-body">
+              <h4 className="card-title">The Title in the Body</h4>
+              <p>That's how it's supposed to be!</p>
+            </div>
+          </div>
+        </Col>
+        <Col md={4}>
+          <NoteCard
+            title="Header"
+            menuItems={[
+              { label: "Action", action: () => {} },
+              { label: "Action 2", action: () => {} },
+              { label: "Action 3", action: () => {} },
+              "separator",
+              { label: "Action 4", action: () => {} },
+            ]}
+          >
+            <NoteCard.Switch
+              label="Dense"
+              on={dense}
+              toggle={() => setDense(!dense)}
+            />
+            <NoteCard.Button
+              icon={maximized ? faCompress : faExpand}
+              action={() => setMaximized(!maximized)}
+              title={maximized ? "Restore" : "Maximize"}
+            />
+            <NoteCard.Body title="The Title in the Body">
+              <p>That's how it's supposed to be!</p>
+            </NoteCard.Body>
+          </NoteCard>
+        </Col>
+        <Col md={4}>
+          <NoteCard
+            className="bg-primary text-bg-primary"
+            title="Primary"
+            menuItems={[
+              { label: "Action", action: () => {} },
+              { type: "separator" },
+              {
+                label: "Remove",
+                action: () => {},
+                variant: "danger",
+              },
+            ]}
+          >
+            <NoteCard.Body>
+              <p className="mb-0">
+                Pass <code>className</code> for a different background. The
+                header inherits it.
+              </p>
+            </NoteCard.Body>
+          </NoteCard>
+        </Col>
+        <Col md={4} className="mt-3">
+          <NoteCard title="No menu">
+            <NoteCard.Switch
+              label="Alerts"
+              on={alerts}
+              toggle={() => setAlerts(!alerts)}
+            />
+            <NoteCard.Body>
+              <p className="mb-0">
+                Header tools without an overflow menu. Right padding matches the
+                other cards.
+              </p>
+            </NoteCard.Body>
+          </NoteCard>
         </Col>
       </Row>
 

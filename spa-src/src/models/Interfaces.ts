@@ -1,4 +1,4 @@
-import { IconDefinition } from "@fortawesome/fontawesome-common-types";
+import { AppIcon } from "@/components/Icon";
 import {
   LayoutType,
   NavbarTheme,
@@ -15,7 +15,7 @@ export interface MenuProps {
 export interface MenuItem {
   path?: string;
   label: string;
-  icon?: IconDefinition;
+  icon?: AppIcon;
   items?: MenuItem[];
   group?: boolean;
   roles?: string | string[];

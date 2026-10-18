@@ -62,9 +62,16 @@ In `python-src/` you'll need to create a .env.development file. If you look at `
 
 ```
 # Entra ID settings
+ENVIRONMENT = "Development"
 TENANT_ID = "your-tenant-id"
 CLIENT_ID = "your-client-id"
 API_SCOPE = "your-scope"
+CLIENT_SECRET = "optional-needed-for-graph-avatars"
+
+# SPA / identity
+BUILD_NUMBER = "local"
+ROLE_MAPPINGS = [{"Role":"Admin","Groups":["Admins"]}]
+GRAPH_SCOPES = ["User.Read"]
 
 # Database Connection String Values
 DB_SERVER = "127.0.0.1:1433"
@@ -74,8 +81,11 @@ DB_PASSWORD = "your-password"
 DB_DRIVER = "ODBC+Driver+17+for+SQL+Server" # on windows, this should be "SQL+Server+Native+Client+11.0"
 DB_ENCRYPT = "yes"
 DB_TRUSTSERVERCERTIFICATE = "yes"
-
 ```
+
+`BUILD_NUMBER` values that start with `#` are treated as unset, matching the C# tokenized `#{BuildNumber}#` placeholder.
+
+`ROLE_MAPPINGS` maps Entra `groups` claims to application roles. `/api/info` returns those roles lowercased, same as the C# WebAPI.
 
 #### uvicorn command to bind port
 
@@ -84,6 +94,24 @@ The repo includes the launch.json for debugging the application, and that sets t
 ```
 uvicorn app.main:app --reload --host 0.0.0.0 --port 5011
 ```
+
+## SPA contract parity with the C# WebAPI
+
+The FastAPI app is meant to be a drop-in backend for `spa-src`. Paths, JSON camelCase, string enums, and error bodies match the generated client in `spa-src/src/apiClient/`.
+
+| Method | Path | Auth | Notes |
+| --- | --- | --- | --- |
+| GET | `/api/settings` | open | `applicationMode`, `msalSettings`, `buildNumber` |
+| GET | `/api/settings/avatar` | bearer | Graph photo, then Gravatar, then initials SVG. Cached 7 days in `dat_UserAvatar`. |
+| POST | `/api/settings/avatar/refresh` | bearer | Same resolution, skips cache |
+| GET | `/api/info` | bearer | `personId`, `email`, `displayName`, `roles` |
+| GET | `/api/lookup` | bearer | Lookup bags. Empty until you `register_lookup(...)` in `app/lookups`. |
+| GET | `/api/lookup/type/{lookupType}` | bearer | Single bag, or `400` for `Unknown` / unregistered types |
+| GET | `/api/test/{id}` | bearer | `1` success, `0` invalid, `-1` unhandled 500, `<-1` not found |
+
+Errors use the SPA `ApiError` shape (`status`, `code`, `userMessage`, `message`, `traceId`, `errors`, `exception`). Validation failures are **400** (`code=validation`), not FastAPI's default 422. Development mode includes `exception` (type, message, stackTrace, inner).
+
+`/api/auth/check`, `/api/widget`, and `/api/users` are FastAPI-only extras and are not used by the SPA client.
 
 # Notes
 

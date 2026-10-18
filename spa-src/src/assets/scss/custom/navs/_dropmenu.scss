@@ -22,12 +22,15 @@
         text-decoration: none;
         display: block;
         color: var(--bs-dropdown-link-color);
+        &:hover:not(.active) {
+          color: var(--bs-dropdown-link-hover-color);
+          background-color: var(--bs-dropdown-link-hover-bg);
+        }
         &.active {
           font-weight: 900;
+          color: var(--bs-dropdown-link-active-color);
+          background-color: var(--bs-dropdown-link-active-bg);
         }
-      }
-      a:hover {
-        background-color: var(--bs-dropdown-link-hover-bg);
       }
     }
     ul.sub-menu {

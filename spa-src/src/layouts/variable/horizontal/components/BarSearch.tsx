@@ -1,5 +1,5 @@
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Icon } from "@/components/Icon";
 import { useState } from "react";
 
 export const BarSearch = () => {
@@ -29,7 +29,7 @@ export const BarSearch = () => {
             className={focused ? "btn btn-primary" : "btn btn-tertiary"}
             type="button"
           >
-            <FontAwesomeIcon icon={faSearch} size="sm" />
+            <Icon icon={faSearch} size="sm" />
           </button>
         </div>
       </div>

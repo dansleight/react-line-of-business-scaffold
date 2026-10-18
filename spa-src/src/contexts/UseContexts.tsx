@@ -1,5 +1,5 @@
 import { createContext, ReactNode, useContext } from "react";
-import { GridBreakpoint } from "@/models/Enums";
+import { ColorMode, GridBreakpoint } from "@/models/Enums";
 import { Api } from "@/apiClient/Api";
 import {
   GlobalSettingsModel,
@@ -24,8 +24,9 @@ type SettingsContextType = {
   setSidebarToggled: (sidebarToggled: boolean) => void;
   toggleSidebar: () => void;
   breakpoint: GridBreakpoint;
+  colorMode: ColorMode;
+  setColorMode: (colorMode: ColorMode) => void;
   darkMode: boolean;
-  setDarkMode: (darkMode: boolean) => void;
   globalSettings: GlobalSettingsModel;
 };
 

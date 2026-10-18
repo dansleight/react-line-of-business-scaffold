@@ -4,7 +4,7 @@ import {
   faExclamationTriangle,
   faFileAlt,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Icon } from "@/components/Icon";
 import { Dropdown } from "bootstrap";
 import { useEffect, useRef } from "react";
 
@@ -35,7 +35,7 @@ export const Alerts = ({ className }: AlertsProps) => {
         aria-haspopup="true"
         aria-expanded="false"
       >
-        <FontAwesomeIcon icon={faBell} />
+        <Icon icon={faBell} />
         {/* Counter - Alerts */}
         <span className="badge badge-counter text-info">3+</span>
       </a>
@@ -48,7 +48,7 @@ export const Alerts = ({ className }: AlertsProps) => {
         <a className="dropdown-item d-flex align-items-center" href="#">
           <div className="me-3">
             <div className="icon-circle bg-primary">
-              <FontAwesomeIcon icon={faFileAlt} className="text-white" />
+              <Icon icon={faFileAlt} className="text-white" />
             </div>
           </div>
           <div>
@@ -61,7 +61,7 @@ export const Alerts = ({ className }: AlertsProps) => {
         <a className="dropdown-item d-flex align-items-center" href="#">
           <div className="me-3">
             <div className="icon-circle bg-success">
-              <FontAwesomeIcon icon={faDonate} className="text-white" />
+              <Icon icon={faDonate} className="text-white" />
             </div>
           </div>
           <div>
@@ -72,7 +72,7 @@ export const Alerts = ({ className }: AlertsProps) => {
         <a className="dropdown-item d-flex align-items-center" href="#">
           <div className="me-3">
             <div className="icon-circle bg-warning">
-              <FontAwesomeIcon
+              <Icon
                 icon={faExclamationTriangle}
                 className="text-white"
               />

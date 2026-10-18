@@ -1,6 +1,7 @@
 import classNames from "classnames";
 import { useIdentityContext, useSessionContext } from "@/contexts/UseContexts";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { ColorModeSwitch } from "@/components/ColorModeSwitch";
+import { Icon } from "@/components/Icon";
 import {
   faCopy,
   faGear,
@@ -48,13 +49,13 @@ export const UserMenu = () => {
           className="img-profile rounded-circle"
           src={avatarUrl}
         />
-        {/* <FontAwesomeIcon icon={faUser} size="lg" /> */}
+        {/* <Icon icon={faUser} size="lg" /> */}
       </a>
       <div className="dropdown-menu" onClick={lock}>
         <h6 className="dropdown-header">{username}</h6>
         <Link className="nav-link dropdown-item" to="/about">
           <span>
-            <FontAwesomeIcon
+            <Icon
               icon={faQuestionCircle}
               size="sm"
               className="me-2 text-gray-400"
@@ -64,21 +65,13 @@ export const UserMenu = () => {
         </Link>
         <Link className="nav-link dropdown-item" to="/user-profile">
           <span>
-            <FontAwesomeIcon
-              icon={faUser}
-              size="sm"
-              className="me-2 text-gray-400"
-            />
+            <Icon icon={faUser} size="sm" className="me-2 text-gray-400" />
             Profile
           </span>
         </Link>
         <Link className="nav-link dropdown-item" to="/user-settings">
           <span>
-            <FontAwesomeIcon
-              icon={faGear}
-              size="sm"
-              className="me-2 text-gray-400"
-            />
+            <Icon icon={faGear} size="sm" className="me-2 text-gray-400" />
             Settings
           </span>
         </Link>
@@ -91,21 +84,13 @@ export const UserMenu = () => {
               onClick={() => copyBearerToClipboard()}
             >
               <span>
-                <FontAwesomeIcon
-                  icon={faCopy}
-                  size="sm"
-                  className="me-2 text-gray-400"
-                />
+                <Icon icon={faCopy} size="sm" className="me-2 text-gray-400" />
                 Bearer to Clipboard
               </span>
             </a>
             <Link className="nav-link dropdown-item" to="/jwt">
               <span>
-                <FontAwesomeIcon
-                  icon={faInfo}
-                  size="sm"
-                  className="me-2 text-gray-400"
-                />
+                <Icon icon={faInfo} size="sm" className="me-2 text-gray-400" />
                 JWT Info
               </span>
             </Link>
@@ -120,14 +105,15 @@ export const UserMenu = () => {
           data-target="#logoutModal"
         >
           <span>
-            <FontAwesomeIcon
-              icon={faSignOut}
-              size="sm"
-              className="me-2 text-gray-400"
-            />
+            <Icon icon={faSignOut} size="sm" className="me-2 text-gray-400" />
             Logout
           </span>
         </a>
+
+        <div className="dropdown-divider"></div>
+        <div className="text-center">
+          <ColorModeSwitch />
+        </div>
       </div>
     </div>
   );

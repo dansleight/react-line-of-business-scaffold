@@ -1,7 +1,7 @@
 import { NavLink, useLocation } from "react-router-dom";
 import { MenuItem, SideMenuLayoutConfig } from "@/models/Interfaces";
 import { useMemo } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Icon } from "@/components/Icon";
 import { faCircleDot } from "@fortawesome/free-solid-svg-icons";
 import classNames from "classnames";
 import { useSessionContext } from "@/contexts/UseContexts";
@@ -89,7 +89,7 @@ const RenderMenuItem = ({
         data-discover="true"
       >
         {!depth && (
-          <FontAwesomeIcon
+          <Icon
             size="xl"
             className={
               "mb-1 " +
@@ -122,7 +122,7 @@ const RenderMenuItem = ({
         onClick={(e) => e.preventDefault()}
       >
         {!depth && (
-          <FontAwesomeIcon
+          <Icon
             size="xl"
             className={
               "mb-1 " +

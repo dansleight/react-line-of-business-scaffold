@@ -9,25 +9,8 @@ export function Logo({ size }: LogoProps) {
         <path
           fill="currentColor"
           data-name="part1"
-          d="
-              M 30 0
-              L 73 0
-              L 43 100
-              L 0 100
-              z
-              M 77 10
-              L 97 10
-              L 73 90
-              L 53 90
-              z
-              M 20 42
-              L 20 58
-              L 80 55
-              L 80 45
-              z"
+          d="M0,0m2,9h22.66v40h21.32v-30h8v10h21.32v-10h8v30h14.66v8h-14.66v20h-8v-40h-21.32v12h14.66v8h-14.66v30h-8v-30h-21.32v30h-8v-30h-7.33v-8h7.33v-32h-14.66z"
         />
-        <circle fill="currentColor" cx="13" cy="13" r="11" />
-        <circle fill="currentColor" cx="87" cy="82" r="5" />
       </g>
     </g>
   );

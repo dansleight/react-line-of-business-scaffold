@@ -1,5 +1,4 @@
 import {
-  faDumpsterFire,
   faExclamationTriangle,
   faGauge,
   faPalette,
@@ -18,6 +17,7 @@ const themeLab: MenuItem = {
   icon: faPalette,
   items: [
     { path: "/samples/gallery", label: "Overview" },
+    { path: "/samples/icons", label: "Icons" },
     { path: "/samples/buttons", label: "Buttons" },
     { path: "/samples/backgrounds", label: "Backgrounds" },
     { path: "/samples/typography", label: "Typography" },
@@ -25,33 +25,13 @@ const themeLab: MenuItem = {
     { path: "/samples/indicators", label: "Indicators" },
     { path: "/samples/navs", label: "Navs" },
     { path: "/samples/tables", label: "Tables" },
+    { path: "/samples/datagrid", label: "Data Grid" },
     { path: "/samples/dialogs", label: "Dialogs" },
     { path: "/samples/progress", label: "Progress" },
     { path: "/samples/containers", label: "Containers" },
   ],
 };
-const main: MenuItem = {
-  path: "/main",
-  label: "Main",
-  icon: faDumpsterFire,
-  items: [
-    {
-      path: "/main/sub1",
-      label: "For Admins",
-      roles: "admin",
-    },
-    {
-      path: "/main/sub2",
-      label: "For Developors",
-      roles: "developer",
-    },
-    {
-      path: "/main/sub3",
-      label: "Sub Three",
-    },
-  ],
-};
 
 export const menusConfig: MenusConfig = {
-  mainMenu: [dashboard, themeLab, errorTesting, main],
+  mainMenu: [dashboard, themeLab, errorTesting],
 };

@@ -40,4 +40,26 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          const marker = "node_modules/";
+          const at = id.lastIndexOf(marker);
+          if (at === -1) return;
+          const vendor = id.slice(at + marker.length);
+          if (
+            vendor.startsWith("react/") ||
+            vendor.startsWith("react-dom/") ||
+            vendor.startsWith("scheduler/")
+          ) {
+            return "react";
+          }
+          if (vendor.startsWith("@azure/msal")) return "msal";
+          if (vendor.startsWith("@fortawesome")) return "icons";
+          if (vendor.startsWith("@tanstack")) return "table";
+        },
+      },
+    },
+  },
 });

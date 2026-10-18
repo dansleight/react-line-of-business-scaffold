@@ -6,7 +6,8 @@ import { NotFound } from "./pages/NotFound";
 import { routes } from "./routes";
 import { Layout } from "./layouts/Layout";
 import { layoutConfig } from "./layouts/config";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
+import { WaitBar } from "./components/Loader";
 import { msalConfig } from "./appConfig";
 import {
   AuthenticationResult,
@@ -35,9 +36,12 @@ function App() {
   >(undefined);
   const { globalSettings } = useSettingsContext();
 
-  const msalConfigFull = {
+  const msalConfigFull: Configuration = {
     ...msalConfig,
-    redirectUri: window.location.origin,
+    auth: {
+      ...msalConfig.auth,
+      redirectUri: window.location.origin,
+    },
   };
 
   async function fetchOpenIdConfig(authority: string): Promise<string> {
@@ -88,9 +92,10 @@ function App() {
         fetchOpenIdConfig(globalSettings.msalSettings.authority).then(
           (openIdConfig) => {
             msalConfigFull.auth.authorityMetadata = openIdConfig;
-            msalConfigFull.auth.knownAuthorities = [
-              msalConfigFull.auth.authority,
-            ];
+            msalConfigFull.auth.knownAuthorities =
+              msalConfigFull.auth.authority
+                ? [msalConfigFull.auth.authority]
+                : [];
             configureMsalInstance(msalConfigFull);
           },
         );
@@ -108,13 +113,15 @@ function App() {
                 <SessionProvider messageWrapper={LoadingWrapper}>
                   <LookupProvider messageWrapper={LoadingWrapper}>
                     <Routes>
-                      {routes.map((route, idx) => (
+                      {routes.map((route) => (
                         <Route
                           path={route.path}
-                          key={idx}
+                          key={route.path}
                           element={
                             <Layout config={layoutConfig} title={route.title}>
-                              {route.component}
+                              <Suspense fallback={<WaitBar />}>
+                                <route.Component />
+                              </Suspense>
                             </Layout>
                           }
                         />

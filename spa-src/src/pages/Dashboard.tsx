@@ -1,17 +1,18 @@
 import {
   faCalendar,
   faCircle,
+  faCircleHalfStroke,
   faClipboardList,
   faComments,
   faDollarSign,
   faEllipsisV,
-  faLightbulb,
+  faMoon,
   faQuestion,
+  faSun,
   faToggleOff,
   faToggleOn,
 } from "@fortawesome/free-solid-svg-icons";
-import { faLightbulb as faLightbulbRegular } from "@fortawesome/free-regular-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Icon } from "@/components/Icon";
 import { Card, Col, Row } from "react-bootstrap";
 import SimpleBar from "simplebar-react";
 import "simplebar-react/dist/simplebar.min.css";
@@ -20,10 +21,15 @@ import { Headcrumb } from "@/components/Headcrumb";
 import { Kpi, KpiColor } from "@/components/Kpi";
 import { useEffect, useRef, useState } from "react";
 import { Dropdown } from "bootstrap";
-import { GridBreakpoint } from "@/models/Enums";
+import {
+  ColorMode,
+  colorModeLabel,
+  GridBreakpoint,
+  nextColorMode,
+} from "@/models/Enums";
 
 export function Dashboard() {
-  const { darkMode, setDarkMode, sidebarToggled, toggleSidebar, breakpoint } =
+  const { colorMode, setColorMode, sidebarToggled, toggleSidebar, breakpoint } =
     useSettingsContext();
   const dropdownsCreated = useRef<boolean>(false);
   const [mediaBreakpoint, setMediaBreakpoint] = useState<string>("");
@@ -65,13 +71,19 @@ export function Dashboard() {
           md={6}
           lg={4}
           className="mb-4"
-          onClick={() => setDarkMode(!darkMode)}
+          onClick={() => setColorMode(nextColorMode(colorMode))}
         >
           <Kpi
             color={KpiColor.Generic}
             title="Color Mode"
-            value={darkMode ? "Dark" : "Normal"}
-            icon={darkMode ? faLightbulb : faLightbulbRegular}
+            value={colorModeLabel(colorMode)}
+            icon={
+              colorMode === ColorMode.Dark
+                ? faMoon
+                : colorMode === ColorMode.Follow
+                  ? faCircleHalfStroke
+                  : faSun
+            }
           />
         </Col>
         <Col lg={4} md={6} className="mb-4" onClick={() => toggleSidebar()}>
@@ -137,7 +149,7 @@ export function Dashboard() {
                   aria-haspopup="true"
                   aria-expanded="false"
                 >
-                  <FontAwesomeIcon
+                  <Icon
                     icon={faEllipsisV}
                     size="sm"
                     className="text-gray-400"
@@ -241,7 +253,7 @@ export function Dashboard() {
                   aria-haspopup="true"
                   aria-expanded="false"
                 >
-                  <FontAwesomeIcon
+                  <Icon
                     icon={faEllipsisV}
                     size="sm"
                     className="text-gray-400"
@@ -270,16 +282,16 @@ export function Dashboard() {
               </div>
               <div className="mt-4 text-center small">
                 <span className="me-2">
-                  <FontAwesomeIcon icon={faCircle} className="text-primary" />{" "}
+                  <Icon icon={faCircle} className="text-primary" />{" "}
                   Direct
                 </span>
                 <span className="me-2">
-                  <FontAwesomeIcon icon={faCircle} className="text-success" />{" "}
+                  <Icon icon={faCircle} className="text-success" />{" "}
                   Social
                 </span>
                 <span className="me-2">
-                  <FontAwesomeIcon icon={faCircle} className="text-primary" />
-                  <FontAwesomeIcon
+                  <Icon icon={faCircle} className="text-primary" />
+                  <Icon
                     icon={faCircle}
                     className="text-primary"
                   />{" "}

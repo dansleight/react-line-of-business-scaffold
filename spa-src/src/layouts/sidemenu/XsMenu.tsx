@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import { MenuItem } from "@/models/Interfaces";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Icon } from "@/components/Icon";
 import { faBars, faCircleDot, faUser } from "@fortawesome/free-solid-svg-icons";
 import { Logo } from "@/components/Logo";
 import { useSessionContext } from "@/contexts/UseContexts";
@@ -50,7 +50,7 @@ export const XsMenu = () => {
           data-bs-toggle="dropdown"
           aria-expanded="false"
         >
-          <FontAwesomeIcon icon={faBars} />
+          <Icon icon={faBars} />
         </a>
         <ul className="dropdown-menu">
           <RenderMenuItems items={mainMenu} />
@@ -67,13 +67,13 @@ export const XsMenu = () => {
           data-bs-toggle="dropdown"
           aria-expanded="false"
         >
-          <FontAwesomeIcon icon={faUser} />
+          <Icon icon={faUser} />
         </a>
         <ul className="dropdown-menu dropdown-menu-end">
           <li>
             <Link className="dropdown-item" to="/user-profile">
               <span className="text-uppercase">
-                <FontAwesomeIcon
+                <Icon
                   icon={faUser}
                   size="sm"
                   className="me-2 text-gray-400"
@@ -85,7 +85,7 @@ export const XsMenu = () => {
           <li>
             <Link className="dropdown-item" to="/user-settings">
               <span className="text-uppercase">
-                <FontAwesomeIcon
+                <Icon
                   icon={faUser}
                   size="sm"
                   className="me-2 text-gray-400"
@@ -137,7 +137,7 @@ const RenderMenuItem = ({ item, depth = false }: RenderMenuItemProps) => {
       <li>
         <Link className="dropdown-item" to={item.path ?? "#"}>
           {!depth && (
-            <FontAwesomeIcon icon={item.icon ?? faCircleDot} className="me-2" />
+            <Icon icon={item.icon ?? faCircleDot} className="me-2" />
           )}
           {item.label}
         </Link>
@@ -157,7 +157,7 @@ const RenderMenuItem = ({ item, depth = false }: RenderMenuItemProps) => {
         onClick={(e) => e.preventDefault()}
       >
         {!depth && (
-          <FontAwesomeIcon icon={item.icon ?? faCircleDot} className="me-2" />
+          <Icon icon={item.icon ?? faCircleDot} className="me-2" />
         )}
         {item.label}
       </a>

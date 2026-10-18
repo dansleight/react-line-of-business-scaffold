@@ -1,5 +1,5 @@
 import { NavLink, useLocation } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Icon } from "@/components/Icon";
 import { faCircleDot } from "@fortawesome/free-solid-svg-icons";
 import classNames from "classnames";
 import { MenuItem, MenuProps } from "@/models/Interfaces";
@@ -57,7 +57,7 @@ const RenderMenuItem = ({ item, depth }: RenderMenuItemProps) => {
       >
         {!depth ? (
           <>
-            <FontAwesomeIcon icon={item.icon ?? faCircleDot} size="sm" />
+            <Icon icon={item.icon ?? faCircleDot} size="sm" />
             <span>{item.label}</span>
           </>
         ) : (
@@ -87,7 +87,7 @@ const RenderMenuItem = ({ item, depth }: RenderMenuItemProps) => {
       >
         {!depth ? (
           <>
-            <FontAwesomeIcon icon={item.icon ?? faCircleDot} size="sm" />
+            <Icon icon={item.icon ?? faCircleDot} size="sm" />
             <span>{item.label}</span>
           </>
         ) : (

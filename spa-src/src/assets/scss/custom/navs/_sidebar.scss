@@ -60,9 +60,13 @@
         padding: 0.5rem 1rem;
         display: block;
         color: var(--bs-dropdown-link-color);
-        &:hover {
+        &:hover:not(.active) {
           color: var(--bs-dropdown-link-hover-color);
           background-color: var(--bs-dropdown-link-hover-bg);
+        }
+        &.active {
+          color: var(--bs-dropdown-link-active-color);
+          background-color: var(--bs-dropdown-link-active-bg);
         }
       }
     }

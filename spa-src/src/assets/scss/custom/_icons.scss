@@ -1,0 +1,36 @@
+// Host element is <i>. Sidemenu/sidebar `a.nav-link span` is the label
+// (display:block, 0.65rem). A <span> wrapper matched that rule and left-aligned the glyph.
+.app-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.125em;
+  flex-shrink: 0;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+
+  svg {
+    display: block;
+    width: 1em;
+    height: 1em;
+  }
+}
+
+.app-icon--fw {
+  width: 1.25em;
+}
+
+.app-icon--spin {
+  animation: app-icon-spin 1s linear infinite;
+}
+
+@keyframes app-icon-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

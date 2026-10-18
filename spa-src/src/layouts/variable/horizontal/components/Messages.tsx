@@ -1,5 +1,5 @@
 import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Icon } from "@/components/Icon";
 import { Dropdown } from "bootstrap";
 import { useEffect, useRef } from "react";
 
@@ -23,7 +23,7 @@ export const Messages = () => {
         aria-haspopup="true"
         aria-expanded="false"
       >
-        <FontAwesomeIcon icon={faEnvelope} />
+        <Icon icon={faEnvelope} />
         {/* Counter - Messages */}
         <span className="badge badge-counter text-success">7</span>
       </a>

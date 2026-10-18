@@ -40,17 +40,70 @@ Visual theme. Exactly **one** of the first imports should be active:
 
 Then `app.scss` (layout CSS) always loads. Comment the others. This is SCSS rather than a runtime switch so unused theme CSS never ships.
 
-**Theme Lab** (`/samples/gallery`) is a live gallery of the active theme: semantic swatches, buttons, alerts, badges, progress, tables, and the form kit. Nested sample pages cover the rest of Bootstrap. Switch the import above and reload to compare.
+**Theme Lab** (`/samples/gallery`) is a live gallery of the active theme: semantic swatches, buttons, alerts, badges, progress, tables, and the form kit. Nested sample pages cover the rest of Bootstrap. Switch the import above and reload to compare. The Icons page (`/samples/icons`) shows the universal `<Icon />` tag with Font Awesome and Lucide. Data Grid (`/samples/datagrid`) shows `dataGrid<T>()` with typed columns and auto-generated columns.
 
 Theme SCSS uses the modern Sass API (`color.mix`, `color.adjust`, `math.div`, and so on). Bootstrap 5.3 and Bootswatch still load through `@import`; Vite `quietDeps` plus `silenceDeprecations: ["import"]` cover that until Bootstrap 6. Do not add the other Sass silences back — those were hiding first-party code.
 
 ### `src/menusConfig.ts`
 
-Left-nav (and Variable sidebar) items: `path`, `label`, `icon`, optional nested `items`. Keep paths aligned with `src/routes.tsx`. Role filtering is stubbed in `SessionContext` (`TODO`); `getUserMenuItems` in `models/Utilities.ts` is the intended helper once you wire roles from the API.
+Left-nav (and Variable sidebar) items: `path`, `label`, `icon`, optional nested `items`. `icon` is an `AppIcon` (Font Awesome `IconDefinition` or a React component such as a Lucide export). Keep paths aligned with `src/routes.tsx`. Role filtering is stubbed in `SessionContext` (`TODO`); `getUserMenuItems` in `models/Utilities.ts` is the intended helper once you wire roles from the API.
+
+## Icons
+
+`<Icon icon={...} />` in `src/components/Icon.tsx` is the tag for every icon in the app. Pass a Font Awesome definition or a React component. Do not pass a string name.
+
+```tsx
+import { Icon } from "@/components/Icon";
+import { faSave } from "@fortawesome/free-solid-svg-icons";
+import { Save } from "lucide-react";
+
+<Icon icon={faSave} className="me-1" />
+<Icon icon={Save} size="xl" className="text-primary" />
+<Icon icon={faSave} spin={saving} />
+```
+
+Shared props: `size` (`xs` `sm` `lg` `xl` `2x`, a px number, or any CSS length), `className` (Bootstrap `text-*` / spacing), `fixedWidth`, `spin`, `title`, `aria-label`. Extra props (`strokeWidth`, `weight`, …) pass through to component icons.
+
+The template ships Font Awesome (free solid + regular; swap Pro packages at work) and Lucide (`lucide-react`). Chrome and menus stay on Font Awesome so a Pro swap does not restyle the shell.
+
+**Phosphor** is optional and is not a dependency. After `pnpm add @phosphor-icons/react`:
+
+```tsx
+import { Heart } from "@phosphor-icons/react";
+<Icon icon={Heart} weight="duotone" />
+```
+
+**SVG Repo** has no npm pack. Drop a local component under `src/icons/custom/` and pass it as `icon`. Check each file’s license.
+
+Icon-only controls need `title` or `aria-label`. Icons next to a text label default to `aria-hidden`.
+
+## Data grids
+
+`dataGrid<T>()` in `src/grids/kit` is the typed grid factory. Call it once at module scope so `<Grid.Column property="…" />` has intellisense for that row type. TanStack Table runs the engine; the kit renders Bootstrap tables, search, sort, paging, sticky frozen columns, and stacked cards on small viewports.
+
+```tsx
+import { dataGrid } from "@/grids/kit";
+
+const PersonGrid = dataGrid<Person>();
+
+<PersonGrid data={people} searchable pageSize={25}>
+  <PersonGrid.Column property="displayName" header="Name" frozen="left" />
+  <PersonGrid.Column property="email" />
+  <PersonGrid.Column header="">
+    {(row) => <Link to={`/people/${row.id}`}>Open</Link>}
+  </PersonGrid.Column>
+</PersonGrid>
+```
+
+Omit column children to render one column per own property (keys collected across the array, humanized headers). Pass `properties={["displayName", "email"]}` for a subset. `pageSize={false}` shows every row. Theme Lab → Data Grid has live examples.
 
 ### `src/routes.tsx`
 
-URL → page component → window title. `App.tsx` wraps each route in `Layout`. Add pages here when you add screens.
+URL → lazy page module → window title. `App.tsx` wraps each route in `Layout` and `Suspense`. Add a screen with `lazyPage` so it is its own JS chunk:
+
+```tsx
+{ path: "/people", Component: lazyPage(() => import("./pages/People"), "People"), title: "People" }
+```
 
 ### Toasts
 
@@ -81,4 +134,4 @@ pnpm dev
 
 `pnpm generate-api` with Swagger up. Production builds: `pnpm build:webapi` (output under the C# `ClientApp/dist`) or `pnpm build:fastapi`.
 
-Theme Lab pages live in `src/pages/samples/` and are routed under `/samples`. Use them while picking a theme; they are tooling, not product screens.
+Theme Lab pages live in `src/pages/samples/` and are routed under `/samples`. Use them while picking a theme; they are tooling, not product screens. `pnpm remove-lab` deletes Theme Lab pages, `/samples` routes, and the nav item when you no longer need the gallery.

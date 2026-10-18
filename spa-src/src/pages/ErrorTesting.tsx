@@ -3,7 +3,7 @@ import { Headcrumb } from "@/components/Headcrumb";
 import { useSessionContext } from "@/contexts/UseContexts";
 import { useState } from "react";
 import { GoodModel } from "@/apiClient/data-contracts";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Icon } from "@/components/Icon";
 import {
   faMap,
   faStop,
@@ -95,7 +95,7 @@ export function ErrorTesting() {
             {good && (
               <>
                 <h3 className="text-success">
-                  <FontAwesomeIcon icon={faThumbsUp} /> Good Request
+                  <Icon icon={faThumbsUp} /> Good Request
                 </h3>
                 <dl>
                   <dt>Id</dt>
@@ -109,7 +109,7 @@ export function ErrorTesting() {
             {badRequest && (
               <>
                 <h3 className="text-warning">
-                  <FontAwesomeIcon icon={faThumbsDown} /> Bad Request
+                  <Icon icon={faThumbsDown} /> Bad Request
                 </h3>
                 <dl>
                   {badRequest.message && (
@@ -136,7 +136,7 @@ export function ErrorTesting() {
             {notFound && (
               <>
                 <h3 className="text-warning">
-                  <FontAwesomeIcon icon={faMap} /> Not Found
+                  <Icon icon={faMap} /> Not Found
                 </h3>
                 <dl>
                   <dt>Message</dt>
@@ -147,7 +147,7 @@ export function ErrorTesting() {
             {serverError && (
               <>
                 <h3 className="text-danger">
-                  <FontAwesomeIcon icon={faStop} /> Server Error
+                  <Icon icon={faStop} /> Server Error
                 </h3>
                 <dl>
                   {serverError.detail ? (

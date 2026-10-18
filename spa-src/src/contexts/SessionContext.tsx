@@ -8,7 +8,11 @@ import React, {
 } from "react";
 import { Api } from "@/apiClient/Api";
 import { webApiConfig } from "@/appConfig";
-import { SilentRequest } from "@azure/msal-browser";
+import {
+  AccountInfo,
+  InteractionRequiredAuthError,
+  IPublicClientApplication,
+} from "@azure/msal-browser";
 import {
   SessionContext,
   useIdentityContext,
@@ -20,6 +24,66 @@ import { menusConfig as baseMenusConfig } from "@/menusConfig";
 import { MenusConfig } from "@/models/Interfaces";
 import { UserInfoModel } from "@/apiClient/data-contracts";
 import { getUserMenuItems } from "@/models/Utilities";
+
+let interactiveTokenStarted = false;
+let inFlight: Promise<string | undefined> | null = null;
+
+function errorCode(error: unknown): string {
+  if (error && typeof error === "object" && "errorCode" in error) {
+    return String((error as { errorCode?: string }).errorCode ?? "");
+  }
+  return "";
+}
+
+function needsInteractiveToken(error: unknown): boolean {
+  if (error instanceof InteractionRequiredAuthError) return true;
+  return errorCode(error) === "invalid_grant";
+}
+
+async function acquireApiAccessToken(
+  instance: IPublicClientApplication,
+  account: AccountInfo,
+  scopes: string[],
+): Promise<string | undefined> {
+  if (inFlight) return inFlight;
+  inFlight = acquireOnce(instance, account, scopes).finally(() => {
+    if (!interactiveTokenStarted) inFlight = null;
+  });
+  return inFlight;
+}
+
+async function acquireOnce(
+  instance: IPublicClientApplication,
+  account: AccountInfo,
+  scopes: string[],
+): Promise<string | undefined> {
+  await instance.initialize();
+  try {
+    const result = await instance.acquireTokenSilent({
+      scopes,
+      account,
+      redirectUri: window.location.origin,
+    });
+    return result?.accessToken;
+  } catch (error) {
+    console.error(error);
+    if (!needsInteractiveToken(error) || interactiveTokenStarted) {
+      return undefined;
+    }
+    interactiveTokenStarted = true;
+    try {
+      await instance.acquireTokenRedirect({
+        scopes,
+        account,
+        redirectUri: window.location.origin,
+      });
+    } catch (redirectError) {
+      interactiveTokenStarted = false;
+      console.error(redirectError);
+    }
+    return undefined;
+  }
+}
 
 type SessionProviderProps = {
   children: ReactNode;
@@ -92,19 +156,10 @@ export function SessionProvider({
     setShowApiError(true);
   };
 
+  const tokenScopes = () => [globalSettings.msalSettings!.apiScope];
+
   const getApiBearer = async () => {
-    await instance.initialize();
-    const request: any = {
-      scopes: [globalSettings.msalSettings!.apiScope],
-      accounts: getAccount(),
-    };
-    const authenticationResult = await instance
-      .acquireTokenSilent(request as SilentRequest)
-      .catch((e: any) => {
-        console.error(e);
-      });
-    if (authenticationResult) return authenticationResult!.accessToken;
-    return undefined;
+    return acquireApiAccessToken(instance, getAccount(), tokenScopes());
   };
 
   const api: Api | undefined = useMemo(() => {
@@ -112,20 +167,17 @@ export function SessionProvider({
     return new Api({
       baseUrl: webApiConfig.origin,
       securityWorker: async () => {
-        const request: any = {
-          scopes: [globalSettings.msalSettings!.apiScope],
-          accounts: getAccount(),
-        };
-        await instance.initialize();
-        const authenticationResult = await instance
-          .acquireTokenSilent(request as SilentRequest)
-          .catch((e: any) => {
-            console.error(e);
-          });
-
+        const accessToken = await acquireApiAccessToken(
+          instance,
+          getAccount(),
+          tokenScopes(),
+        );
+        if (!accessToken) {
+          throw new Error("Could not acquire API access token");
+        }
         return {
           headers: {
-            Authorization: `Bearer ${authenticationResult!.accessToken}`,
+            Authorization: `Bearer ${accessToken}`,
           },
         };
       },

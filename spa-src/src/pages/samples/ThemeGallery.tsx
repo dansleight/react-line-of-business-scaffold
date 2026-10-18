@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Headcrumb } from "@/components/Headcrumb";
 import { useSettingsContext } from "@/contexts/UseContexts";
+import { ColorMode, colorModeLabel } from "@/models/Enums";
 import {
   EnumField,
   FormLayout,
@@ -93,7 +94,7 @@ function SampleFormCard() {
 }
 
 export function ThemeGallery() {
-  const { darkMode } = useSettingsContext();
+  const { colorMode, darkMode } = useSettingsContext();
   const [tokens, setTokens] = useState<Record<SemanticToken, string>>(
     () =>
       Object.fromEntries(SEMANTIC_TOKENS.map((name) => [name, ""])) as Record<
@@ -139,7 +140,12 @@ export function ThemeGallery() {
           <Card.Title className="push-up">Active tokens</Card.Title>
           <dl className="row mb-0 small">
             <dt className="col-sm-3">Color mode</dt>
-            <dd className="col-sm-9">{darkMode ? "dark" : "light"}</dd>
+            <dd className="col-sm-9">
+              {colorModeLabel(colorMode)}
+              {colorMode === ColorMode.Follow
+                ? ` (${darkMode ? "dark" : "light"})`
+                : ""}
+            </dd>
             <dt className="col-sm-3">Body</dt>
             <dd className="col-sm-9">
               {meta.bodyColor} on {meta.bodyBg}

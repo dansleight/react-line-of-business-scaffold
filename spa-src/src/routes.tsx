@@ -1,53 +1,36 @@
-import { About } from "./pages/About";
-import { Dashboard } from "./pages/Dashboard";
-import { ErrorTesting } from "./pages/ErrorTesting";
-import { Jwt } from "./pages/Jwt";
-import { Backgrounds } from "./pages/samples/Backgrounds";
-import { Buttons } from "./pages/samples/Buttons";
-import { Containers } from "./pages/samples/Containers";
-import { Dialogs } from "./pages/samples/Dialogs";
-import { Forms } from "./pages/samples/Forms";
-import { Indicators } from "./pages/samples/Indicators";
-import { Navs } from "./pages/samples/Navs";
-import { Progress } from "./pages/samples/Progress";
-import { Tables } from "./pages/samples/Tables";
-import { ThemeGallery } from "./pages/samples/ThemeGallery";
-import { Typography } from "./pages/samples/Typography";
+import { ComponentType, lazy, type LazyExoticComponent } from "react";
+
+/** Dynamic import for a named page export so the screen is its own chunk. */
+export function lazyPage<M extends Record<string, unknown>>(
+  loader: () => Promise<M>,
+  exportName: keyof M & string,
+): LazyExoticComponent<ComponentType> {
+  return lazy(async () => {
+    const mod = await loader();
+    return { default: mod[exportName] as ComponentType };
+  });
+}
 
 export const routes: {
   path: string;
-  component: React.JSX.Element;
+  Component: LazyExoticComponent<ComponentType>;
   title: string;
 }[] = [
-  { path: "/", component: <Dashboard />, title: "Dashboard" },
-  { path: "/about", component: <About />, title: "About" },
-  { path: "/jwt", component: <Jwt />, title: "JWT Token Info" },
-  { path: "/error-testing", component: <ErrorTesting />, title: "Error Testing" },
-  { path: "/samples/gallery", component: <ThemeGallery />, title: "Theme Lab" },
-  { path: "/samples/buttons", component: <Buttons />, title: "Buttons" },
-  {
-    path: "/samples/backgrounds",
-    component: <Backgrounds />,
-    title: "Backgrounds",
-  },
-  {
-    path: "/samples/typography",
-    component: <Typography />,
-    title: "Typography",
-  },
-  { path: "/samples/forms", component: <Forms />, title: "Forms" },
-  {
-    path: "/samples/indicators",
-    component: <Indicators />,
-    title: "Indicators",
-  },
-  { path: "/samples/navs", component: <Navs />, title: "Navs" },
-  { path: "/samples/tables", component: <Tables />, title: "Tables" },
-  { path: "/samples/dialogs", component: <Dialogs />, title: "Dialogs" },
-  { path: "/samples/progress", component: <Progress />, title: "Progress" },
-  {
-    path: "/samples/containers",
-    component: <Containers />,
-    title: "Containers",
-  },
+  { path: "/", Component: lazyPage(() => import("./pages/Dashboard"), "Dashboard"), title: "Dashboard" },
+  { path: "/about", Component: lazyPage(() => import("./pages/About"), "About"), title: "About" },
+  { path: "/jwt", Component: lazyPage(() => import("./pages/Jwt"), "Jwt"), title: "JWT Token Info" },
+  { path: "/error-testing", Component: lazyPage(() => import("./pages/ErrorTesting"), "ErrorTesting"), title: "Error Testing" },
+  { path: "/samples/gallery", Component: lazyPage(() => import("./pages/samples/ThemeGallery"), "ThemeGallery"), title: "Theme Lab" },
+  { path: "/samples/buttons", Component: lazyPage(() => import("./pages/samples/Buttons"), "Buttons"), title: "Buttons" },
+  { path: "/samples/backgrounds", Component: lazyPage(() => import("./pages/samples/Backgrounds"), "Backgrounds"), title: "Backgrounds" },
+  { path: "/samples/typography", Component: lazyPage(() => import("./pages/samples/Typography"), "Typography"), title: "Typography" },
+  { path: "/samples/forms", Component: lazyPage(() => import("./pages/samples/Forms"), "Forms"), title: "Forms" },
+  { path: "/samples/icons", Component: lazyPage(() => import("./pages/samples/Icons"), "Icons"), title: "Icons" },
+  { path: "/samples/indicators", Component: lazyPage(() => import("./pages/samples/Indicators"), "Indicators"), title: "Indicators" },
+  { path: "/samples/navs", Component: lazyPage(() => import("./pages/samples/Navs"), "Navs"), title: "Navs" },
+  { path: "/samples/tables", Component: lazyPage(() => import("./pages/samples/Tables"), "Tables"), title: "Tables" },
+  { path: "/samples/datagrid", Component: lazyPage(() => import("./pages/samples/DataGrid"), "DataGridSample"), title: "Data Grid" },
+  { path: "/samples/dialogs", Component: lazyPage(() => import("./pages/samples/Dialogs"), "Dialogs"), title: "Dialogs" },
+  { path: "/samples/progress", Component: lazyPage(() => import("./pages/samples/Progress"), "Progress"), title: "Progress" },
+  { path: "/samples/containers", Component: lazyPage(() => import("./pages/samples/Containers"), "Containers"), title: "Containers" },
 ];
