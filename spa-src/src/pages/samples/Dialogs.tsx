@@ -2,6 +2,8 @@ import { Col, Container, Row } from "react-bootstrap";
 import { Modal, Popover, Tooltip } from "bootstrap";
 import { useEffect, useRef } from "react";
 import { Headcrumb } from "@/components/Headcrumb";
+import { CodeSnippets } from "@/components/CodeSnippets";
+import { dialogSnippets } from "./labSnippets";
 import { ToastAccent, useToast } from "@/contexts/UseContexts";
 
 const accents: ToastAccent[] = [
@@ -312,6 +314,7 @@ export function Dialogs() {
           </div>
         </Col>
       </Row>
+      <CodeSnippets items={dialogSnippets} />
     </Container>
   );
 }

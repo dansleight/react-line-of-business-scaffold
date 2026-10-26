@@ -1,5 +1,7 @@
 import { Card, Col, Container, Row } from "react-bootstrap";
 import { Headcrumb } from "@/components/Headcrumb";
+import { CodeSnippets } from "@/components/CodeSnippets";
+import { formSnippets } from "./labSnippets";
 
 export function Forms() {
   return (
@@ -457,6 +459,7 @@ export function Forms() {
           </Card>
         </Col>
       </Row>
+      <CodeSnippets items={formSnippets} />
     </Container>
   );
 }

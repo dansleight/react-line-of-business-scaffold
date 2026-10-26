@@ -1,0 +1,88 @@
+<Project>
+  <!--
+    The Pkcs PackageReference in each project only lifts a vulnerable transitive
+    floor. This warns once the other packages already require a patched Pkcs,
+    so the reference can be deleted instead of lingering.
+  -->
+  <UsingTask
+    TaskName="PkcsOverrideStillNeeded"
+    TaskFactory="RoslynCodeTaskFactory"
+    AssemblyFile="$(MSBuildToolsPath)/Microsoft.Build.Tasks.Core.dll">
+    <ParameterGroup>
+      <AssetsFile ParameterType="System.String" Required="true" />
+      <StillNeeded ParameterType="System.Boolean" Output="true" />
+      <ParentFloor ParameterType="System.String" Output="true" />
+    </ParameterGroup>
+    <Task>
+      <Using Namespace="System" />
+      <Using Namespace="System.IO" />
+      <Using Namespace="System.Text.RegularExpressions" />
+      <Code Type="Fragment" Language="cs"><![CDATA[
+        StillNeeded = true;
+        ParentFloor = "";
+        try
+        {
+          var json = File.ReadAllText(AssetsFile);
+          // Package nodes only. A project reference to another pin (Business -> 10.0.14)
+          // must not look like an upstream package has already moved.
+          var packages = Regex.Matches(
+            json,
+            "\"type\"\\s*:\\s*\"package\"\\s*,\\s*\"dependencies\"\\s*:\\s*\\{([^}]*)\\}",
+            RegexOptions.CultureInvariant);
+          var pkcs = new Regex(
+            "\"System\\.Security\\.Cryptography\\.Pkcs\"\\s*:\\s*\"([^\"]+)\"",
+            RegexOptions.CultureInvariant);
+          Version best = null;
+          foreach (Match package in packages)
+          {
+            var hit = pkcs.Match(package.Groups[1].Value);
+            if (!hit.Success)
+              continue;
+            var cleaned = hit.Groups[1].Value.Trim().TrimStart('[', '(');
+            var comma = cleaned.IndexOf(',');
+            if (comma >= 0)
+              cleaned = cleaned.Substring(0, comma);
+            cleaned = cleaned.Trim().TrimEnd(']', ')');
+            var dash = cleaned.IndexOf('-');
+            if (dash > 0)
+              cleaned = cleaned.Substring(0, dash);
+            if (!Version.TryParse(cleaned, out var parsed))
+              continue;
+            if (best == null || parsed > best)
+              best = parsed;
+          }
+
+          if (best != null)
+          {
+            ParentFloor = best.ToString();
+            StillNeeded =
+              (best.Major == 8 && best < new Version(8, 0, 2)) ||
+              (best.Major == 9 && best < new Version(9, 0, 21)) ||
+              (best.Major == 10 && best < new Version(10, 0, 13)) ||
+              (best.Major == 11 && best < new Version(11, 0, 0));
+          }
+        }
+        catch (Exception ex)
+        {
+          Log.LogMessage(MessageImportance.Low, "Pkcs override check skipped: " + ex.Message);
+          StillNeeded = true;
+        }
+      ]]></Code>
+    </Task>
+  </UsingTask>
+
+  <Target Name="WarnWhenPkcsOverrideIsRedundant" AfterTargets="ResolvePackageAssets" Condition="Exists('$(ProjectAssetsFile)')">
+    <ItemGroup>
+      <_PkcsDirectReference Include="@(PackageReference)" Condition="'%(Identity)' == 'System.Security.Cryptography.Pkcs'" />
+    </ItemGroup>
+    <PkcsOverrideStillNeeded
+      Condition="'@(_PkcsDirectReference)' != ''"
+      AssetsFile="$(ProjectAssetsFile)">
+      <Output TaskParameter="StillNeeded" PropertyName="_PkcsOverrideStillNeeded" />
+      <Output TaskParameter="ParentFloor" PropertyName="_PkcsParentFloor" />
+    </PkcsOverrideStillNeeded>
+    <Warning
+      Condition="'@(_PkcsDirectReference)' != '' and '$(_PkcsOverrideStillNeeded)' == 'false'"
+      Text="The System.Security.Cryptography.Pkcs PackageReference in $(MSBuildProjectName) only lifts a vulnerable transitive version. Other packages now require $(_PkcsParentFloor), which is patched. Delete that PackageReference." />
+  </Target>
+</Project>

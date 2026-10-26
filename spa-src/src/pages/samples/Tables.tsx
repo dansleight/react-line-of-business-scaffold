@@ -1,5 +1,7 @@
 import { Card, Col, Container, Row } from "react-bootstrap";
 import { Headcrumb } from "@/components/Headcrumb";
+import { CodeSnippets } from "@/components/CodeSnippets";
+import { tableSnippets } from "./labSnippets";
 
 export function Tables() {
   return (
@@ -100,6 +102,7 @@ export function Tables() {
           </Card>
         </Col>
       </Row>
+      <CodeSnippets items={tableSnippets} />
     </Container>
   );
 }

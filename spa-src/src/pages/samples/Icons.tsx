@@ -1,5 +1,7 @@
 import { Card, Col, Row, Table } from "react-bootstrap";
 import { Headcrumb } from "@/components/Headcrumb";
+import { CodeSnippets } from "@/components/CodeSnippets";
+import { iconSnippets } from "./labSnippets";
 import { Icon } from "@/components/Icon";
 import {
   faBell,
@@ -170,6 +172,7 @@ export function Icons() {
         such as <code>weight</code> pass through. Outline and fill sets will not
         match Font Awesome in the same toolbar.
       </div>
+      <CodeSnippets items={iconSnippets} />
     </div>
   );
 }

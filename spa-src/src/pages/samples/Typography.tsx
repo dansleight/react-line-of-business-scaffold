@@ -1,5 +1,7 @@
 import { Card, Col, Container, Row } from "react-bootstrap";
 import { Headcrumb } from "@/components/Headcrumb";
+import { CodeSnippets } from "@/components/CodeSnippets";
+import { typographySnippets } from "./labSnippets";
 
 export function Typography() {
   return (
@@ -149,6 +151,7 @@ export function Typography() {
           </Card>
         </Col>
       </Row>
+      <CodeSnippets items={typographySnippets} />
     </Container>
   );
 }

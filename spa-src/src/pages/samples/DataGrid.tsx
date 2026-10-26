@@ -1,5 +1,7 @@
 import { Card, Col, Container, Row } from "react-bootstrap";
 import { Headcrumb } from "@/components/Headcrumb";
+import { CodeSnippets } from "@/components/CodeSnippets";
+import { gridSnippets } from "./labSnippets";
 import { useToast } from "@/contexts/UseContexts";
 import { dataGrid } from "@/grids/kit";
 
@@ -209,25 +211,7 @@ export function DataGridSample() {
         </Col>
       </Row>
 
-      <Card className="mb-3">
-        <Card.Body>
-          <Card.Title className="push-up">Usage</Card.Title>
-          <pre className="bg-body-secondary rounded p-3 small mb-0 overflow-auto">
-            {`const PersonGrid = dataGrid<Person>();
-
-<PersonGrid data={people} searchable pageSize={25}>
-  <PersonGrid.Column property="displayName" header="Name" frozen="left" />
-  <PersonGrid.Column property="email" />
-  <PersonGrid.Column header="">
-    {(row) => <Link to={\`/people/\${row.id}\`}>Open</Link>}
-  </PersonGrid.Column>
-</PersonGrid>
-
-<PersonGrid data={people} />
-<PersonGrid data={people} properties={["displayName", "email"]} />`}
-          </pre>
-        </Card.Body>
-      </Card>
+      <CodeSnippets items={gridSnippets} />
     </Container>
   );
 }

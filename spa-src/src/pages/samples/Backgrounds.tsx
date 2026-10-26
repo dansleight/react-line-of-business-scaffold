@@ -1,5 +1,7 @@
 import { Col, Container, Row } from "react-bootstrap";
 import { Headcrumb } from "@/components/Headcrumb";
+import { CodeSnippets } from "@/components/CodeSnippets";
+import { backgroundSnippets } from "./labSnippets";
 
 export function Backgrounds() {
   return (
@@ -263,6 +265,7 @@ export function Backgrounds() {
           </div>
         </Col>
       </Row>
+      <CodeSnippets items={backgroundSnippets} />
     </Container>
   );
 }

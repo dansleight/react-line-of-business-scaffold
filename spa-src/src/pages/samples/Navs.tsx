@@ -1,5 +1,7 @@
 import { Col, Container, Row } from "react-bootstrap";
 import { Headcrumb } from "@/components/Headcrumb";
+import { CodeSnippets } from "@/components/CodeSnippets";
+import { navSnippets } from "./labSnippets";
 
 export function Navs() {
   return (
@@ -356,6 +358,7 @@ export function Navs() {
           </div>
         </Col>
       </Row>
+      <CodeSnippets items={navSnippets} />
     </Container>
   );
 }

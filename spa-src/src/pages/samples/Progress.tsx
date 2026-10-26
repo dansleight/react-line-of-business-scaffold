@@ -1,5 +1,7 @@
 import { Col, Container, Row } from "react-bootstrap";
 import { Headcrumb } from "@/components/Headcrumb";
+import { CodeSnippets } from "@/components/CodeSnippets";
+import { progressSnippets } from "./labSnippets";
 
 export function Progress() {
   return (
@@ -165,6 +167,7 @@ export function Progress() {
           </div>
         </Col>
       </Row>
+      <CodeSnippets items={progressSnippets} />
     </Container>
   );
 }

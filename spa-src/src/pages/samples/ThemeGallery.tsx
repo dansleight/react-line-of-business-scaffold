@@ -4,6 +4,8 @@ import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Headcrumb } from "@/components/Headcrumb";
+import { CodeSnippets } from "@/components/CodeSnippets";
+import { gallerySnippets } from "./labSnippets";
 import { useSettingsContext } from "@/contexts/UseContexts";
 import { ColorMode, colorModeLabel } from "@/models/Enums";
 import {
@@ -323,6 +325,7 @@ export function ThemeGallery() {
           </Card>
         </Col>
       </Row>
+      <CodeSnippets items={gallerySnippets} />
     </div>
   );
 }

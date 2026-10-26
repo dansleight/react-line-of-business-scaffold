@@ -1,5 +1,7 @@
 import { Col, Container, Row } from "react-bootstrap";
 import { Headcrumb } from "@/components/Headcrumb";
+import { CodeSnippets } from "@/components/CodeSnippets";
+import { containerSnippets } from "./labSnippets";
 import { Icon } from "@/components/Icon";
 import { EllipsisVertical } from "lucide-react";
 import { NoteCard } from "@/components/NoteCard";
@@ -665,6 +667,7 @@ export function Containers() {
           </div>
         </Col>
       </Row>
+      <CodeSnippets items={containerSnippets} />
     </Container>
   );
 }

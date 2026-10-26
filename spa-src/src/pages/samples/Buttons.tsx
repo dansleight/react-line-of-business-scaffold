@@ -8,6 +8,8 @@ import {
   ToggleButton,
 } from "react-bootstrap";
 import { Headcrumb } from "@/components/Headcrumb";
+import { CodeSnippets } from "@/components/CodeSnippets";
+import { buttonSnippets } from "./labSnippets";
 import { useState } from "react";
 
 export function Buttons() {
@@ -763,6 +765,7 @@ export function Buttons() {
           </Card>
         </Col>
       </Row>
+      <CodeSnippets items={buttonSnippets} />
     </div>
   );
 }

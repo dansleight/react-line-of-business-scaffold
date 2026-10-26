@@ -1,5 +1,7 @@
 import { Col, Container, Row } from "react-bootstrap";
 import { Headcrumb } from "@/components/Headcrumb";
+import { CodeSnippets } from "@/components/CodeSnippets";
+import { indicatorSnippets } from "./labSnippets";
 
 export function Indicators() {
   return (
@@ -156,6 +158,7 @@ export function Indicators() {
           <span className="badge rounded-pill bg-dark">Dark</span>{" "}
         </div>
       </div>
+      <CodeSnippets items={indicatorSnippets} />
     </Container>
   );
 }
