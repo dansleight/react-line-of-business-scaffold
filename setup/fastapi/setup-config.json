@@ -56,7 +56,9 @@
         "./src/docker-compose.override.yml",
         "./src/docker-compose.override.yml-template",
         "./src/Dockerfile",
-        "./src/ReadMe.md"
+        "./src/ReadMe.md",
+        "./src/**/*.md",
+        "./spa-src/**/*.md"
       ],
       "match": "5011",
       "to": "${apiPort}",
@@ -130,6 +132,13 @@
       "match": "build:fastapi",
       "to": "build:release",
       "comment": "renaming the build script"
+    },
+    {
+      "action": "replace-text",
+      "target": "./spa-src/README.md",
+      "match": "Production builds: `pnpm build:webapi` (output under `src/Scaffold/ClientApp/dist`) or `pnpm build:fastapi`.",
+      "to": "Production builds: `pnpm build:release` (output under `src/client_app`).",
+      "comment": "Point the SPA readme at the renamed production script"
     },
     {
       "action": "remove",

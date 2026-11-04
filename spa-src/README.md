@@ -1,6 +1,16 @@
 # SPA
 
-Vite + React + TypeScript. In Development it talks to the API through the Vite proxy (`/api`, `/hub`), so you do not put Entra client ids in frontend env files. On boot, `SettingsProvider` calls **`GET /api/settings`**. That payload includes `msalSettings` (`clientId`, `authority`, `apiScope`) which `App.tsx` uses to construct MSAL. If settings fail to load, the SPA stops with an error screen — that is usually the API not running or Entra config missing on the server.
+Vite + React + TypeScript. In Development it talks to the API through the Vite proxy (`/api`, `/hub`), so you do not put Entra client ids in frontend env files. On boot, `SettingsProvider` calls **`GET /api/settings`**. That payload includes `msalSettings` (`clientId`, `authority`, `apiScope`) which `App.tsx` uses to construct MSAL. If settings fail to load, the SPA stops with an error screen. That is usually the API not running, or Entra config missing on the server.
+
+Agent rules are in [AGENTS.md](AGENTS.md).
+
+| Area | Doc |
+|---|---|
+| Shell, routes, menus, Headcrumb, color mode | [docs/shell.md](docs/shell.md) |
+| Browser sign-in | [docs/auth.md](docs/auth.md) |
+| Forms | [docs/forms.md](docs/forms.md) |
+| Generated client, lookups, grids | [docs/data.md](docs/data.md) |
+| Theme, icons, logo | [docs/theme.md](docs/theme.md) |
 
 ## Layouts
 
@@ -17,7 +27,7 @@ export const layoutConfig = smLayoutConfig;
 // export const layoutConfig = vLayoutConfig;
 ```
 
-Theme enums on each config (`SideMenuTheme`, `SidebarTheme`, `TopbarTheme`, …) are Bootstrap utility class bundles from `src/models/Enums.ts`. Light and dark variants are separate properties (`theme` / `darkTheme`, `topbarTheme` / `topbarDarkTheme`). Dark mode itself is a `localStorage` flag (`darkmode`) applied as `data-bs-theme` on `<html>`.
+Theme enums on each config (`SideMenuTheme`, `SidebarTheme`, `TopbarTheme`, …) are Bootstrap utility class bundles from `src/models/Enums.ts`. Light and dark variants are separate properties (`theme` / `darkTheme`, `topbarTheme` / `topbarDarkTheme`). Color mode is `light`, `dark`, or `follow`, stored in `localStorage` as `colormode` and applied as `data-bs-theme` on `<html>`. `follow` tracks `prefers-color-scheme`. A legacy `darkmode` boolean is migrated once. `darkMode` is the resolved boolean the chrome reads. Details are in [docs/shell.md](docs/shell.md).
 
 `defaultTitle` and `titleSuffix` are document titles, not the nav label.
 
@@ -132,6 +142,6 @@ pnpm i
 pnpm dev
 ```
 
-`pnpm generate-api` with Swagger up. Production builds: `pnpm build:webapi` (output under the C# `ClientApp/dist`) or `pnpm build:fastapi`.
+`pnpm generate-api` with Swagger up. Production builds: `pnpm build:webapi` (output under `src/Scaffold/ClientApp/dist`) or `pnpm build:fastapi`.
 
 Theme Lab pages live in `src/pages/samples/` and are routed under `/samples`. Use them while picking a theme; they are tooling, not product screens. `pnpm remove-lab` deletes Theme Lab pages, `/samples` routes, and the nav item when you no longer need the gallery.

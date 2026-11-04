@@ -379,19 +379,41 @@ async function main() {
     await fs.rm(path.join(rootPath, "spa-src/yarn.lock"), { force: true });
   }
 
+  await writeGeneratedRootDocs(rootPath, isDotnet, {
+    apiPort,
+    spaPort,
+    ns,
+    title,
+    dbName,
+    nslower,
+  });
+
   console.log("Setup succeeded:");
   console.log(`   Project Root: ${rootPath}`);
-  console.log("Next steps:");
-  console.log(
-    " - Provision SQL Server database using scripts in ./assets/DbScripts/SqlServer",
-  );
-  console.log(
-    " - Update environment variables in ./src/docker-compose-override.yml:",
-  );
-  console.log("    - IdP settings are required");
-  console.log("    - Confirm Database Settings");
-  console.log("Further instructions can be found in ./ReadMe.md");
+  console.log("This scaffold repo is done. Work in the new folder.");
+  console.log("Its ReadMe.md has the database name, the ports, and the next steps.");
   console.log("GOOD LUCK!");
+}
+
+async function writeGeneratedRootDocs(
+  rootPath: string,
+  isDotnet: boolean,
+  vars: Record<string, string | number>,
+) {
+  const dir = isDotnet ? "webapi" : "fastapi";
+  for (const name of ["ReadMe", "AGENTS"]) {
+    const templatePath = path.resolve(
+      PROJECT_ROOT,
+      "setup",
+      dir,
+      `${name}.template.md`,
+    );
+    const template = await fs.readFile(templatePath, "utf-8");
+    await fs.writeFile(
+      path.resolve(rootPath, `${name}.md`),
+      interpolate(template, vars),
+    );
+  }
 }
 
 main().catch((err) => {

@@ -15,7 +15,7 @@ I chose FastAPI because it handles multi-threading out of the box, and is fairly
 
 You will need to account for the following to get the Python version of the back-end up and running:
 
-- Microsoft SQL Server instance. This is covered in the root README.md of the project.
+- Microsoft SQL Server instance. On a clean clone of the scaffold, start from the root `ReadMe.md` and run setup. In a generated app, the root `ReadMe.md` is the one setup wrote for this project.
 - Python 3 (I'd suggest something still supported) and a Virtual Environment
 
 ### Python Virtual Environment

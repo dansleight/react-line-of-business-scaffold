@@ -4,7 +4,7 @@
  * Strip Theme Lab from a generated SPA.
  *
  * Deletes `src/pages/samples/`, drops `/samples` routes, removes the Theme Lab
- * nav item, and trims Theme Lab copy from this folder's README. Product kits
+ * nav item, and trims Theme Lab copy from this folder's README and docs/theme.md. Product kits
  * (forms, grids, icons, toasts) stay.
  *
  * Run from spa-src: `pnpm remove-lab`
@@ -18,6 +18,7 @@ const SAMPLES_DIR = path.join(ROOT, "src/pages/samples");
 const ROUTES_FILE = path.join(ROOT, "src/routes.tsx");
 const MENUS_FILE = path.join(ROOT, "src/menusConfig.ts");
 const README_FILE = path.join(ROOT, "README.md");
+const THEME_DOC = path.join(ROOT, "docs/theme.md");
 
 async function exists(filePath: string): Promise<boolean> {
   try {
@@ -173,12 +174,13 @@ async function main() {
     changed.push("updated src/menusConfig.ts");
   }
 
-  if (await exists(README_FILE)) {
-    const readmeBefore = await readFile(README_FILE, "utf-8");
-    const readmeAfter = collapseBlankLines(stripReadmeLabCopy(readmeBefore));
-    if (readmeAfter !== readmeBefore) {
-      await writeFile(README_FILE, readmeAfter);
-      changed.push("updated README.md");
+  for (const file of [README_FILE, THEME_DOC]) {
+    if (!(await exists(file))) continue;
+    const before = await readFile(file, "utf-8");
+    const after = collapseBlankLines(stripReadmeLabCopy(before));
+    if (after !== before) {
+      await writeFile(file, after);
+      changed.push(`updated ${path.relative(ROOT, file)}`);
     }
   }
 

@@ -5,6 +5,7 @@ import {
   type FunctionComponent,
   type ReactNode,
 } from "react";
+import { actionsToColumn, type DataGridActionsProps } from "./actions";
 import { humanize } from "./formatCell";
 import type { DataGridColumnProps, DataGridFrozen, DataGridRow } from "./types";
 
@@ -20,6 +21,7 @@ export function columnId<T extends DataGridRow>(
 export function parseColumnChildren<T extends DataGridRow>(
   children: ReactNode,
   Column: FunctionComponent<DataGridColumnProps<T>>,
+  Actions?: FunctionComponent<DataGridActionsProps<T>>,
 ): DataGridColumnProps<T>[] {
   const defs: DataGridColumnProps<T>[] = [];
 
@@ -32,6 +34,8 @@ export function parseColumnChildren<T extends DataGridRow>(
       }
       if (child.type === Column) {
         defs.push(child.props as DataGridColumnProps<T>);
+      } else if (Actions && child.type === Actions) {
+        defs.push(actionsToColumn(child.props as DataGridActionsProps<T>));
       }
     });
   };

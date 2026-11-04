@@ -12,11 +12,11 @@
         "./assets/DbScripts/SqlServer/2 - WebAPI logs.sql",
         "./assets/DbScripts/SqlServer/3 - DB User.sql",
         "./src/Scaffold/appsettings.Development.json",
-        "./src/ReadMe.md"
+        "./src/**/*.md"
       ],
       "match": "Scaff_DB",
       "to": "${dbName}",
-      "comment": "Replace 'Scaffold' with namespace in multiple files"
+      "comment": "Replace the sample database name, including copied markdown"
     },
     {
       "action": "replace-text",
@@ -32,7 +32,9 @@
         "./spa-src/src/appConfig.ts",
         "./spa-src/vite.config.ts",
         "./src/.vscode/launch.json",
-        "./src/Scaffold/Properties/launchSettings.json"
+        "./src/Scaffold/Properties/launchSettings.json",
+        "./src/**/*.md",
+        "./spa-src/**/*.md"
       ],
       "match": "5011",
       "to": "${apiPort}",
@@ -83,6 +85,21 @@
       "match": "build:webapi",
       "to": "build:release",
       "comment": "renaming the build script"
+    },
+    {
+      "action": "replace-text",
+      "target": "./spa-src/README.md",
+      "match": "Production builds: `pnpm build:webapi` (output under `src/Scaffold/ClientApp/dist`) or `pnpm build:fastapi`.",
+      "to": "Production builds: `pnpm build:release` (output under `src/${ns}/ClientApp/dist`).",
+      "comment": "Point the SPA readme at the renamed production script"
+    },
+    {
+      "action": "replace-text",
+      "target": ["./src/**/*.md", "./spa-src/**/*.md", "./assets/generator/**/*.md"],
+      "match": "\\bScaffold\\b",
+      "regex": true,
+      "to": "${ns}",
+      "comment": "Project name in the docs setup copies"
     }
   ]
 }

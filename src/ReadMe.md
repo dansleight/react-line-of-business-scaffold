@@ -1,6 +1,16 @@
 # Backend (C# Web API)
 
-This folder is the ASP.NET Core host (`{Namespace}/`) and the business library (`{Namespace}.Business/`). After `setup`, names match the namespace you typed.
+This folder is the ASP.NET Core host (`Scaffold/`) and the business library (`Scaffold.Business/`). After setup, those names match the namespace you typed.
+
+Agent rules are in [AGENTS.md](AGENTS.md). Domain notes:
+
+| Area | Doc |
+|---|---|
+| Table prefixes and audit columns | [docs/database.md](docs/database.md) |
+| Repositories | [docs/repositories.md](docs/repositories.md) |
+| Controllers, errors, settings | [docs/http.md](docs/http.md) |
+| How the API treats a token | [docs/authentication.md](docs/authentication.md) |
+| Generating objects from tables | [docs/generator.md](docs/generator.md) |
 
 The API is a JWT bearer resource. The SPA does not put Entra values in its own env files: it calls **`GET /api/settings`** (anonymous) and receives `clientId`, `authority`, and `apiScope`. Those values are read from the **same** `EntraId` section the API uses to validate tokens. Keep that section correct and both sides line up.
 
@@ -10,7 +20,7 @@ The API expects a database and a SQL login. Scripts are in `assets/DbScripts/Sql
 
 1. `1 - Init.sql` — database, tables, seed data
 2. `2 - WebAPI logs.sql` — Serilog table
-3. `3 - DB User.sql` — login/user `user_{Database}` (default password in the script is a placeholder; change it)
+3. `3 - DB User.sql` — login/user `user_Scaff_DB` (default password in the script is a placeholder; change it)
 
 `setup` substitutes your database name into these scripts and into `appsettings.Development.json`.
 
@@ -29,7 +39,7 @@ Create the host data directory first. On Windows, use `C:\SqlServer\data` (or si
 Connection string (Development default shape):
 
 ```
-Server=localhost;Initial Catalog={Database};User Id=user_{Database};Password=...;Encrypt=Yes;TrustServerCertificate=Yes;
+Server=localhost;Initial Catalog=Scaff_DB;User Id=user_Scaff_DB;Password=...;Encrypt=Yes;TrustServerCertificate=Yes;
 ```
 
 Treat the password like the Entra secret: user secrets or environment variables in anything past a private machine.
@@ -62,7 +72,7 @@ Optional: **App roles** or **groups** feed `RoleMappings` in `appsettings.json` 
 
 **Do not commit `ClientSecret`.** `appsettings.json` uses deploy-time tokens (`#tenantid#`, `#clientsecret#`, …). `appsettings.Development.json` may hold non-secret ids on a private box; still keep the secret out of git.
 
-`setup` removes `UserSecretsId` from the copied web project. Init secrets once in the Web API project folder (`src/{Namespace}/`):
+`setup` removes `UserSecretsId` from the copied web project. Init secrets once in the Web API project folder (`src/Scaffold/`):
 
 ```bash
 dotnet user-secrets init
@@ -107,10 +117,10 @@ From `src/`:
 
 ```bash
 dotnet build
-dotnet run --project {Namespace}/{Namespace}.csproj
+dotnet run --project Scaffold/Scaffold.csproj
 ```
 
-Or open `{Namespace}.sln` and run the Web API project. The `http` profile listens on the port `setup` chose (template default `http://localhost:5011`) and opens Swagger.
+Or open `Scaffold.sln` and run the Web API project. The `http` profile listens on the port `setup` chose (template default `http://localhost:5011`) and opens Swagger.
 
 Confirm `GET /api/settings` returns `msalSettings` with `clientId`, `authority`, and `apiScope`. Empty `msalSettings` means TenantId, ClientId, or WebApiScope did not load.
 
@@ -118,4 +128,4 @@ Then start the SPA (`spa-src/`) as described in that README. The Vite proxy targ
 
 ## Generator
 
-With the database up, `assets/generator/` can emit Business objects, repositories, and services from tables. See that project's README. Mark `dat_*` tables **primary** when they own a `br_*` many-to-many; insert/update will persist `*Ids` lists.
+With the database up, `assets/generator/` can emit Business objects, repositories, and services from tables. The workflow is in [docs/generator.md](docs/generator.md). CLI flags are in that project's README. Mark `dat_*` tables **primary** when they own a `br_*` many-to-many; insert/update will persist `*Ids` lists.

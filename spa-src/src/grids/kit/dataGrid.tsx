@@ -1,4 +1,5 @@
 import { useMemo, type FunctionComponent } from "react";
+import type { DataGridActionsProps } from "./actions";
 import { autoColumns, parseColumnChildren } from "./columns";
 import { DataGridView } from "./DataGridView";
 import type { DataGridColumnProps, DataGridProps, DataGridRow } from "./types";
@@ -7,6 +8,7 @@ export type DataGridComponent<T extends DataGridRow> = FunctionComponent<
   DataGridProps<T>
 > & {
   Column: FunctionComponent<DataGridColumnProps<T>>;
+  Actions: FunctionComponent<DataGridActionsProps<T>>;
 };
 
 /**
@@ -22,9 +24,15 @@ export function dataGrid<T extends DataGridRow>(): DataGridComponent<T> {
   }
   Column.displayName = "DataGrid.Column";
 
+  function Actions(props: DataGridActionsProps<T>) {
+    void props;
+    return null;
+  }
+  Actions.displayName = "DataGrid.Actions";
+
   function Grid({ children, properties, data, ...rest }: DataGridProps<T>) {
     const columns = useMemo(() => {
-      const specified = parseColumnChildren(children, Column);
+      const specified = parseColumnChildren(children, Column, Actions);
       if (specified.length > 0) return specified;
       return autoColumns(data, properties);
     }, [children, data, properties]);
@@ -33,5 +41,6 @@ export function dataGrid<T extends DataGridRow>(): DataGridComponent<T> {
   }
   Grid.displayName = "DataGrid";
   Grid.Column = Column;
+  Grid.Actions = Actions;
   return Grid;
 }
