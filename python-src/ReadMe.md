@@ -111,8 +111,6 @@ The FastAPI app is meant to be a drop-in backend for `spa-src`. Paths, JSON came
 
 Errors use the SPA `ApiError` shape (`status`, `code`, `userMessage`, `message`, `traceId`, `errors`, `exception`). Validation failures are **400** (`code=validation`), not FastAPI's default 422. Development mode includes `exception` (type, message, stackTrace, inner).
 
-`/api/auth/check`, `/api/widget`, and `/api/users` are FastAPI-only extras and are not used by the SPA client.
-
 # Notes
 
 you might have to clear out all of the environment variables at some point. This worked on my mac from within the venv:

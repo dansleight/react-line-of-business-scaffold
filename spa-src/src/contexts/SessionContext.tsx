@@ -24,6 +24,7 @@ import { menusConfig as baseMenusConfig } from "@/menusConfig";
 import { MenusConfig } from "@/models/Interfaces";
 import { UserInfoModel } from "@/apiClient/data-contracts";
 import { getUserMenuItems } from "@/models/Utilities";
+// import-reference
 
 let interactiveTokenStarted = false;
 let inFlight: Promise<string | undefined> | null = null;
@@ -96,7 +97,8 @@ export function SessionProvider({
 }: SessionProviderProps) {
   const { globalSettings } = useSettingsContext();
   const { getAccount } = useIdentityContext();
-  const { instance } = useMsal();
+  const msal = useMsal();
+  const { instance } = msal;
   const [showApiError, setShowApiError] = useState<boolean>(false);
   const [apiErrorMessage, setApiErrorMessage] = useState<string>("");
   const [apiErrorDetails, setApiErrorDetails] = useState<string | undefined>(
@@ -190,6 +192,8 @@ export function SessionProvider({
       api.infoGetUserInfoModel().then((res) => setUserInfo(res.data));
     }
   }, [api]);
+
+  // useEffect-reference
 
   // TODO: Implement roles filter
   const menusConfig: MenusConfig = useMemo(() => {

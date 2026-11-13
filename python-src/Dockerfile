@@ -1,11 +1,5 @@
-# If you want to use the standard python slim image:
-# FROM python:3.13-slim
-
-# To use the hardened image with sfw
-# FROM dhi.io/python:3.13-sfw-dev
-
-# To use the hardened image without sfw
-FROM dhi.io/python:3.13-debian13-dev
+# Base Image
+FROM python:3.13-slim
 
 # Set working directory
 WORKDIR /code

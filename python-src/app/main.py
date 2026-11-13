@@ -20,7 +20,7 @@ from app.errors import (
     validation_exception_handler,
 )
 from app.logging.config import logger, shutdown_logging
-from app.routes import auth, info, lookup, settings as settings_routes, test, widget
+from app.routes import info, lookup, settings as settings_routes, test
 
 
 @asynccontextmanager
@@ -61,8 +61,6 @@ if settings.environment.lower() == "development":
 
 app.mount("/static", StaticFiles(directory="client_app"), name="static")
 
-app.include_router(auth.router)
-app.include_router(widget.router)
 app.include_router(settings_routes.router)
 app.include_router(info.router)
 app.include_router(lookup.router)
@@ -109,7 +107,7 @@ async def log_requests(request: Request, call_next):
         )
 
 
-@app.get("/{path:path}")
+@app.get("/{path:path}", include_in_schema=False)
 async def serve_spa(path: str):
     normalized = "/" + path.lstrip("/")
     protected_prefixes = ("/api", "/ws", "/swagger", "/redoc", "/openapi.json", "/static")

@@ -9,6 +9,7 @@ import {
 import { AccountInfo } from "@azure/msal-browser";
 import { MenusConfig } from "@/models/Interfaces";
 import LookupClass from "@/models/LookupClass";
+// import-reference
 
 // ---- Settings Context -----------------------------------------------------------------------
 type SettingsContextType = {

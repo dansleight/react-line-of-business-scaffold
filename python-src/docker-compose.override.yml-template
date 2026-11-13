@@ -11,6 +11,8 @@ services:
       - CLIENT_ID=
       - API_SCOPE=
       - CLIENT_SECRET= # Optional, only necessary for downstream calls
+      # Role Mappings
+      - 'ROLE_MAPPINGS=[{"Role":"admin","Groups":["00000000-0000-0000-0000-000000000000"]}]'
       # Database Settings
       - DB_SERVER=host.docker.internal:1433
       - DB_NAME=Scaff_DB
