@@ -108,7 +108,7 @@
     },
     {
       "action": "replace-text",
-      "target": "./spa-src/src/layout/sidebar/index.tsx",
+      "target": "./spa-src/src/layouts/variable/sidebar/Sidebar.tsx",
       "match": "Scaff <sup>00</sup>",
       "to": "${title}",
       "comment": "Title on Sidebar"
