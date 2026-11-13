@@ -61,7 +61,7 @@ export const SessionContext = createContext({} as SessionContextType);
 
 export const useSessionContext = () => useContext(SessionContext);
 
-// ---- Session Context -----------------------------------------------------------------------
+// ---- LookupContext Context -----------------------------------------------------------------------
 type LookupContextType = {
   lookups: Record<string, LookupClass>;
   display: (lookupType: LookupType, id?: number | null) => ReactNode;
@@ -72,12 +72,7 @@ export const LookupContext = createContext({} as LookupContextType);
 export const useLookupContext = () => useContext(LookupContext);
 
 // ---- Toast Context -----------------------------------------------------------------------
-export type ToastAccent =
-  | "primary"
-  | "success"
-  | "info"
-  | "warning"
-  | "danger";
+export type ToastAccent = "primary" | "success" | "info" | "warning" | "danger";
 
 export type ToastOptions = {
   /** Auto-dismiss after `toastTimeoutMs`. Default true. */
