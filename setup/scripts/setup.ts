@@ -181,7 +181,7 @@ async function main() {
       try {
         const content = await fs.readFile(file, "utf-8");
         const cleaned = content
-          .replace(/<UserSecretsId>.*?<\/UserSecretsId>\s*/gis, "")
+          .replace(/^\s*<UserSecretsId>.*?<\/UserSecretsId>\s\r?\n?/gim, "")
           .replace(
             // Also remove empty <PropertyGroup> if that's all it contained
             /<PropertyGroup>\s*<\/PropertyGroup>/gis,
@@ -391,7 +391,9 @@ async function main() {
   console.log("Setup succeeded:");
   console.log(`   Project Root: ${rootPath}`);
   console.log("This scaffold repo is done. Work in the new folder.");
-  console.log("Its ReadMe.md has the database name, the ports, and the next steps.");
+  console.log(
+    "Its ReadMe.md has the database name, the ports, and the next steps.",
+  );
   console.log("GOOD LUCK!");
 }
 

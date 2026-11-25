@@ -15,6 +15,7 @@ import {
   GlobalSettingsModel,
   GoodModel,
   LookupModel,
+  LookupType,
   UserInfoModel,
 } from "./data-contracts";
 import { HttpClient, RequestParams } from "./http-client";
@@ -26,14 +27,48 @@ export class Api<
    * No description
    *
    * @tags Info
-   * @name InfoGetUserInfoModel
+   * @name GetUserInfo
    * @request GET:/api/info
    * @secure
    */
-  infoGetUserInfoModel = (params: RequestParams = {}) =>
+  getUserInfo = (params: RequestParams = {}) =>
     this.request<UserInfoModel, ApiError>({
       path: `/api/info`,
       method: "GET",
+      secure: true,
+      format: "json",
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Info
+   * @name GetUserAvatar
+   * @summary Gets the current user's avatar (Graph, then Gravatar, then initials). Cached for seven days.
+   * @request GET:/api/info/avatar
+   * @secure
+   */
+  getUserAvatar = (params: RequestParams = {}) =>
+    this.request<File, ApiError>({
+      path: `/api/info/avatar`,
+      method: "GET",
+      secure: true,
+      format: "json",
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Info
+   * @name RefreshUserAvatar
+   * @summary Forces a refresh of the current user's avatar from Graph / Gravatar / initials.
+   * @request POST:/api/info/avatar/refresh
+   * @secure
+   */
+  refreshUserAvatar = (params: RequestParams = {}) =>
+    this.request<File, ApiError>({
+      path: `/api/info/avatar/refresh`,
+      method: "POST",
       secure: true,
       format: "json",
       ...params,
@@ -47,7 +82,7 @@ export class Api<
    * @secure
    */
   lookupAll = (params: RequestParams = {}) =>
-    this.request<LookupModel[], any>({
+    this.request<LookupModel[], ApiError>({
       path: `/api/lookup`,
       method: "GET",
       secure: true,
@@ -57,49 +92,31 @@ export class Api<
   /**
    * No description
    *
+   * @tags Lookup
+   * @name LookupType
+   * @request GET:/api/lookup/type/{lookupType}
+   * @secure
+   */
+  lookupType = (lookupType: LookupType, params: RequestParams = {}) =>
+    this.request<LookupModel, ApiError>({
+      path: `/api/lookup/type/${lookupType}`,
+      method: "GET",
+      secure: true,
+      format: "json",
+      ...params,
+    });
+  /**
+   * No description
+   *
    * @tags Settings
-   * @name SettingsGet
+   * @name GetSettings
    * @summary Gets the global settings necessary for the SPA to start, including MSAL settings for Authentication
    * @request GET:/api/settings
    */
-  settingsGet = (params: RequestParams = {}) =>
+  getSettings = (params: RequestParams = {}) =>
     this.request<GlobalSettingsModel, ApiError>({
       path: `/api/settings`,
       method: "GET",
-      format: "json",
-      ...params,
-    });
-  /**
-   * No description
-   *
-   * @tags Settings
-   * @name SettingsAvatar
-   * @summary Gets the current user's avatar (Graph, then Gravatar, then initials). Cached for seven days.
-   * @request GET:/api/settings/avatar
-   * @secure
-   */
-  settingsAvatar = (params: RequestParams = {}) =>
-    this.request<File, ApiError>({
-      path: `/api/settings/avatar`,
-      method: "GET",
-      secure: true,
-      format: "json",
-      ...params,
-    });
-  /**
-   * No description
-   *
-   * @tags Settings
-   * @name SettingsRefreshAvatar
-   * @summary Forces a refresh of the current user's avatar from Graph / Gravatar / initials.
-   * @request POST:/api/settings/avatar/refresh
-   * @secure
-   */
-  settingsRefreshAvatar = (params: RequestParams = {}) =>
-    this.request<File, ApiError>({
-      path: `/api/settings/avatar/refresh`,
-      method: "POST",
-      secure: true,
       format: "json",
       ...params,
     });

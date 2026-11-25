@@ -189,7 +189,7 @@ export function SessionProvider({
 
   useEffect(() => {
     if (api) {
-      api.infoGetUserInfoModel().then((res) => setUserInfo(res.data));
+      api.getUserInfo().then((res) => setUserInfo(res.data));
     }
   }, [api]);
 

@@ -20,6 +20,7 @@ using Serilog;
 using Serilog.AspNetCore;
 using Serilog.Events;
 using Swashbuckle.AspNetCore.SwaggerUI;
+using Swashbuckle.AspNetCore.Annotations;
 using Scaffold.Business.Services.Caching;
 using Scaffold.Hubs;
 using Scaffold.SpaModels;
@@ -175,6 +176,7 @@ public class Program
                 c.SupportNonNullableReferenceTypes();
                 c.UseAllOfToExtendReferenceSchemas();
                 c.OperationFilter<AuthorizeOperationFilter>();
+                c.EnableAnnotations();
             });
             services.AddSwaggerGenNewtonsoftSupport();
         }

@@ -1,9 +1,5 @@
 import { ComponentType, ReactNode, useEffect, useState } from "react";
-import {
-  ColorMode,
-  GridBreakpoint,
-  gridBreakpoints,
-} from "@/models/Enums";
+import { ColorMode, GridBreakpoint, gridBreakpoints } from "@/models/Enums";
 import { SettingsContext } from "./UseContexts";
 import { GlobalSettingsModel } from "@/apiClient/data-contracts";
 import { defaultGlobalSettings, webApiConfig } from "@/appConfig";
@@ -95,7 +91,7 @@ export function SettingsProvider({
 
     const getSettings = async () => {
       api
-        .settingsGet()
+        .getSettings()
         .then((res) => {
           setGlobalSettings(res.data);
           setLoaded(true);
