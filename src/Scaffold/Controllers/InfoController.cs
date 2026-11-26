@@ -27,7 +27,7 @@ public class InfoController : ControllerBase
     }
 
     [HttpGet]
-    [SwaggerOperation(OperationId = "GetUserInfo")]
+    [SwaggerOperation(OperationId = "getUserInfo")]
     [ProducesResponseType(typeof(UserInfoModel), 200)]
     public ActionResult GetUserInfoModel()
     {
@@ -39,7 +39,7 @@ public class InfoController : ControllerBase
     /// Gets the current user's avatar (Graph, then Gravatar, then initials). Cached for seven days.
     /// </summary>
     [HttpGet("avatar")]
-    [SwaggerOperation(OperationId = "GetUserAvatar")]
+    [SwaggerOperation(OperationId = "getUserAvatar")]
     [ProducesResponseType(typeof(FileContentResult), 200)]
     [ProducesResponseType(typeof(ApiError), 401)]
     public async Task<IActionResult> Avatar()
@@ -52,7 +52,7 @@ public class InfoController : ControllerBase
     /// Forces a refresh of the current user's avatar from Graph / Gravatar / initials.
     /// </summary>
     [HttpPost("avatar/refresh")]
-    [SwaggerOperation(OperationId = "RefreshUserAvatar")]
+    [SwaggerOperation(OperationId = "refreshUserAvatar")]
     [ProducesResponseType(typeof(FileContentResult), 200)]
     [ProducesResponseType(typeof(ApiError), 401)]
     public async Task<IActionResult> RefreshAvatar()

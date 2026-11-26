@@ -29,7 +29,7 @@ public class SettingsController : ControllerBase
     /// Gets the global settings necessary for the SPA to start, including MSAL settings for Authentication
     /// </summary>
     [HttpGet]
-    [SwaggerOperation(OperationId = "GetSettings")]
+    [SwaggerOperation(OperationId = "getSettings")]
     [ProducesResponseType(typeof(GlobalSettingsModel), 200)]
     public ActionResult Get()
     {

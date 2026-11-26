@@ -7,6 +7,12 @@ services:
       dockerfile: Dockerfile
     image: scaffold/fastapi-scaffold:dev
     container_name: scaffold_fastapi
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:5011/api/settings"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 30s
     environment:
       - PYTHONUNBUFFERED=1
       - PYTHONPATH=/app
